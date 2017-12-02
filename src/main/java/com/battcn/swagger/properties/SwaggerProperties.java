@@ -11,7 +11,6 @@ import java.util.Map;
 
 /**
  * @author Levin
- * @create 2017/12/1 0001
  */
 @Data
 @ConfigurationProperties("swagger")

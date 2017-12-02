@@ -12,6 +12,11 @@
     <url>https://github.com/battcn/spring-boot-starter-swagger.git</url>
     <description>一款简单漂亮的Swagger</description>
 
+    <organization>
+        <name>battcn开源组</name>
+        <url>http://blog.battcn.com</url>
+    </organization>
+
 
     <licenses>
         <license>
@@ -55,6 +60,9 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}
         </destDir>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     </properties>
 
 
@@ -100,48 +108,85 @@
     </dependencyManagement>
 
 
-    <build>
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <targetPath>META-INF/resources/</targetPath>
-            </resource>
-        </resources>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <showWarnings>true</showWarnings>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <skipTests>${skipTests}</skipTests>
-                </configuration>
-            </plugin>
-            <!-- 上传源码 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+
+    <profiles>
+        <profile>
+            <id>oss</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>${project.basedir}/src/main/resources</directory>
+                        <targetPath>META-INF/resources/</targetPath>
+                    </resource>
+                </resources>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+
+    </profiles>
+
 
 </project>

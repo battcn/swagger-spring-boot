@@ -4,7 +4,6 @@ package com.battcn.swagger.properties;
  * 方便Swagger 中 @ApiImplicitParam(paramType = ParamType.HEADER)
  *
  * @author Levin
- * @Q群：391619659
  */
 public final class ParamType {
 
