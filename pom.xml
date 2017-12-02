@@ -6,11 +6,11 @@
 
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.1.0-RELEASE</version>
+    <version>1.2.0-RELEASE</version>
 
     <name>spring-boot-starter-swagger</name>
     <url>https://github.com/battcn/spring-boot-starter-swagger.git</url>
-    <description>一款简单漂亮的Swagger</description>
+    <description>基于swagger2.7.0做的一款扩展工具包</description>
 
     <organization>
         <name>battcn开源组</name>
@@ -174,6 +174,7 @@
                     </plugin>
                 </plugins>
             </build>
+
             <distributionManagement>
                 <snapshotRepository>
                     <id>oss</id>

@@ -2,7 +2,6 @@ package com.battcn.swagger;
 
 import com.battcn.swagger.properties.SwaggerProperties;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -26,12 +25,14 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-import static com.google.common.base.Predicates.and;
-import static com.google.common.base.Predicates.not;
-import static com.google.common.base.Predicates.or;
+import static com.google.common.base.Predicates.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 
 /**
@@ -45,7 +46,15 @@ import static com.google.common.base.Predicates.or;
 })
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
+    private static final String DEFAULT_DOCKET = "defaultDocket";
+    private static final String BASE_PATH = "/**";
+
     private BeanFactory beanFactory;
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -55,7 +64,6 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "swagger.enabled", matchIfMissing = true)
     public List<Docket> createRestApi(SwaggerProperties swaggerProperties) {
         ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
         List<Docket> docketList = new LinkedList<>();
@@ -77,14 +85,12 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
             // base-path处理
             // 当没有配置任何path的时候，解析/**
             if (swaggerProperties.getBasePath().isEmpty()) {
-                swaggerProperties.getBasePath().add("/**");
-            }
-            List<Predicate<String>> basePath = Lists.newArrayList();
-            for (String path : swaggerProperties.getBasePath()) {
-                basePath.add(PathSelectors.ant(path));
+                swaggerProperties.getBasePath().add(BASE_PATH);
             }
 
-            // exclude-path处理
+            List<Predicate<String>> basePath = swaggerProperties.getBasePath().stream().map(PathSelectors::ant).collect(toList());
+
+            // exclude-path 处理
             List<Predicate<String>> excludePath = Lists.newArrayList();
             for (String path : swaggerProperties.getExcludePath()) {
                 excludePath.add(PathSelectors.ant(path));
@@ -99,7 +105,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .paths(and(not(or(excludePath)), or(basePath)))
                     .build();
 
-            configurableBeanFactory.registerSingleton("defaultDocket", docket);
+            configurableBeanFactory.registerSingleton(DEFAULT_DOCKET, docket);
             docketList.add(docket);
             return docketList;
         }
@@ -107,7 +113,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         // 分组创建
         for (String groupName : swaggerProperties.getDocket().keySet()) {
             SwaggerProperties.DocketInfo docketInfo = swaggerProperties.getDocket().get(groupName);
-
+            SwaggerProperties.Contact contact = docketInfo.getContact();
             ApiInfo apiInfo = new ApiInfoBuilder()
                     .title(docketInfo.getTitle().isEmpty() ? swaggerProperties.getTitle() : docketInfo.getTitle())
                     .description(docketInfo.getDescription().isEmpty() ? swaggerProperties.getDescription() : docketInfo.getDescription())
@@ -116,9 +122,9 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .licenseUrl(docketInfo.getLicenseUrl().isEmpty() ? swaggerProperties.getLicenseUrl() : docketInfo.getLicenseUrl())
                     .contact(
                             new Contact(
-                                    docketInfo.getContact().getName().isEmpty() ? swaggerProperties.getContact().getName() : docketInfo.getContact().getName(),
-                                    docketInfo.getContact().getUrl().isEmpty() ? swaggerProperties.getContact().getUrl() : docketInfo.getContact().getUrl(),
-                                    docketInfo.getContact().getEmail().isEmpty() ? swaggerProperties.getContact().getEmail() : docketInfo.getContact().getEmail()
+                                    contact.getName().isEmpty() ? swaggerProperties.getContact().getName() : contact.getName(),
+                                    contact.getUrl().isEmpty() ? swaggerProperties.getContact().getUrl() : contact.getUrl(),
+                                    contact.getEmail().isEmpty() ? swaggerProperties.getContact().getEmail() : contact.getEmail()
                             )
                     )
                     .termsOfServiceUrl(docketInfo.getTermsOfServiceUrl().isEmpty() ? swaggerProperties.getTermsOfServiceUrl() : docketInfo.getTermsOfServiceUrl())
@@ -127,12 +133,10 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
             // base-path处理
             // 当没有配置任何path的时候，解析/**
             if (docketInfo.getBasePath().isEmpty()) {
-                docketInfo.getBasePath().add("/**");
+                docketInfo.getBasePath().add(BASE_PATH);
             }
-            List<Predicate<String>> basePath = Lists.newArrayList();
-            for (String path : docketInfo.getBasePath()) {
-                basePath.add(PathSelectors.ant(path));
-            }
+
+            List<Predicate<String>> basePath = docketInfo.getBasePath().stream().map(PathSelectors::ant).collect(toList());
 
             // exclude-path处理
             List<Predicate<String>> excludePath = Lists.newArrayList();
@@ -157,13 +161,13 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         return docketList;
     }
 
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
-    }
-
-    private List<Parameter> buildGlobalOperationParametersFromSwaggerProperties(
-            List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters) {
+    /**
+     * 用SwaggerProperties的配置来构建全局操作参数
+     *
+     * @param globalOperationParameters 全局参数
+     * @return 参数集
+     */
+    private List<Parameter> buildGlobalOperationParametersFromSwaggerProperties(List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters) {
         List<Parameter> parameters = Lists.newArrayList();
 
         if (Objects.isNull(globalOperationParameters)) {
@@ -191,24 +195,18 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     private List<Parameter> assemblyGlobalOperationParameters(
             List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters,
             List<SwaggerProperties.GlobalOperationParameter> docketOperationParameters) {
-
         if (Objects.isNull(docketOperationParameters) || docketOperationParameters.isEmpty()) {
             return buildGlobalOperationParametersFromSwaggerProperties(globalOperationParameters);
         }
 
         Set<String> docketNames = docketOperationParameters.stream()
                 .map(SwaggerProperties.GlobalOperationParameter::getName)
-                .collect(Collectors.toSet());
+                .collect(toSet());
 
-        List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters = Lists.newArrayList();
+        List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters = globalOperationParameters.stream()
+                .filter(parameter -> !docketNames.contains(parameter.getName()))
+                .collect(toList());
 
-        if (Objects.nonNull(globalOperationParameters)) {
-            for (SwaggerProperties.GlobalOperationParameter parameter : globalOperationParameters) {
-                if (!docketNames.contains(parameter.getName())) {
-                    resultOperationParameters.add(parameter);
-                }
-            }
-        }
         resultOperationParameters.addAll(docketOperationParameters);
         return buildGlobalOperationParametersFromSwaggerProperties(resultOperationParameters);
     }
