@@ -99,7 +99,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
             Docket docket = new Docket(DocumentationType.SWAGGER_2)
                     .host(swaggerProperties.getHost())
                     .apiInfo(apiInfo)
-                    .globalOperationParameters(buildGlobalOperationParametersFromSwaggerProperties(swaggerProperties.getGlobalOperationParameters()))
+                    .globalOperationParameters(buildGlobalOperationParameters(swaggerProperties.getGlobalOperationParameters()))
                     .select()
                     .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
                     .paths(and(not(or(excludePath)), or(basePath)))
@@ -162,12 +162,12 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     }
 
     /**
-     * 用SwaggerProperties的配置来构建全局操作参数
+     * 读取SwaggerProperties配置,构建全局操作参数
      *
      * @param globalOperationParameters 全局参数
      * @return 参数集
      */
-    private List<Parameter> buildGlobalOperationParametersFromSwaggerProperties(List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters) {
+    private List<Parameter> buildGlobalOperationParameters(List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters) {
         List<Parameter> parameters = Lists.newArrayList();
 
         if (Objects.isNull(globalOperationParameters)) {
@@ -196,7 +196,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
             List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters,
             List<SwaggerProperties.GlobalOperationParameter> docketOperationParameters) {
         if (Objects.isNull(docketOperationParameters) || docketOperationParameters.isEmpty()) {
-            return buildGlobalOperationParametersFromSwaggerProperties(globalOperationParameters);
+            return buildGlobalOperationParameters(globalOperationParameters);
         }
 
         Set<String> docketNames = docketOperationParameters.stream()
@@ -208,6 +208,6 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                 .collect(toList());
 
         resultOperationParameters.addAll(docketOperationParameters);
-        return buildGlobalOperationParametersFromSwaggerProperties(resultOperationParameters);
+        return buildGlobalOperationParameters(resultOperationParameters);
     }
 }

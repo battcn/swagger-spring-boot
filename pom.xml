@@ -6,7 +6,8 @@
 
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.2.0-RELEASE</version>
+    <version>1.3.1-SNAPSHOT</version>
+    <!-- SNAPSHOT RELEASE -->
 
     <name>spring-boot-starter-swagger</name>
     <url>https://github.com/battcn/spring-boot-starter-swagger.git</url>
@@ -188,6 +189,15 @@
         </profile>
 
     </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <targetPath>META-INF/resources/</targetPath>
+            </resource>
+        </resources>
+    </build>
 
 
 </project>

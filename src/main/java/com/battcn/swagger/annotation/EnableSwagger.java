@@ -1,5 +1,6 @@
-package com.battcn.swagger;
+package com.battcn.swagger.annotation;
 
+import com.battcn.swagger.SwaggerAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

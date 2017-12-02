@@ -82,7 +82,9 @@
             overflow: hidden;
             margin: 0;
         }
-
+        .imitatTable  ul li{/* 补充等高布局 */
+            overflow: hidden;
+        }
         .imitatTable > ul > * {
             overflow: hidden;
             _zoom: 1;
@@ -102,7 +104,7 @@
             font-weight: 700;
         }
 
-        .imitatTable > ul ul > li:nth-child(1) {
+        .imitatTable > ul ul > li:not(:last-of-type) {
             overflow: hidden;
             _zoom: 1;
             line-height: 39px;
@@ -111,6 +113,8 @@
         }
 
         .imitatTable ul li > span {
+            margin-bottom: -1000px;
+            padding-bottom: 1000px;
             border-right: 1px solid #ddd;
         }
 
