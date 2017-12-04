@@ -39,14 +39,14 @@ import static java.util.stream.Collectors.toSet;
  * @author Levin
  */
 @Configuration
-@ConditionalOnProperty(name = "swagger.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.swagger.enabled", matchIfMissing = true)
 @Import({
         Swagger2DocumentationConfiguration.class,
         BeanValidatorPluginsConfiguration.class
 })
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
-    private static final String DEFAULT_DOCKET = "defaultDocket";
+    private static final String DEFAULT_GROUP_NAME = "default";
     private static final String BASE_PATH = "/**";
 
     private BeanFactory beanFactory;
@@ -69,7 +69,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         List<Docket> docketList = new LinkedList<>();
 
         // 没有分组
-        if (swaggerProperties.getDocket().size() == 0) {
+        if (swaggerProperties.getGroups().size() == 0) {
             ApiInfo apiInfo = new ApiInfoBuilder()
                     .title(swaggerProperties.getTitle())
                     .description(swaggerProperties.getDescription())
@@ -105,42 +105,38 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .paths(and(not(or(excludePath)), or(basePath)))
                     .build();
 
-            configurableBeanFactory.registerSingleton(DEFAULT_DOCKET, docket);
+            configurableBeanFactory.registerSingleton(DEFAULT_GROUP_NAME, docket);
             docketList.add(docket);
             return docketList;
         }
 
         // 分组创建
-        for (String groupName : swaggerProperties.getDocket().keySet()) {
-            SwaggerProperties.DocketInfo docketInfo = swaggerProperties.getDocket().get(groupName);
-            SwaggerProperties.Contact contact = docketInfo.getContact();
+        for (String groupName : swaggerProperties.getGroups().keySet()) {
+            SwaggerProperties.GroupInfo groupInfo = swaggerProperties.getGroups().get(groupName);
+            SwaggerProperties.Contact contact = groupInfo.getContact();
             ApiInfo apiInfo = new ApiInfoBuilder()
-                    .title(docketInfo.getTitle().isEmpty() ? swaggerProperties.getTitle() : docketInfo.getTitle())
-                    .description(docketInfo.getDescription().isEmpty() ? swaggerProperties.getDescription() : docketInfo.getDescription())
-                    .version(docketInfo.getVersion().isEmpty() ? swaggerProperties.getVersion() : docketInfo.getVersion())
-                    .license(docketInfo.getLicense().isEmpty() ? swaggerProperties.getLicense() : docketInfo.getLicense())
-                    .licenseUrl(docketInfo.getLicenseUrl().isEmpty() ? swaggerProperties.getLicenseUrl() : docketInfo.getLicenseUrl())
-                    .contact(
-                            new Contact(
-                                    contact.getName().isEmpty() ? swaggerProperties.getContact().getName() : contact.getName(),
-                                    contact.getUrl().isEmpty() ? swaggerProperties.getContact().getUrl() : contact.getUrl(),
-                                    contact.getEmail().isEmpty() ? swaggerProperties.getContact().getEmail() : contact.getEmail()
-                            )
-                    )
-                    .termsOfServiceUrl(docketInfo.getTermsOfServiceUrl().isEmpty() ? swaggerProperties.getTermsOfServiceUrl() : docketInfo.getTermsOfServiceUrl())
+                    .title(defaultString(groupInfo.getTitle(), swaggerProperties.getTitle()))
+                    .description(defaultString(groupInfo.getDescription(), swaggerProperties.getDescription()))
+                    .version(defaultString(groupInfo.getVersion(), swaggerProperties.getVersion()))
+                    .license(defaultString(groupInfo.getLicense(), swaggerProperties.getLicense()))
+                    .licenseUrl(defaultString(groupInfo.getLicenseUrl(), swaggerProperties.getLicenseUrl()))
+                    .contact(new Contact(
+                            defaultString(contact.getName(), swaggerProperties.getContact().getName()),
+                            defaultString(contact.getUrl(), swaggerProperties.getContact().getUrl()),
+                            defaultString(contact.getEmail(), swaggerProperties.getContact().getEmail())))
+                    .termsOfServiceUrl(defaultString(groupInfo.getTermsOfServiceUrl(), swaggerProperties.getTermsOfServiceUrl()))
                     .build();
 
             // base-path处理
             // 当没有配置任何path的时候，解析/**
-            if (docketInfo.getBasePath().isEmpty()) {
-                docketInfo.getBasePath().add(BASE_PATH);
+            if (groupInfo.getBasePath().isEmpty()) {
+                groupInfo.getBasePath().add(BASE_PATH);
             }
 
-            List<Predicate<String>> basePath = docketInfo.getBasePath().stream().map(PathSelectors::ant).collect(toList());
-
+            List<Predicate<String>> basePath = groupInfo.getBasePath().stream().map(PathSelectors::ant).collect(toList());
             // exclude-path处理
             List<Predicate<String>> excludePath = Lists.newArrayList();
-            for (String path : docketInfo.getExcludePath()) {
+            for (String path : groupInfo.getExcludePath()) {
                 excludePath.add(PathSelectors.ant(path));
             }
 
@@ -148,10 +144,10 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .host(swaggerProperties.getHost())
                     .apiInfo(apiInfo)
                     .globalOperationParameters(assemblyGlobalOperationParameters(swaggerProperties.getGlobalOperationParameters(),
-                            docketInfo.getGlobalOperationParameters()))
+                            groupInfo.getGlobalOperationParameters()))
                     .groupName(groupName)
                     .select()
-                    .apis(RequestHandlerSelectors.basePackage(docketInfo.getBasePackage()))
+                    .apis(RequestHandlerSelectors.basePackage(groupInfo.getBasePackage()))
                     .paths(and(not(or(excludePath)), or(basePath)))
                     .build();
 
@@ -179,7 +175,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .description(globalOperationParameter.getDescription())
                     .modelRef(new ModelRef(globalOperationParameter.getModelRef()))
                     .parameterType(globalOperationParameter.getParameterType())
-                    .required(Boolean.parseBoolean(globalOperationParameter.getRequired()))
+                    .required(globalOperationParameter.getRequired())
                     .build());
         }
         return parameters;
@@ -189,25 +185,29 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
      * 局部参数按照name覆盖局部参数
      *
      * @param globalOperationParameters 全局参数
-     * @param docketOperationParameters 附加参数
+     * @param groupOperationParameters  附加参数
      * @return 参数集
      */
     private List<Parameter> assemblyGlobalOperationParameters(
             List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters,
-            List<SwaggerProperties.GlobalOperationParameter> docketOperationParameters) {
-        if (Objects.isNull(docketOperationParameters) || docketOperationParameters.isEmpty()) {
+            List<SwaggerProperties.GlobalOperationParameter> groupOperationParameters) {
+        if (Objects.isNull(groupOperationParameters) || groupOperationParameters.isEmpty()) {
             return buildGlobalOperationParameters(globalOperationParameters);
         }
 
-        Set<String> docketNames = docketOperationParameters.stream()
+        Set<String> groupNames = groupOperationParameters.stream()
                 .map(SwaggerProperties.GlobalOperationParameter::getName)
                 .collect(toSet());
 
         List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters = globalOperationParameters.stream()
-                .filter(parameter -> !docketNames.contains(parameter.getName()))
+                .filter(parameter -> !groupNames.contains(parameter.getName()))
                 .collect(toList());
 
-        resultOperationParameters.addAll(docketOperationParameters);
+        resultOperationParameters.addAll(groupOperationParameters);
         return buildGlobalOperationParameters(resultOperationParameters);
+    }
+
+    private static String defaultString(final String str, final String defaultStr) {
+        return str == null || Objects.equals(str.trim(), "") || str.length() == 0 ? defaultStr : str;
     }
 }

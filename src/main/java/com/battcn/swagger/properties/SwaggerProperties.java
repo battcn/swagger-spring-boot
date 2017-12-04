@@ -9,49 +9,60 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * @author Levin
  */
 @Data
-@ConfigurationProperties("swagger")
+@ConfigurationProperties("spring.swagger")
 public class SwaggerProperties {
+
+
+    private static final String DEFAULT_NULL = "";
 
     /**
      * 是否开启swagger
      */
     private Boolean enabled;
-
     /**
      * 标题
      */
-    private String title = "";
+    private String title = DEFAULT_NULL;
     /**
      * 描述
      */
-    private String description = "";
+    private String description = DEFAULT_NULL;
     /**
      * 版本
      */
-    private String version = "";
+    private String version = DEFAULT_NULL;
     /**
      * 许可证
      */
-    private String license = "";
+    private String license = DEFAULT_NULL;
     /**
      * 许可证URL
      */
-    private String licenseUrl = "";
+    private String licenseUrl = DEFAULT_NULL;
     /**
      * 服务条款URL
      */
-    private String termsOfServiceUrl = "";
-
-    private Contact contact = new Contact();
+    private String termsOfServiceUrl = DEFAULT_NULL;
 
     /**
      * swagger会解析的包路径
      */
-    private String basePackage = "";
+    private String basePackage = DEFAULT_NULL;
+
+    /**
+     * host信息
+     */
+    private String host = DEFAULT_NULL;
+
+    /**
+     * 联系人信息
+     */
+    private Contact contact = new Contact();
 
     /**
      * swagger会解析的url规则
@@ -65,12 +76,8 @@ public class SwaggerProperties {
     /**
      * 分组文档
      */
-    private Map<String, DocketInfo> docket = new LinkedHashMap<>();
+    private Map<String, GroupInfo> groups = new LinkedHashMap<>();
 
-    /**
-     * host信息
-     */
-    private String host = "";
 
     /**
      * 全局参数配置
@@ -81,6 +88,7 @@ public class SwaggerProperties {
     @Data
     @NoArgsConstructor
     public static class GlobalOperationParameter {
+
         /**
          * 参数名
          */
@@ -97,52 +105,59 @@ public class SwaggerProperties {
         private String modelRef;
 
         /**
-         * 参数放在哪个地方:header,query,path,body.form
+         * 参数存放位置:
+         *
+         * @see ParamType
          */
         private String parameterType;
 
         /**
-         * 参数是否必须传
+         * 是否必须传
          */
-        private String required;
+        private Boolean required = false;
 
     }
 
     @Data
     @NoArgsConstructor
-    public static class DocketInfo {
+    @ConfigurationProperties("spring.swagger.groups")
+    public static class GroupInfo {
 
         /**
          * 标题
          */
-        private String title = "";
+        private String title = DEFAULT_NULL;
         /**
          * 描述
          */
-        private String description = "";
+        private String description = DEFAULT_NULL;
+
         /**
          * 版本
          */
-        private String version = "";
+        private String version = DEFAULT_NULL;
+
         /**
          * 许可证
          */
-        private String license = "";
+        private String license = DEFAULT_NULL;
+
         /**
          * 许可证URL
          */
-        private String licenseUrl = "";
+        private String licenseUrl = DEFAULT_NULL;
+
         /**
          * 服务条款URL
          */
-        private String termsOfServiceUrl = "";
+        private String termsOfServiceUrl = DEFAULT_NULL;
 
         private Contact contact = new Contact();
 
         /**
          * swagger会解析的包路径
          */
-        private String basePackage = "";
+        private String basePackage = DEFAULT_NULL;
 
         /**
          * swagger会解析的url规则
@@ -153,6 +168,9 @@ public class SwaggerProperties {
          */
         private List<String> excludePath = new ArrayList<>();
 
+        /**
+         * 分组里的全局参数
+         */
         private List<GlobalOperationParameter> globalOperationParameters;
 
     }
@@ -163,15 +181,15 @@ public class SwaggerProperties {
         /**
          * 联系人
          */
-        private String name = "";
+        private String name = DEFAULT_NULL;
         /**
          * 联系人url
          */
-        private String url = "";
+        private String url = DEFAULT_NULL;
         /**
          * 联系人email
          */
-        private String email = "";
+        private String email = DEFAULT_NULL;
 
     }
 
