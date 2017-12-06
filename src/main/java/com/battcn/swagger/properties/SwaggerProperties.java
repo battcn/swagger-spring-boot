@@ -107,7 +107,7 @@ public class SwaggerProperties {
         /**
          * 参数存放位置:
          *
-         * @see ParamType
+         * @see ApiParamType
          */
         private String parameterType;
 

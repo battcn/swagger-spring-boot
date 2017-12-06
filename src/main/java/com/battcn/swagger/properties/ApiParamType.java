@@ -1,11 +1,11 @@
 package com.battcn.swagger.properties;
 
 /**
- * 方便Swagger 中 @ApiImplicitParam(paramType = ParamType.HEADER)
+ * 方便Swagger 中 @ApiImplicitParam(paramType = ApiParamType.HEADER)
  *
  * @author Levin
  */
-public final class ParamType {
+public final class ApiParamType {
 
     public final static String QUERY = "query";
     public final static String HEADER = "header";
