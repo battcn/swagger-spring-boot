@@ -15,7 +15,7 @@
 
 # 使用 #
 
-只需一个小小的注解`@EnableSwagger`即可完成默认装配，当然更强大的功能在后面
+只需一个小小的注解`@EnableSwagger2Doc`即可完成默认装配，当然更强大的功能在后面
 
 - 在`pom.xml`中引入依赖：
 
@@ -23,14 +23,14 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.3.3-RELEASE</version>
+    <version>1.3.4-RELEASE</version>
 </dependency>
 ```
 
 - 在应用主类中增加`@EnableSwagger`注解
 
 ``` java
-@EnableSwagger
+@EnableSwagger2Doc
 @SpringBootApplication
 public class Application {
 
