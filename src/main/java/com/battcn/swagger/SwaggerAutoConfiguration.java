@@ -194,18 +194,20 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         if (Objects.isNull(groupOperationParameters) || groupOperationParameters.isEmpty()) {
             return buildGlobalOperationParameters(globalOperationParameters);
         }
+        Set<String> groupNames = groupOperationParameters.stream().map(SwaggerProperties.GlobalOperationParameter::getName).collect(toSet());
 
-        Set<String> groupNames = groupOperationParameters.stream()
-                .map(SwaggerProperties.GlobalOperationParameter::getName)
-                .collect(toSet());
-
-        List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters = globalOperationParameters.stream()
-                .filter(parameter -> !groupNames.contains(parameter.getName()))
-                .collect(toList());
-
+        List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters = Lists.newArrayList();
+        if (Objects.nonNull(globalOperationParameters)) {
+            for (SwaggerProperties.GlobalOperationParameter parameter : globalOperationParameters) {
+                if (!groupNames.contains(parameter.getName())) {
+                    resultOperationParameters.add(parameter);
+                }
+            }
+        }
         resultOperationParameters.addAll(groupOperationParameters);
         return buildGlobalOperationParameters(resultOperationParameters);
     }
+
 
     private static String defaultString(final String str, final String defaultStr) {
         return str == null || Objects.equals(str.trim(), "") || str.length() == 0 ? defaultStr : str;
