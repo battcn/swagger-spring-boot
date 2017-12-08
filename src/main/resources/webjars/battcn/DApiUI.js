@@ -17,7 +17,6 @@
                     var el=$('<option value="'+data[i].location+'" order='+i+'>'+data[i].name+'('+data[i].location+')</option>');
                     DApiUI.dli.append(el);
                 }
-               // for (var i = 0; i < data.length; i++) {
                     var menu = data[0];
                     console.info(menu.location);
                     $.ajax({
@@ -69,19 +68,19 @@
      * 创建面板
      */
     DApiUI.creatabTab = function () {
-        var divcontent = $('<div id="myTab" class="tabs-container" style="width:99%;margin:0 auto;"></div>');
+        var tabsContainer = $('<div id="myTab" class="tabs-container" style="width:99%;margin:0 auto;"></div>');
         var ul = $('<ul class="nav nav-tabs" style="position:fixed;z-index:99;"></ul>');
         ul.append($('<li><a data-toggle="tab" href="#tab1" aria-expanded="false"> 接口说明</a></li>'));
         ul.append($('<li class=""><a data-toggle="tab" href="#tab2" aria-expanded="true"> 在线调试</a></li>'));
-        divcontent.append(ul);
-        var tabcontent = $('<div style="margin-top: 35px;" class="tab-content"></div>');
+        tabsContainer.append(ul);
+        var tabContent = $('<div style="margin-top: 35px;" class="tab-content"></div>');
 
-        tabcontent.append($('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
-        tabcontent.append($('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
-        divcontent.append(tabcontent);
+        tabContent.append($('<div id="tab1" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
+        tabContent.append($('<div id="tab2" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
+        tabsContainer.append(tabContent);
         //内容覆盖
         DApiUI.getDoc().html("");
-        DApiUI.getDoc().append(divcontent);
+        DApiUI.getDoc().append(tabsContainer);
         DApiUI.log("动态激活...");
         DApiUI.getDoc().find("#myTab a:first").tab('show')
     };
@@ -173,12 +172,6 @@
         //遍历tags
         var tags = [];
         //简介li
-        //var dli = $('<li  class="active"><a href="javascript:void(0)"><i class="icon-text-width"></i><span class="menu-text"> 简介 </span></a></li>');
-        // dli.on("click", function () {/* 简介部分点击事件 */
-        //     DApiUI.log("简介click");
-        //     DApiUI.createDescription(menu);
-        //     dli.addClass("active");
-        // });
         var dli =DApiUI.dli;
         DApiUI.getMenu().html("");
         DApiUI.getMenu().append(dli);
@@ -257,7 +250,6 @@
                 methodApis.push(apiInfo);
             }
         }
-        //console.log(methodApis);
         return methodApis;
 
     };
@@ -278,7 +270,6 @@
             var className = parentLi.prop("class");
             DApiUI.log(className);
             DApiUI.getMenu().find("li").removeClass("active");
-            //parentLi.addClass("active");
             that.addClass("active");
             DApiUI.createApiInfoTable(data);
             DApiUI.createDebugTab(data);
@@ -330,19 +321,19 @@
     DApiUI.createDebugTab = function (apiInfo) {
         DApiUI.log("创建调试tab");
         //方法、请求类型、发送按钮
-        var div = $('<div style="width: 100%;auto;margin: 20px 0 0;"></div>');
-        var headdiv1 = $('<div class="" style="overflow: hidden;height: 35px;margin-bottom: 10px;position: relative;padding-left: 50px;">' +
+        var debugContainer = $('<div style="width: 100%;auto;margin: 20px 0 0;"></div>'); //debugHead
+        var debugHead = $('<div class="" style="overflow: hidden;height: 35px;margin-bottom: 10px;position: relative;padding-left: 50px;">' +
             '<span style="left: 0;width: 50px;position: absolute;color: #fff;background: #428BCA;text-align: center;height: 100%;line-height: 35px;" class="">' + DApiUI.getStringValue(apiInfo.methodType) + '</span>' +
             '<input style="height: 100%;" type="text" id="requestUrl" class="col-md-11 col-lg-11 col-sm-11 col-xs-11" value="' + DApiUI.getStringValue(apiInfo.url) + '" />' +
             '<button style="padding: 0;margin: 0;height: 100%;" id="btnRequest" class="col-md-1 col-lg-1 col-sm-1 col-xs-1 btn btn-default btn-primary " type="button"> 发 送 </button>' +
             '</div>');
 
-        div.append(headdiv1);
+        debugContainer.append(debugHead);
 
         //请求参数
-        var divp = $('<div class="panel panel-primary"><div class="panel-heading">请求参数</div></div>');
+        var debugPanel = $('<div class="panel panel-primary"><div class="panel-heading">请求参数</div></div>');
 
-        var divpbody = $('<div class="panel-body"></div>');
+        var panelContent = $('<div class="panel-body"></div>');
         //是否是文件上传
         var fileform = false;
         //判断是否有请求参数
@@ -355,8 +346,6 @@
                 var tr = $('<tr></tr>');
                 tr.data("data", param);
                 //判断 param 的in类型
-                //query--text
-                //body--textarea
                 var checkbox = $('<td width="5%"><div class="checkbox"><label><input type="checkbox" value="" checked></label></div></td>');
                 var key = $('<td width="20%"><input class="form-control p-key"   value="' + param.name + '"/></td>');
                 var value = $('<td></td>');
@@ -451,33 +440,33 @@
             if (fileform) {
                 var form = $('<form id="uploadForm"  target="uploadIframe" action="' + apiInfo.url + '" type="" enctype="multipart/form-data" method="' + apiInfo.methodType + '"></form>');
                 form.append(table);
-                divpbody.append(form);
+                panelContent.append(form);
             } else {
-                divpbody.append(table);
+                panelContent.append(table);
             }
         } else {
-            divpbody.append($('<strong>暂无参数</strong>'))
+            panelContent.append($('<strong>暂无参数</strong>'))
         }
-        divp.append(divpbody);
+        debugPanel.append(panelContent);
         //
         if (fileform) {
             //追加iframe
             var resptabframe = $('<div id="resptab" class="tabs-container" ><iframe name="uploadIframe" id="uploadIframe" style="border: none;height: 1%;display: none;"></iframe></div>');
-            divp.append(resptabframe);
+            debugPanel.append(resptabframe);
         }
-        div.append(divp);
+        debugContainer.append(debugPanel);
         //创建reesponsebody
         var respcleanDiv = $('<div id="responsebody"></div>');
 
-        div.append(respcleanDiv);
+        debugContainer.append(respcleanDiv);
 
 
         DApiUI.getDoc().find("#tab2").find(".panel-body").html("");
-        DApiUI.getDoc().find("#tab2").find(".panel-body").append(div);
+        DApiUI.getDoc().find("#tab2").find(".panel-body").append(debugContainer);
 
 
         //发送事件
-        headdiv1.find("#btnRequest").bind("click", function (e) {
+        debugHead.find("#btnRequest").bind("click", function (e) {
             e.preventDefault();
             respcleanDiv.html("");
             DApiUI.log("发送请求");
@@ -539,7 +528,6 @@
                     } else {
                         value = paramtr.find("td:eq(2)").find("input").val();
                     }
-                    //var value=paramtr.find("td:eq(2)").find("input").val();
                     //delete方式参数url传递
                     if (apiInfo.methodType === "delete") {
                         //判断是否是path参数
@@ -598,7 +586,6 @@
                 reqdata = params;
                 contType = "application/x-www-form-urlencoded; charset=UTF-8";
             }
-            //console.log(reqdata)
             if (validateflag) {
                 layer.msg(validateobj.message);
                 return;
@@ -868,16 +855,16 @@
         var args = $('<tr><th class="active" style="text-align: right;">请求参数</th></tr>');
         //判断是否有请求参数
         if (typeof (apiInfo.parameters) !== 'undefined' && apiInfo.parameters !== null) {
-            var ptd = $("<td style='text-align: left;'></td>");
-            var ptable = $('<div class="panel col-lg-12 col-md-12 col-sm-12 col-xs-12 imitatTable"></div>');
-            var table2 = $("<ul class=''></ul>");
-            table2.append($("<li class='tbHeader'><span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>参数名称</span>" +
+            var requestTd = $("<td style='text-align: left;'></td>");
+            var requestTable = $('<div class="panel col-lg-12 col-md-12 col-sm-12 col-xs-12 imitatTable"></div>');
+            var tables = $("<ul class=''></ul>");
+            tables.append($("<li class='tbHeader'><span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>参数名称</span>" +
                 "<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>说明</span>" +
                 "<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>类型</span>" +
                 "<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>条件</span>" +
                 "<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>in</span>" +
                 "<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>是否必须</span></li>"));
-            ptable.append(table2);
+            requestTable.append(tables);
             $.each(apiInfo.parameters, function (i, param) {
                 //判断是否是ref,如果是，列出他的属性说明
                 var refflag = false;
@@ -922,7 +909,7 @@
                     }).css({"color": "#428BCA", "cursor": "pointer"})
                         .append($("<a class='caret' style='border-top-color:#428BCA'></a>"));
 
-                    table2.append(ptr);
+                    tables.append(ptr);
                     var definitionsArray = DApiUI.getDoc().data("definitionsArray");
                     var mcs = DApiUI.getMenuConstructs();
                     console.log(mcs.definitions,"!!!!");
@@ -935,12 +922,11 @@
                                 var pvalue = props[prop];
                                 var tr = $("<li class=' '></li>");
                                 tr.append($("<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2' style='text-align: right;'>" + prop + "</span>"));
-                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.toString(pvalue.description, "") + "</span>"));
+                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.toString(pvalue.description?pvalue.description:"&ensp;", "") + "</span>"));
                                 var type = DApiUI.toString(pvalue.type, "string");
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + type + "</span>"));
-                                /* pvalue.pattern    (pvalue.maxLength==undefined&&pvalue.minlength==undefined)?  :(pvalue.minlength+"<"+prop+"<"+pvalue.maxLength) */
-                                var condition= (pvalue.maxLength&&pvalue.minLength)?("长度在"+pvalue.minLength+"和"+pvalue.maxLength+"之间"):(pvalue.pattern?pvalue.pattern:"无");
-                                console.log(condition)
+                                var condition= (pvalue.maxLength&&pvalue.minLength)?("长度在"+pvalue.minLength+"和"+pvalue.maxLength+"之间"):(pvalue.pattern?pvalue.pattern:((pvalue.minimum&&pvalue.maximum)?pvalue.minimum+"&lt;"+prop+"&lt;"+pvalue.maximum:"无"));
+                                console.log(condition);
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + condition + "</span>"));
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.getStringValue(param['in']) + "</span>"));
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (mcs.definitions[param.name.toLowerCase().replace(/( |^)[a-z]/g, function (m) {
@@ -949,7 +935,7 @@
 
                                 $div.append(tr);
                             }
-                            table2.append($div);
+                            tables.append($div);
                         }
                     }
                 } else {
@@ -960,13 +946,13 @@
                         '<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + DApiUI.getStringValue(param['in']) + '</span>' +
                         '<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + param['required'] + '</span></li>');
                     //   ptr = $('<tr><td>' + param.name + '</td><td style="text-align: center;">' + DApiUI.getStringValue(param['description']) + '</td><td>' + ptype + '</td><td>' + DApiUI.getStringValue(param['in']) + '</td><td>' + param['required'] + '</td></tr>');
-                    table2.append(ptr);
+                    tables.append(ptr);
                 }
             });
-            table2.append($('<li class=" " style="line-height: 0;border: 0;"><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="text-align: right;">填充填充填充填充填充填充填充</span><span class="col-lg-4 col-md-4 col-sm-4 col-xs-4">填充填充填充填充填充填充填充填充填充填充填充填充</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">填充填充填充填充填充填充填充填充</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">填充填充填充填充填充填充填充</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">填充填充填充填充填充填充填充</span></li>'));
-            ptable.append(table2);
-            ptd.append(ptable);
-            args.append(ptd);
+            tables.append($('<li class=" " style="line-height: 0;border: 0;"><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="text-align: right;">填充填充填充填充填充填充填充</span><span class="col-lg-4 col-md-4 col-sm-4 col-xs-4">填充填充填充填充填充填充填充填充填充填充填充填充</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">填充填充填充填充填充填充填充填充</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">填充填充填充填充填充填充填充</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">填充填充填充填充填充填充填充</span></li>'));
+            requestTable.append(tables);
+            requestTd.append(requestTable);
+            args.append(requestTd);
         } else {
             args.append($('<td  style="text-align: left">暂无</td>'));
         }
