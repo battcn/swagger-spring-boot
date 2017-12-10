@@ -101,6 +101,24 @@ Levin：1837307557@qq.com
 _Rock：995269937@qq.com
 
 
+
+# 常用注解说明 #
+
+* `@Api`:一般用于Controller中,用于接口分组,使用如下图：
+
+
+* `@ApiOperation`:接口说明,用于api方法上
+
+
+* `@ApiImplicitParam`:参数说明,适用于只有一个请求参数,主要参数
+
+
+* `@ApiImplicitParams`:多个参数说明,主要参数参考上面`@ApiImplicitParam`
+
+
+* `@ApiModelProperty`:实体参数说明
+
+
 # 如何参与 #
 
 有兴趣的可以联系本人（Pull Request），参与进来一起开发，美化UI与配置项一起完善
