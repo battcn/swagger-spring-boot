@@ -104,7 +104,7 @@ _Rock：995269937@qq.com
 
 # 常用注解说明 #
 
-* `@Api`:一般用于Controller中,用于接口分组,使用如下图：
+* `@Api`:一般用于Controller中,用于接口分组
 
 
 * `@ApiOperation`:接口说明,用于api方法上
