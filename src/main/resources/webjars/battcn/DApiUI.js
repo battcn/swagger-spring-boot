@@ -9,61 +9,60 @@
             async: false,
             success: function (data) {
                 console.info(data);
-                DApiUI.dli=$('<select class="form-control"></select>');
-                DApiUI.dli.on("change",'',function () {
+                DApiUI.dli = $('<select class="form-control"></select>');
+                DApiUI.dli.on("change", '', function () {
                     DApiUI.paging(data);
                 });
                 for (var i = 0; i < data.length; i++) {
-                    var el=$('<option value="'+data[i].location+'" order='+i+'>'+data[i].name+'('+data[i].location+')</option>');
+                    var el = $('<option value="' + data[i].location + '" order=' + i + '>' + data[i].name + '(' + data[i].location + ')</option>');
                     DApiUI.dli.append(el);
                 }
-                    var menu = data[0];
-                    console.info(menu.location);
-                    $.ajax({
-                        url: menu.location,
-                        dataType: "json",
-                        type: "get",
-                        async: false,
-                        success: function (data) {
-                            var menu = data;
-                            /*  判断是否必须 */
-                            console.info(menu);
-                            DApiUI.definitions(menu);
-                            DApiUI.createDescription(menu);
-                            DApiUI.initTreeMenu(menu);
-                            DApiUI.eachPath(menu);
-                        }
-                    })
-                }
+                var menu = data[0];
+                $.ajax({
+                    url: menu.location,
+                    dataType: "json",
+                    type: "get",
+                    async: false,
+                    success: function (data) {
+                        var menu = data;
+                        /*  判断是否必须 */
+                        console.info(menu);
+                        DApiUI.definitions(menu);
+                        DApiUI.createDescription(menu);
+                        DApiUI.initTreeMenu(menu);
+                        DApiUI.eachPath(menu);
+                    }
+                })
+            }
             //}
         });
     };
-     /***
-      *   根据单选框选择获取接口
-      *
-      */
-     DApiUI.paging=function (data) {
-         var menu = data[parseInt($(".bycdao-left .form-control").children('option:selected').attr('order'))];
-         $.ajax({
-             url: menu.location,
-             dataType: "json",
-             type: "get",
-             async: false,
-             success: function (data) {
-                 var menu = data;
-                 /*  判断是否必须 */
-                 console.info(menu);
-                 DApiUI.definitions(menu);
-                 DApiUI.createDescription(menu);
-                 DApiUI.initTreeMenu(menu);
-                 DApiUI.eachPath(menu);
-             }
-         })
-         DApiUI.dli.on("change",'',function () {
-             DApiUI.paging(data);
-         });
+    /***
+     *   根据单选框选择获取接口
+     *
+     */
+    DApiUI.paging = function (data) {
+        var menu = data[parseInt($(".bycdao-left .form-control").children('option:selected').attr('order'))];
+        $.ajax({
+            url: menu.location,
+            dataType: "json",
+            type: "get",
+            async: false,
+            success: function (data) {
+                var menu = data;
+                /*  判断是否必须 */
+                console.info(menu);
+                DApiUI.definitions(menu);
+                DApiUI.createDescription(menu);
+                DApiUI.initTreeMenu(menu);
+                DApiUI.eachPath(menu);
+            }
+        });
+        DApiUI.dli.on("change", '', function () {
+            DApiUI.paging(data);
+        });
 
-     };
+    };
     /***
      * 创建面板
      */
@@ -81,7 +80,6 @@
         //内容覆盖
         DApiUI.getDoc().html("");
         DApiUI.getDoc().append(tabsContainer);
-        DApiUI.log("动态激活...");
         DApiUI.getDoc().find("#myTab a:first").tab('show')
     };
 
@@ -172,12 +170,11 @@
         //遍历tags
         var tags = [];
         //简介li
-        var dli =DApiUI.dli;
+        var dli = DApiUI.dli;
         DApiUI.getMenu().html("");
         DApiUI.getMenu().append(dli);
         var methodApis = DApiUI.eachPath(menu);
-
-        $.each(menu.tags, function (i, tag) {
+        $.each(menu.tags ? menu.tags : [], function (i, tag) {
             var tagInfo = new TagInfo(tag.name, tag.description);
             //查找childrens
             $.each(methodApis, function (i, methodApi) {
@@ -206,14 +203,12 @@
                 DApiUI.getMenu().append(li);
             }
         });
-        DApiUI.log("菜单初始化完成...");
         DApiUI.initLiClick();
     };
 
 
     DApiUI.eachPath = function (menu) {
         var paths = menu.paths;
-        DApiUI.log(paths);
         //paths是object对象,key是api接口地址,
         var methodApis = [];
         for (var key in paths) {
@@ -262,13 +257,9 @@
             e.preventDefault();
             var that = $(this);
             var data = that.data("data");
-            DApiUI.log("Li标签click事件");
-            DApiUI.log(data);
             //获取parent-Li的class属性值
             var parentLi = that.parent().parent();
-            DApiUI.log(parentLi);
             var className = parentLi.prop("class");
-            DApiUI.log(className);
             DApiUI.getMenu().find("li").removeClass("active");
             that.addClass("active");
             DApiUI.createApiInfoTable(data);
@@ -319,7 +310,6 @@
      * 创建调试面板
      */
     DApiUI.createDebugTab = function (apiInfo) {
-        DApiUI.log("创建调试tab");
         //方法、请求类型、发送按钮
         var debugContainer = $('<div style="width: 100%;auto;margin: 20px 0 0;"></div>'); //debugHead
         var debugHead = $('<div class="" style="overflow: hidden;height: 35px;margin-bottom: 10px;position: relative;padding-left: 50px;">' +
@@ -426,9 +416,7 @@
                                 }
                             }
                         });
-                        DApiUI.log(realValue);
                         $("#requestUrl").val(realValue);
-                        DApiUI.log("keyup。。。。")
                     })
 
                 }
@@ -469,7 +457,6 @@
         debugHead.find("#btnRequest").bind("click", function (e) {
             e.preventDefault();
             respcleanDiv.html("");
-            DApiUI.log("发送请求");
             //
             var params = {};
             var headerparams = {};
@@ -481,14 +468,11 @@
 
             //获取参数
             var paramBody = DApiUI.getDoc().find("#tab2").find("#paramBody");
-            DApiUI.log("paramsbody..");
-            DApiUI.log(paramBody);
             //组装请求url
             var url = DApiUI.getStringValue(apiInfo.url);
             var cacheData = DApiUI.getDoc().data("data");
             if (typeof (cacheData.basePath) !== "undefined" && cacheData.basePath !== "") {
                 if (cacheData.basePath !== "/") {
-                    DApiUI.log("NOT ROOT PATH:");
                     url = cacheData.basePath + DApiUI.getStringValue(apiInfo.url);
                 }
             }
@@ -497,12 +481,9 @@
             paramBody.find("tr").each(function () {
                 var paramtr = $(this);
                 var cked = paramtr.find("td:first").find(":checked").prop("checked");
-                DApiUI.log(cked);
                 if (cked) {
                     //如果选中
                     var trdata = paramtr.data("data");
-                    DApiUI.log("trdata....");
-                    DApiUI.log(trdata);
                     //获取key
                     //var key=paramtr.find("td:eq(1)").find("input").val();
                     var key = trdata["name"];
@@ -520,13 +501,15 @@
                                     var refType = RegExp.$1;
                                     //这里判断refType是否是MultipartFile类型,如果是该类型,上传组件
                                     if (refType === "MultipartFile") {
-                                        value = paramtr.find("td:eq(2)").find("input").val();
+                                        //  value = paramtr.find("td:eq(2)").find("input").val();
+                                        value = (paramtr.find("td:eq(2)").find("input").val() === '') ? null : paramtr.find("td:eq(2)").find("input").val()
                                     }
                                 }
                             }
                         }
                     } else {
-                        value = paramtr.find("td:eq(2)").find("input").val();
+                        value = (paramtr.find("td:eq(2)").find("input").val() === '') ? null : paramtr.find("td:eq(2)").find("input").val();
+                        // value = paramtr.find("td:eq(2)").find("input").val();
                     }
                     //delete方式参数url传递
                     if (apiInfo.methodType === "delete") {
@@ -569,16 +552,10 @@
                         }
 
                     }
-                    DApiUI.log("key:" + key + ",value:" + value);
                 }
             });
-            DApiUI.log("获取参数..");
-            DApiUI.log(params);
-            DApiUI.log(apiInfo);
 
-            DApiUI.log("请求url：" + url);
             var reqdata = null;
-            //console.log(paramBody.attr("reqtype"))
             var contType = "application/json; charset=UTF-8";
             if (paramBody.attr("reqtype") !== null && paramBody.attr("reqtype") !== undefined && paramBody.attr("reqtype") === "body") {
                 reqdata = bodyparams;
@@ -594,10 +571,8 @@
             var form = $("#uploadForm");
             if (form.length > 0) {
                 form[0].submit();
-                //console.log("表单提交")
                 //iframe监听change事件
                 $("#uploadIframe").on("load", function () {
-                    //console.log("uploadIframe changed....")
                     $(this).unbind('load');
                     var framebody = $(this).contents().find("body");
                     var ret = framebody.html();
@@ -608,7 +583,6 @@
                     var res;
                     try {
                         res = JSON.parse(ret);
-                        //console.log(res)
                         var resptab = $('<div id="resptab" class="tabs-container" ></div>');
                         var ulresp = $('<ul class="nav nav-tabs">' +
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li></ul>');
@@ -629,6 +603,7 @@
                     }
                 })
             } else {
+                console.log(reqdata, "!!!!", reqdata.toString());
                 $.ajax({
                     url: url,
                     headers: headerparams,
@@ -640,7 +615,8 @@
                         var ulresp = $('<ul class="nav nav-tabs">' +
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>');
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> curl方式 </a></li></ul>');
 
                         resptab.append(ulresp);
                         var respcontent = $('<div class="tab-content"></div>');
@@ -648,14 +624,15 @@
                         var resp1 = $('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2 = $('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3 = $('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
+                        var resp4 = $('<div id="tabcurl" class="tab-pane active"><div class="panel-body">暂无</div></div>');
 
-                        respcontent.append(resp1).append(resp2).append(resp3);
+
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4);
 
                         resptab.append(respcontent);
 
                         respcleanDiv.append(resptab);
-                        DApiUI.log(xhr);
-                        DApiUI.log(xhr.getAllResponseHeaders());
+                        var headerValu = "";
                         var allheaders = xhr.getAllResponseHeaders();
                         if (allheaders !== null && typeof (allheaders) !== 'undefined' && allheaders !== "") {
                             var headers = allheaders.split("\r\n");
@@ -663,7 +640,7 @@
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
-                                    var headerValu = header.split(":");
+                                    headerValu = header.split(":");
                                     var headertr = $('<tr><th class="active">' + headerValu[0] + '</th><td>' + headerValu[1] + '</td></tr>');
                                     headertable.append(headertr);
                                 }
@@ -672,13 +649,25 @@
                             resp3.find(".panel-body").html("");
                             resp3.find(".panel-body").append(headertable);
                         }
+                        var contentType = headerValu[1].split(";")[0];
+                        var contentUrl = (this.url.indexOf("http://") === 0 || this.url.indexOf("https://") === 0) ? contentType : window.location.protocol + "//" + window.location.host;
+                        if (this.type.toLowerCase() === "get") {
+                            var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
+                        } else {
+                            var curltable = "curl&ensp;-X&ensp;" + this.type+"&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;"+ contentType+ "\'&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType+"\'"+ "&ensp;--header&ensp;\'Authorization:&ensp;1\'&ensp;-d&ensp;\'";
+                            // $.each(this.data,function (i,va) {
+                            //     curltable+=("\""+i+"\":&ensp;\""+va+"\",&ensp;\\\n")
+                            // });
+                            curltable+=this.data;
+                            curltable+="\'&ensp;\'"+ contentUrl + this.url + "\'";
+                        }
+                        //设置curl内容
+                        resp4.find(".panel-body").html("");
+                        resp4.find(".panel-body").append(curltable);
                         var contentType = xhr.getResponseHeader("Content-Type");
-                        DApiUI.log("Content-Type:" + contentType);
-                        DApiUI.log(xhr.hasOwnProperty("responseJSON"));
                         if (xhr.hasOwnProperty("responseJSON")) {
                             //如果存在该对象,服务端返回为json格式
                             resp1.find(".panel-body").html("");
-                            DApiUI.log(xhr["responseJSON"]);
                             var pre = $('<pre></pre>');
                             var jsondiv = $('<div></div>');
                             jsondiv.JSONView(xhr["responseJSON"]);
@@ -709,19 +698,15 @@
 
                         }
 
-                        DApiUI.log("tab show...");
                         resptab.find("a:first").tab("show");
                     },
                     error: function (xhr, textStatus, errorThrown) {
-                        DApiUI.log("error.....");
-                        DApiUI.log(xhr);
-                        DApiUI.log(textStatus);
-                        DApiUI.log(errorThrown);
                         var resptab = $('<div id="resptab" class="tabs-container" ></div>');
                         var ulresp = $('<ul class="nav nav-tabs">' +
                             '<li class=""><a data-toggle="tab" href="#tabresp" aria-expanded="false"> 响应内容 </a></li>' +
                             '<li class=""><a data-toggle="tab" href="#tabcookie" aria-expanded="true"> Cookies</a></li>' +
-                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li></ul>');
+                            '<li class=""><a data-toggle="tab" href="#tabheader" aria-expanded="true"> Headers </a></li>' +
+                            '<li class=""><a data-toggle="tab" href="#tabcurl" aria-expanded="true"> curl方式 </a></li></ul></ul>');
 
                         resptab.append(ulresp);
                         var respcontent = $('<div class="tab-content"></div>');
@@ -729,14 +714,13 @@
                         var resp1 = $('<div id="tabresp" class="tab-pane active"><div class="panel-body"><pre></pre></div></div>');
                         var resp2 = $('<div id="tabcookie" class="tab-pane active"><div class="panel-body">暂无</div>');
                         var resp3 = $('<div id="tabheader" class="tab-pane active"><div class="panel-body">暂无</div></div>');
-
-                        respcontent.append(resp1).append(resp2).append(resp3);
+                        var resp4 = $('<div id="tabcurl" class="tab-pane active"><div class="panel-body">暂无</div></div>');
+                        respcontent.append(resp1).append(resp2).append(resp3).append(resp4);
 
                         resptab.append(respcontent);
 
                         respcleanDiv.append(resptab);
-                        DApiUI.log(xhr);
-                        DApiUI.log(xhr.getAllResponseHeaders());
+                        var headerValu = "";
                         var allheaders = xhr.getAllResponseHeaders();
                         if (allheaders !== null && typeof (allheaders) !== 'undefined' && allheaders !== "") {
                             var headers = allheaders.split("\r\n");
@@ -744,7 +728,7 @@
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
-                                    var headerValu = header.split(":");
+                                    headerValu = header.split(":");
                                     var headertr = $('<tr><th class="active">' + headerValu[0] + '</th><td>' + headerValu[1] + '</td></tr>');
                                     headertable.append(headertr);
                                 }
@@ -753,14 +737,30 @@
                             resp3.find(".panel-body").html("");
                             resp3.find(".panel-body").append(headertable);
                         }
+                        var contentType = headerValu[1].split(";")[0];
+                        console.log(window.location.protocol, "!!!", window.location.host);
+                        var contentUrl = (this.url.indexOf("http://") === 0 || this.url.indexOf("https://") === 0) ? contentType : window.location.protocol + "//" + window.location.host;
+                        if (this.type.toLowerCase() === "get") {
+                            var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
+                        } else {
+                            var curltable = "curl&ensp;-X&ensp;" + this.type+"&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;"+ contentType+ "\'&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType+"\'"+ "&ensp;--header&ensp;\'Authorization:&ensp;1\'&ensp;-d&ensp;\'";
+                            // $.each(this.data,function (i,va) {
+                            //     curltable+=("\""+i+"\":&ensp;\""+va+"\",&ensp;\\\n")
+                            // });
+
+                            //console.log(this.data.split(",").join(",  \\\n"))
+                            curltable+=this.data;
+                            curltable+=("\'&ensp;\'"+ contentUrl + this.url + "\'");
+                        }
+                        //设置curl内容
+                        resp4.find(".panel-body").html("");
+                        resp4.find(".panel-body").append(curltable);
+
                         var contentType = xhr.getResponseHeader("Content-Type");
-                        DApiUI.log("Content-Type:" + contentType);
                         var jsonRegex = "";
-                        DApiUI.log(xhr.hasOwnProperty("responseJSON"));
                         if (xhr.hasOwnProperty("responseJSON")) {
                             //如果存在该对象,服务端返回为json格式
                             resp1.find(".panel-body").html("");
-                            DApiUI.log(xhr["responseJSON"]);
                             var jsondiv = $('<div></div>');
                             jsondiv.JSONView(xhr["responseJSON"]);
                             resp1.find(".panel-body").append(jsondiv);
@@ -772,7 +772,6 @@
                                 resp1.find(".panel-body").html(xhr.responseText);
                             }
                         }
-                        DApiUI.log("tab show...");
                         resptab.find("a:first").tab("show");
 
                     }
@@ -898,9 +897,6 @@
                         '<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + "无" + '</span>' +
                         '<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + DApiUI.getStringValue(param['in']) +
                         '</span><span class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + param['required'] + '</span></li>');
-                    // console.log(DApiUI.must[param.name.toLowerCase().replace(/( |^)[a-z]/g, function (m) {
-                    //     return m.toUpperCase()
-                    // })].required);
 
                     ptr.find("span:first-child").attr({
                         "data-parent": '#accordion',
@@ -912,7 +908,6 @@
                     tables.append(ptr);
                     var definitionsArray = DApiUI.getDoc().data("definitionsArray");
                     var mcs = DApiUI.getMenuConstructs();
-                    console.log(mcs.definitions,"!!!!");
                     for (var k in mcs.definitions) {
                         if (ptype === k) {
                             var tp = mcs.definitions[ptype];
@@ -922,16 +917,16 @@
                                 var pvalue = props[prop];
                                 var tr = $("<li class=' '></li>");
                                 tr.append($("<span class='col-lg-2 col-md-2 col-sm-2 col-xs-2' style='text-align: right;'>" + prop + "</span>"));
-                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.toString(pvalue.description?pvalue.description:"&ensp;", "") + "</span>"));
+                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.toString(pvalue.description ? pvalue.description : "&ensp;", "") + "</span>"));
                                 var type = DApiUI.toString(pvalue.type, "string");
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + type + "</span>"));
-                                var condition= (pvalue.maxLength&&pvalue.minLength)?("长度在"+pvalue.minLength+"和"+pvalue.maxLength+"之间"):(pvalue.pattern?pvalue.pattern:((pvalue.minimum&&pvalue.maximum)?pvalue.minimum+"&lt;"+prop+"&lt;"+pvalue.maximum:"无"));
-                                console.log(condition);
+                                var condition = (pvalue.maxLength && pvalue.minLength) ? ("长度在" + pvalue.minLength + "和" + pvalue.maxLength + "之间") : (pvalue.pattern ? pvalue.pattern : ((pvalue.minimum && pvalue.maximum) ? pvalue.minimum + "&lt;" + prop + "&lt;" + pvalue.maximum : "无"));
+
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + condition + "</span>"));
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.getStringValue(param['in']) + "</span>"));
-                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (mcs.definitions[param.name.toLowerCase().replace(/( |^)[a-z]/g, function (m) {
-                                        return m.toUpperCase()
-                                    })].required.indexOf(prop) !== -1 ? "true" : "false") + "</span>"));
+                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (mcs.definitions[ptype.toLowerCase().replace(/( |^)[a-z]/g, function (m) {
+                                    return m.toUpperCase()
+                                })].required.indexOf(prop) !== -1 ? "true" : "false") + "</span>"));
 
                                 $div.append(tr);
                             }
@@ -1026,7 +1021,9 @@
             var ok = resp["200"];
             if (ok.hasOwnProperty("schema")) {
                 var schema = ok["schema"];
-                var ref = schema["$ref"];
+
+                // var ref = schema["$ref"];
+                var ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
                 var regex = new RegExp("#/definitions/(.*)$", "ig");
                 if (regex.test(ref)) {
                     var refType = RegExp.$1;
@@ -1104,7 +1101,8 @@
             var ok = resp["200"];
             if (ok.hasOwnProperty("schema")) {
                 var schema = ok["schema"];
-                var ref = schema["$ref"];
+                // var ref = schema["$ref"];
+                var ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
                 var regex = new RegExp("#/definitions/(.*)$", "ig");
                 if (regex.test(ref)) {
                     var refType = RegExp.$1;
@@ -1142,7 +1140,6 @@
 
     DApiUI.definitions = function (menu) {
         var definitionsArray = [];
-        DApiUI.log("definitionsArray....");
         if (menu !== null && typeof (menu) !== "undefined" && menu.hasOwnProperty("definitions")) {
             var definitions = menu["definitions"];
             for (var definition in definitions) {
