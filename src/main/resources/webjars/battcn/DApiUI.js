@@ -244,6 +244,13 @@
                 apiInfo.url = key;
                 methodApis.push(apiInfo);
             }
+            if (obj.hasOwnProperty("patch")) {
+                //delete
+                var apiInfo = new ApiInfo(obj["patch"]);
+                apiInfo.methodType = "patch";
+                apiInfo.url = key;
+                methodApis.push(apiInfo);
+            }
         }
         return methodApis;
 
@@ -603,7 +610,6 @@
                     }
                 })
             } else {
-                console.log(reqdata, "!!!!", reqdata.toString());
                 $.ajax({
                     url: url,
                     headers: headerparams,
@@ -637,6 +643,7 @@
                         if (allheaders !== null && typeof (allheaders) !== 'undefined' && allheaders !== "") {
                             var headers = allheaders.split("\r\n");
                             var headertable = $('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
+                            headers.push("response-code: "+xhr.status);
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
@@ -733,12 +740,12 @@
                                     headertable.append(headertr);
                                 }
                             }
-                            //设置Headers内容
+                            //设置Headers内容neir
                             resp3.find(".panel-body").html("");
                             resp3.find(".panel-body").append(headertable);
                         }
                         var contentType = headerValu[1].split(";")[0];
-                        console.log(window.location.protocol, "!!!", window.location.host);
+                        //console.log(window.location.protocol, "!!!", window.location.host);
                         var contentUrl = (this.url.indexOf("http://") === 0 || this.url.indexOf("https://") === 0) ? contentType : window.location.protocol + "//" + window.location.host;
                         if (this.type.toLowerCase() === "get") {
                             var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
@@ -924,10 +931,10 @@
 
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + condition + "</span>"));
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.getStringValue(param['in']) + "</span>"));
-                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (mcs.definitions[ptype.toLowerCase().replace(/( |^)[a-z]/g, function (m) {
+                                var required=mcs.definitions[ptype.toLowerCase().replace(/( |^)[a-z]/g, function (m) {
                                     return m.toUpperCase()
-                                })].required.indexOf(prop) !== -1 ? "true" : "false") + "</span>"));
-
+                                })].required;
+                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (required?(required.indexOf(prop) !== -1 ? "true" : "false"):"false") + "</span>"));
                                 $div.append(tr);
                             }
                             tables.append($div);
@@ -1017,8 +1024,18 @@
     DApiUI.createResponseDefinitionDetail = function (apiInfo) {
         var resp = apiInfo.responses;
         var div = $("<div class='panel col-lg-12 col-md-12 col-sm-12 col-xs-12 imitatTable'></div>");
-        if (resp.hasOwnProperty("200")) {
-            var ok = resp["200"];
+        var respBasis=false;
+        var respState;
+        for( key in resp){
+            if(parseInt(key)>=200&&parseInt(key)<=299){
+                respBasis=true;
+                respState=key
+                break;
+            }
+        }
+        // if (resp.hasOwnProperty("200")) {
+        if (respBasis) {
+            var ok = resp[respState];
             if (ok.hasOwnProperty("schema")) {
                 var schema = ok["schema"];
 
@@ -1095,10 +1112,21 @@
 
 
     DApiUI.createResponseDefinition = function (apiInfo) {
+        console.log(apiInfo.responses);
         var resp = apiInfo.responses;
         var div = $("<div class='panel'>暂无</div>");
-        if (resp.hasOwnProperty("200")) {
-            var ok = resp["200"];
+        var respBasis=false;
+        var respState;
+        for( key in resp){
+            if(parseInt(key)>=200&&parseInt(key)<=299){
+                respBasis=true;
+                respState=key
+                break;
+            }
+        }
+        // if (resp.hasOwnProperty("200")) {
+        if (respBasis) {
+            var ok = resp[respState];
             if (ok.hasOwnProperty("schema")) {
                 var schema = ok["schema"];
                 // var ref = schema["$ref"];
