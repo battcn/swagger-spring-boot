@@ -23,7 +23,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.3.8-RELEASE</version>
+    <version>1.4.0-RELEASE</version>
 </dependency>
 ```
 
