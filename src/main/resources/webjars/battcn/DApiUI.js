@@ -311,12 +311,11 @@
         return res;
 
     }
-
-    /* 对象拷贝 */
-    DApiUI.deepCopy = function (source) {
-        var result = {};
+/* 对象拷贝 */
+    DApiUI.deepCopy= function(source) {
+        var result={};
         for (var key in source) {
-            result[key] = (typeof source[key] === 'object') ? DApiUI.deepCopy(source[key]) : source[key];
+            result[key] = (typeof source[key]==='object')? DApiUI.deepCopy(source[key]): source[key];
         }
         return result;
     }
@@ -373,12 +372,12 @@
                                 //find in definitionsArray
                                 var definitionsArray = DApiUI.getDoc().data("definitionsArray");
                                 var deftion = null;
-                                //  var definition=null;
+                              //  var definition=null;
                                 for (var i = 0; i < definitionsArray.length; i++) {
-                                    // var definition = definitionsArray[i];
+                                   // var definition = definitionsArray[i];
                                     if (definitionsArray[i].key === refType) {
-                                        deftion = DApiUI.deepCopy(definitionsArray[i].value);
-                                        // deftion = definition.value;
+                                        deftion= DApiUI.deepCopy(definitionsArray[i].value);
+                                       // deftion = definition.value;
                                         break;
                                     }
                                 }
@@ -387,16 +386,16 @@
                                     // if((typeof deftion[k])=="object"){
                                     //     deftion[k]=true;
                                     // }
-                                    if ((typeof deftion[k]) == "boolean") {
-                                        deftion[k] = true;
+                                    if((typeof deftion[k])=="boolean"){
+                                        deftion[k]=true;
                                         continue;
                                     }
-                                    if ((typeof deftion[k]) == "number") {
-                                        deftion[k] % 1 === 0 ? deftion[k] = 0 : deftion[k] = 0.0;
+                                    if((typeof deftion[k])=="number"){
+                                        deftion[k]%1 === 0?deftion[k]=0:deftion[k]=0.0;
                                         continue;
                                     }
-                                    if ((typeof deftion[k]) == "string") {
-                                        deftion[k] = "";
+                                    if((typeof deftion[k])=="string"){
+                                        deftion[k]="";
                                     }
 
                                 }
@@ -540,18 +539,19 @@
                         // value = paramtr.find("td:eq(2)").find("input").val();
                     }
                     //delete方式参数url传递
-                    if (apiInfo.methodType === "delete") {
-                        //判断是否是path参数
-                        if (trdata["in"] === "path") {
-                            url = url.replace("{" + key + "}", value);
-                        } else {
-                            if (url.indexOf("?") > -1) {
-                                url = url + "&" + key + "=" + value;
-                            } else {
-                                url += "?" + key + "=" + value;
-                            }
-                        }
-                    } else {
+                    // if (apiInfo.methodType === "delete") {
+                    //     //判断是否是path参数
+                    //     if (trdata["in"] === "path") {
+                    //         url = url.replace("{" + key + "}", value);
+                    //     } else {
+                    //         if (url.indexOf("?") > -1) {
+                    //             url = url + "&" + key + "=" + value;
+                    //         } else {
+                    //             url += "?" + key + "=" + value;
+                    //         }
+                    //     }
+                    // } else
+                        {
                         if (trdata["in"] === "path") {
                             url = url.replace("{" + key + "}", value);
                         } else {
@@ -631,6 +631,7 @@
                     }
                 })
             } else {
+                // "/users2/1"
                 $.ajax({
                     url: url,
                     headers: headerparams,
@@ -664,7 +665,7 @@
                         if (allheaders !== null && typeof (allheaders) !== 'undefined' && allheaders !== "") {
                             var headers = allheaders.split("\r\n");
                             var headertable = $('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            headers.push("response-code: " + xhr.status);
+                            headers.push("response-code: "+xhr.status);
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
@@ -679,12 +680,19 @@
                         }
                         var contentType = headerValu[1].split(";")[0];
                         var contentUrl = (this.url.indexOf("http://") === 0 || this.url.indexOf("https://") === 0) ? contentType : window.location.protocol + "//" + window.location.host;
+                        var headers="--header&ensp;'";
+                        for(key in this.headers){
+                            headers+=(key+":&ensp;"+this.headers[key]);
+                        }
+                        console.log();
                         if (this.type.toLowerCase() === "get") {
                             var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
                         } else {
-                            var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;" + contentType + "\'&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'" + "&ensp;--header&ensp;\'Authorization:&ensp;1\'&ensp;-d&ensp;\'";
-                            curltable += this.data;
-                            curltable += "\'&ensp;\'" + contentUrl + this.url + "\'";
+                            var curltable = "curl&ensp;-X&ensp;" + this.type+"&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;"+ contentType+ "\'&ensp;" +
+                                "--header&ensp;\'Accept:&ensp;&ensp;" + contentType+"\'"+ "&ensp;" +
+                                headers+"\'&ensp;-d&ensp;\'";
+                            curltable+=this.data;
+                            curltable+="\'&ensp;\'"+ contentUrl + this.url + "\'";
                         }
                         //设置curl内容
                         resp4.find(".panel-body").html("");
@@ -750,7 +758,7 @@
                         if (allheaders !== null && typeof (allheaders) !== 'undefined' && allheaders !== "") {
                             var headers = allheaders.split("\r\n");
                             var headertable = $('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
-                            headers.push("response-code: " + xhr.status);
+                            headers.push("response-code: "+xhr.status);
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
@@ -769,14 +777,14 @@
                         if (this.type.toLowerCase() === "get") {
                             var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
                         } else {
-                            var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;" + contentType + "\'&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'" + "&ensp;--header&ensp;\'Authorization:&ensp;1\'&ensp;-d&ensp;\'";
+                            var curltable = "curl&ensp;-X&ensp;" + this.type+"&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;"+ contentType+ "\'&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType+"\'"+ "&ensp;--header&ensp;\'Authorization:&ensp;1\'&ensp;-d&ensp;\'";
                             // $.each(this.data,function (i,va) {
                             //     curltable+=("\""+i+"\":&ensp;\""+va+"\",&ensp;\\\n")
                             // });
 
                             //console.log(this.data.split(",").join(",  \\\n"))
-                            curltable += this.data;
-                            curltable += ("\'&ensp;\'" + contentUrl + this.url + "\'");
+                            curltable+=this.data;
+                            curltable+=("\'&ensp;\'"+ contentUrl + this.url + "\'");
                         }
                         //设置curl内容
                         resp4.find(".panel-body").html("");
@@ -951,11 +959,11 @@
 
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + condition + "</span>"));
                                 tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + DApiUI.getStringValue(param['in']) + "</span>"));
-                                var required = "";
-                                for (var key in  mcs.definitions) {
-                                    key.toLowerCase() === ptype.toLowerCase() ? (required = mcs.definitions[key].required) : "";
+                                var required="";
+                                for(var key in  mcs.definitions){
+                                    key.toLowerCase()===ptype.toLowerCase()?(required=mcs.definitions[key].required):"";
                                 }
-                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (required ? (required.indexOf(prop) !== -1 ? "true" : "false") : "false") + "</span>"));
+                                tr.append($("<span  class='col-lg-2 col-md-2 col-sm-2 col-xs-2'>" + (required?(required.indexOf(prop) !== -1 ? "true" : "false"):"false") + "</span>"));
                                 $div.append(tr);
                             }
                             tables.append($div);
@@ -1045,12 +1053,12 @@
     DApiUI.createResponseDefinitionDetail = function (apiInfo) {
         var resp = apiInfo.responses;
         var div = $("<div class='panel col-lg-12 col-md-12 col-sm-12 col-xs-12 imitatTable'></div>");
-        var respBasis = false;
+        var respBasis=false;
         var respState;
-        for (key in resp) {
-            if (parseInt(key) >= 200 && parseInt(key) <= 299) {
-                respBasis = true;
-                respState = key
+        for( key in resp){
+            if(parseInt(key)>=200&&parseInt(key)<=299){
+                respBasis=true;
+                respState=key
                 break;
             }
         }
@@ -1135,12 +1143,12 @@
     DApiUI.createResponseDefinition = function (apiInfo) {
         var resp = apiInfo.responses;
         var div = $("<div class='panel'>暂无</div>");
-        var respBasis = false;
+        var respBasis=false;
         var respState;
-        for (key in resp) {
-            if (parseInt(key) >= 200 && parseInt(key) <= 299) {
-                respBasis = true;
-                respState = key;
+        for( key in resp){
+            if(parseInt(key)>=200&&parseInt(key)<=299){
+                respBasis=true;
+                respState=key;
                 break;
             }
         }
@@ -1158,7 +1166,7 @@
                     var htmlValue = refType;
                     var definitionsArray = DApiUI.getDoc().data("definitionsArray");
                     var deftion = null;
-                    var definition = null;
+                    var definition=null;
                     for (var i = 0; i < definitionsArray.length; i++) {
                         // var definition = definitionsArray[i];
                         // if (definition.key === refType) {
@@ -1168,21 +1176,21 @@
                         // }
                         if (definitionsArray[i].key === refType) {
                             flag = true;
-                            deftion = DApiUI.deepCopy(definitionsArray[i].value);
+                            deftion= DApiUI.deepCopy(definitionsArray[i].value);
                             break;
                         }
                     }
-                    for (var key in deftion) {
-                        if ((typeof deftion[key]) == "boolean") {
-                            deftion[key] = true;
+                    for(var key in deftion){
+                         if((typeof deftion[key])=="boolean"){
+                             deftion[key]=true;
                             continue;
                         }
-                        if ((typeof deftion[key]) == "number") {
-                            deftion[key] % 1 === 0 ? deftion[key] = 0 : deftion[key] = 0.0;
+                        if((typeof deftion[key])=="number"){
+                            deftion[key]%1 === 0?deftion[key]=0:deftion[key]=0.0;
                             continue;
                         }
-                        if ((typeof deftion[key]) == "string") {
-                            deftion[key] = "String";
+                        if((typeof deftion[key])=="string"){
+                            deftion[key]="String";
                             continue;
                         }
 
