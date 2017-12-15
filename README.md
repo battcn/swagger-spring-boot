@@ -23,7 +23,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.4.1-RELEASE</version>
+    <version>1.4.2-RELEASE</version>
 </dependency>
 ```
 
@@ -43,6 +43,11 @@ public class Application {
 
 # 更新记录 #
 ```
+1.4.2
+  发布时间：2017年12月15日
+  更新内容：
+    1.修复CRUL口令
+    2.渲染菜单列表颜色
 1.4.1
   发布时间：2017年12月13日
   更新内容：
@@ -125,7 +130,7 @@ spring.swagger.groups.基础信息.basePackage=com.battcn.controller.basic
 ``` yaml
 spring:
   swagger:
-	enabled: true
+    enabled: true
     title: 标题
     description: 描述信息
     version: 系统版本号
