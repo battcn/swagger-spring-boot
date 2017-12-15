@@ -23,11 +23,11 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.4.0-RELEASE</version>
+    <version>1.4.1-RELEASE</version>
 </dependency>
 ```
 
-- 在应用主类中增加`@EnableSwagger`注解
+- 在应用主类中增加`@EnableSwagger2Doc`注解
 
 ``` java
 @EnableSwagger2Doc
@@ -84,20 +84,17 @@ public class Application {
 ![在线调试](http://image.battcn.com/article/images/20171204/springboot/spring-boot-starter-swagger/3.png)
 
 
-# 配置示例 #
-
-
-
 ## 配置说明 ##
 
+`spring.swagger.enabled`：默认使用 `@EnableSwagger2Doc` 后就是 true，提供该配置目的是方便多环境关闭，一般生产环境中不会暴露它，这时候就可以通过 `java -jar xx.jar --spring.swagger.enabled=false` 动态关闭，也可以在多环境配置写好
 
 
-## 默认配置 ##
+### properties ###
 
 ```
 spring.swagger.enabled=是否启用swagger，默认：true
 spring.swagger.title=标题
-spring.swagger.description=描述
+spring.swagger.description=描述信息
 spring.swagger.version=版本
 spring.swagger.license=许可证
 spring.swagger.licenseUrl=许可证URL
@@ -114,6 +111,39 @@ spring.swagger.globalOperationParameters[0].description=描述信息
 spring.swagger.globalOperationParameters[0].modelRef=指定参数类型
 spring.swagger.globalOperationParameters[0].parameterType=指定参数存放位置,参考ParamType:(header,query,path,body,form)
 spring.swagger.globalOperationParameters[0].required=指定参数是否必传，默认false
+#下面分组是
+spring.swagger.groups.<name>.basePackage=swagger扫描的路径
+#比如
+spring.swagger.groups.基础信息.basePackage=com.battcn.controller.basic
+```
+
+
+### yaml ###
+
+以下为 `application.yml` 配置示例
+
+``` yaml
+spring:
+  swagger:
+	enabled: true
+    title: 标题
+    description: 描述信息
+    version: 系统版本号
+    contact:
+      name: 维护者信息
+    base-package: swagger扫描的基础包，默认：全扫描(分组情况下此处可不配置)
+	#全局参数,比如Token之类的验证信息可以全局话配置
+    global-operation-parameters:
+    -   description: 'Token信息,必填项'
+        modelRef: 'string'
+        name: 'Authorization'
+        parameter-type: 'header'
+        required: true
+    groups:
+      基础资料:
+        base-package: com.battcn.controller.basic
+      系统设置:
+        base-package: com.battcn.controller.system
 ```
 
 
@@ -131,17 +161,15 @@ _Rock：995269937@qq.com
 
 * `@Api`:一般用于Controller中,用于接口分组
 
-
 * `@ApiOperation`:接口说明,用于api方法上
-
 
 * `@ApiImplicitParam`:参数说明,适用于只有一个请求参数,主要参数
 
-
 * `@ApiImplicitParams`:多个参数说明,主要参数参考上面`@ApiImplicitParam`
 
+* `@ApiModel`:实体类说明
 
-* `@ApiModelProperty`:实体参数说明
+* `@ApiModelProperty`：实体参数说明
 
 
 # 如何参与 #
