@@ -173,6 +173,19 @@
         DApiUI.getMenu().html("");
         DApiUI.getMenu().append(dli);
         var methodApis = DApiUI.eachPath(menu);
+        /*  序号排序函数*/
+        function sortNumber(c,d) {
+            var a=c.name,b=d.name;
+            return  parseFloat(a.slice(0,a.indexOf(".")+1)+a.slice(a.indexOf(".")+1,a.length).replace(/\./g, ''))- parseFloat(b.slice(0,b.indexOf(".")+1)+b.slice(b.indexOf(".")+1,b.length).replace(/\./g, ''));
+        }
+        menu.tags ?menu.tags=menu.tags.sort(sortNumber):[];
+        var sortOrder={get:1,post:2,put:3,patch:4,delete:5}
+        /* 请求类型排序函数 */
+        function sortType(a,b) {
+            return  sortOrder[a.methodType.toLowerCase()]- sortOrder[b.methodType.toLowerCase()];
+        }
+        var bgArray={get:"#c3d9ec",post:"#c3e8d1",
+            delete:"#e8c6c7",patch:"#F5D5C3",put:"#f0e0ca"};
         $.each(menu.tags ? menu.tags : [], function (i, tag) {
             var tagInfo = new TagInfo(tag.name, tag.description);
             //查找childrens
@@ -189,13 +202,15 @@
             } else {
                 //存在子标签
                 var li = $('<li></li>');
-                var titleA = $('<a href="#" class="dropdown-toggle"><i class="icon-file-alt"></i><span class="menu-text">' + tagInfo.name + "&nbsp;&nbsp;&nbsp;" + tagInfo.description + '<span class="badge badge-primary ">' + len + '</span></span><b class="arrow icon-angle-down"></b></a>');
+                var titleA = $('<a href="#" class="dropdown-toggle" style="height:auto;line-height:normal;padding-top: 8px;padding-bottom: 10px;"><i class="icon-file-alt" style="float: left;"></i><span class="menu-text" style="width: 50px;float: left;">' + tagInfo.name + '</span><span style="width:140px;display: inline-block;">' + tagInfo.description + '</span><span class="badge badge-primary ">' + len + '</span><b class="arrow icon-angle-down"></b></a>');
                 li.append(titleA);
                 //循环树
                 var ul = $('<ul class="submenu"></ul>');
+                tagInfo.childrens=tagInfo.childrens.sort(sortType);
                 $.each(tagInfo.childrens, function (i, children) {
-                    var childrenLi = $('<li class="menuLi" ><div class="mhed"><div>' + children.methodType.toUpperCase() + '-<code>' + children.url + '</code></div><div>' + children.summary + '</div></div></li>');
+                    var childrenLi = $('<li class="menuLi"><div class="mhed"><div>' + children.methodType.toUpperCase() + '-<code>' + children.url + '</code></div><div>' + children.summary + '</div></div></li>');
                     childrenLi.data("data", children);
+                    bgArray[children.methodType.toLowerCase()]?childrenLi.css({"backgroundColor":bgArray[children.methodType.toLowerCase()]}):"";
                     ul.append(childrenLi);
                 });
                 li.append(ul);
@@ -208,7 +223,7 @@
 
     DApiUI.eachPath = function (menu) {
         var paths = menu.paths;
-        //paths是object对象,key是api接口地址,
+        //paths是object对象,key是api接口地址,aaaaa
         var methodApis = [];
         for (var key in paths) {
             var obj = paths[key];
@@ -666,6 +681,7 @@
                             var headers = allheaders.split("\r\n");
                             var headertable = $('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
                             headers.push("response-code: "+xhr.status);
+                            var contentType="";
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
@@ -673,30 +689,39 @@
                                     var headertr = $('<tr><th class="active">' + headerValu[0] + '</th><td>' + headerValu[1] + '</td></tr>');
                                     headertable.append(headertr);
                                 }
+                                if(headers[i].toLowerCase().indexOf("content-type")>=0){
+                                    headers[i].indexOf(";")>=0?contentType=headers[i].match(/:([\s\S]*);/)[1]:contentType=headers[i].match(/:([\s\S]*)/)[1];
+                                }
                             }
                             //设置Headers内容
                             resp3.find(".panel-body").html("");
                             resp3.find(".panel-body").append(headertable);
                         }
-                        var contentType = headerValu[1].split(";")[0];
                         var contentUrl = (this.url.indexOf("http://") === 0 || this.url.indexOf("https://") === 0) ? contentType : window.location.protocol + "//" + window.location.host;
-                        var headers="--header&ensp;'";
+                        var headerss="";
                         for(key in this.headers){
-                            headers+=(key+":&ensp;"+this.headers[key]);
+                            headerss+=(key+": "+this.headers[key]);
                         }
-                        console.log();
+                        /*  生成curl命令组成部分 */
+                        /* 头部数据 */
+                        headerss!=""?headerss=" --header \'"+headerss+"\' ":"";/* head部分数据 */
+                        /* content-type */
+                        contentType!=""?(contentType=" --header \'Content-Type:  "+contentType+"\' "):"";
+                        /* d data 非头部附带数据 */
+                        var curlData=" -d \'"+this.data+"\' ";
+                        /* Accept: consumes*/
+                        var curlAccept=" --header \'Accept:  " + apiInfo.consumes[0]+"\' ";
+                        /* url */
+                        var curlUrl="\'"+ contentUrl + this.url + "\'";
                         if (this.type.toLowerCase() === "get") {
-                            var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
+                            var curltable = ("curl -X " + this.type + " --header \'Accept:  " + apiInfo.consumes[0] + "\' " +
+                                headerss+curlUrl).replace(/[\r\n]/g,"");
                         } else {
-                            var curltable = "curl&ensp;-X&ensp;" + this.type+"&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;"+ contentType+ "\'&ensp;" +
-                                "--header&ensp;\'Accept:&ensp;&ensp;" + contentType+"\'"+ "&ensp;" +
-                                headers+"\'&ensp;-d&ensp;\'";
-                            curltable+=this.data;
-                            curltable+="\'&ensp;\'"+ contentUrl + this.url + "\'";
+                            var curltable = ("curl -X " + this.type+ contentType + curlAccept+ headerss+curlData+curlUrl).replace(/[\r\n]/g,"");
                         }
                         //设置curl内容
                         resp4.find(".panel-body").html("");
-                        resp4.find(".panel-body").append(curltable);
+                        resp4.find(".panel-body").css({"white-space":"pre","overflow-x":"auto"}).append(curltable);
                         var contentType = xhr.getResponseHeader("Content-Type");
                         if (xhr.hasOwnProperty("responseJSON")) {
                             //如果存在该对象,服务端返回为json格式
@@ -755,10 +780,12 @@
                         respcleanDiv.append(resptab);
                         var headerValu = "";
                         var allheaders = xhr.getAllResponseHeaders();
+
                         if (allheaders !== null && typeof (allheaders) !== 'undefined' && allheaders !== "") {
                             var headers = allheaders.split("\r\n");
                             var headertable = $('<table class="table table-hover table-bordered table-text-center"><tr><th>请求头</th><th>value</th></tr></table>');
                             headers.push("response-code: "+xhr.status);
+                            var contentType="";
                             for (var i = 0; i < headers.length; i++) {
                                 var header = headers[i];
                                 if (header !== null && header !== "") {
@@ -766,29 +793,38 @@
                                     var headertr = $('<tr><th class="active">' + headerValu[0] + '</th><td>' + headerValu[1] + '</td></tr>');
                                     headertable.append(headertr);
                                 }
+                                if(headers[i].toLowerCase().indexOf("content-type")>=0){
+                                    headers[i].indexOf(";")>=0?contentType=headers[i].match(/:([\s\S]*);/)[1]:contentType=headers[i].match(/:([\s\S]*)/)[1];
+                                }
                             }
                             //设置Headers内容neir
                             resp3.find(".panel-body").html("");
                             resp3.find(".panel-body").append(headertable);
                         }
-                        var contentType = headerValu[1].split(";")[0];
-                        //console.log(window.location.protocol, "!!!", window.location.host);
                         var contentUrl = (this.url.indexOf("http://") === 0 || this.url.indexOf("https://") === 0) ? contentType : window.location.protocol + "//" + window.location.host;
+                        var headerss="";
+                        for(key in this.headers){
+                            headerss+=(key+": "+this.headers[key]);
+                        }
+                        /*  生成curl命令组成部分 */
+                        /* 头部数据 */
+                        headerss!=""?headerss=" --header \'"+headerss+"\' ":"";/* head部分数据 */
+                        /* content-type */
+                        contentType!=""?(contentType=" --header \'Content-Type:  "+contentType+"\' "):"";
+                        /* d data 非头部附带数据 */
+                        var curlData=" -d \'"+this.data+"\' ";
+                        /* Accept: consumes*/
+                        var curlAccept=" --header \'Accept:  " + apiInfo.consumes[0]+"\' ";
+                        /* url */
+                        var curlUrl="\'"+ contentUrl + this.url + "\'";
                         if (this.type.toLowerCase() === "get") {
-                            var curltable = "curl&ensp;-X&ensp;" + this.type + "&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType + "\'&ensp;\'" + contentUrl + this.url + "\'";
+                            var curltable = ("curl -X " + this.type + " --header \'Accept:  " + apiInfo.consumes[0] + "\' " + headerss+curlUrl).replace(/[\r\n]/g,"");
                         } else {
-                            var curltable = "curl&ensp;-X&ensp;" + this.type+"&ensp;--header&ensp;\'Content-Type:&ensp;&ensp;"+ contentType+ "\'&ensp;--header&ensp;\'Accept:&ensp;&ensp;" + contentType+"\'"+ "&ensp;--header&ensp;\'Authorization:&ensp;1\'&ensp;-d&ensp;\'";
-                            // $.each(this.data,function (i,va) {
-                            //     curltable+=("\""+i+"\":&ensp;\""+va+"\",&ensp;\\\n")
-                            // });
-
-                            //console.log(this.data.split(",").join(",  \\\n"))
-                            curltable+=this.data;
-                            curltable+=("\'&ensp;\'"+ contentUrl + this.url + "\'");
+                            var curltable = ("curl -X " + this.type+ contentType + curlAccept+ headerss+curlData+curlUrl).replace(/[\r\n]/g,"");
                         }
                         //设置curl内容
                         resp4.find(".panel-body").html("");
-                        resp4.find(".panel-body").append(curltable);
+                        resp4.find(".panel-body").css({"white-space":"pre","overflow-x":"auto"}).append(curltable);
 
                         var contentType = xhr.getResponseHeader("Content-Type");
                         var jsonRegex = "";
@@ -1213,7 +1249,7 @@
         return div;
     };
 
-
+    /*  初始化数据到右部 */
     DApiUI.definitions = function (menu) {
         var definitionsArray = [];
         if (menu !== null && typeof (menu) !== "undefined" && menu.hasOwnProperty("definitions")) {
