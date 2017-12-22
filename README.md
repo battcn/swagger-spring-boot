@@ -80,6 +80,10 @@ public class Application {
 
 默认的UI在多个接口和大量参数下显得有点力不从心了，这时候在网上发现一款名为 [Swagger-Bootstrap-UI](https://github.com/xiaoymin/Swagger-Bootstrap-UI "https://github.com/xiaoymin/Swagger-Bootstrap-UI") 引起了我浓烈的兴趣，但使用下来发现问题也不不少，故而在此基础之上做了二次开发
 
+> 操作风格 - 1.4.3支持
+
+![接口说明](http://image.battcn.com/article/images/20171204/springboot/spring-boot-starter-swagger/4.png)
+
 > 接口说明：折叠式Model
 
 ![接口说明](http://image.battcn.com/article/images/20171204/springboot/spring-boot-starter-swagger/1.png)
