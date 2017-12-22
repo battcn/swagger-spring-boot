@@ -23,7 +23,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.4.2-RELEASE</version>
+    <version>1.4.3-RELEASE</version>
 </dependency>
 ```
 
@@ -43,6 +43,11 @@ public class Application {
 
 # 更新记录 #
 ```
+1.4.3
+  发布时间：2017年12月22日
+  更新内容：
+    1.修复CRUL口令
+    2.提升操作体验
 1.4.2
   发布时间：2017年12月15日
   更新内容：

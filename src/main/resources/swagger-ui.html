@@ -11,7 +11,6 @@
         window.jQuery || document.write("<script src='webjars/ace/js/jquery-2.0.3.min.js'>" + "<" + "/script>");
     </script>
     <!-- <![endif]-->
-
     <!--[if IE]> -->
     <script type="text/javascript">
         window.jQuery || document.write("<script src='webjars/ace/js/jquery-1.10.2.min.js'>" + "<" + "/script>");
@@ -40,9 +39,8 @@
         }
 
         .bycdao-main {
-            margin-left: 270px;
+            margin-left: 540px;
             padding-top: 5px;
-            /* padding-left: 15px;*/
             padding-right: 15px;
             background: #f3f3f4;
             transition: all 0.2s;
@@ -83,9 +81,11 @@
             overflow: hidden;
             margin: 0;
         }
-        .imitatTable  ul li{/* 补充等高布局 */
+
+        .imitatTable ul li { /* 补充等高布局 */
             overflow: hidden;
         }
+
         .imitatTable > ul > * {
             overflow: hidden;
             _zoom: 1;
@@ -119,11 +119,73 @@
             border-right: 1px solid #ddd;
         }
 
+        /* 菜单头 */
+        .bycdao-header {
+            margin-left: 540px;
+            padding-top: 5px;
+            padding-right: 15px;
+            background: #f3f3f4;
+            transition: all 0.2s;
+        }
+
+        #tabIndex {
+            white-space: nowrap;
+            overflow-y: hidden;
+            overflow-x: scroll;
+            padding: 0 10px 0px 10px;
+        }
+
+        #tabIndex > li {
+            position: relative;
+            display: inline-block;
+            margin-bottom: -1px;
+            margin-right: 5px;
+            float: none;
+        }
+
+        /* 类别 */
+        .bycdao-category {
+            padding: 0;
+            margin-left: 270px;
+            width: 270px;
+            margin-top: 0px;
+            position: fixed;
+            /* background: #337ab7; */
+            height: 100%;
+            transition: all 0.2s;
+        }
+
+        .bycdao-header #tabIndex li b {
+            display: inline-block;
+            z-index: 99;
+            width: 8px;
+            height: 8px;
+            background-color: #ccc;
+            position: absolute;
+            top: 50%;
+            margin-top: -4px;
+            right: 5px;
+            border-radius: 10px;
+        }
+
+        .bycdao-header #tabIndex li ~ li > a {
+            padding-right: 20px;
+        }
+
+        .bycdao-header #tabIndex li a:hover ~ b {
+            background-color: #e8c6c7;
+        }
+
+        .bycdao-header #tabIndex li ~ li > b:hover {
+            background-color: #a41e22
+        }
+
     </style>
 </head>
 <body style="overflow: hidden;">
 
-<div class="bycdao-left" style="height: 100%px;overflow-y: auto;">
+
+<div class="bycdao-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
     <ul class="nav nav-list" id="menu">
         <li>
             <a href="javascript:void(0)">
@@ -165,9 +227,24 @@
         </li>
     </ul>
 </div>
-
-<div class="bycdao-main" id="content" style="height: 100%;overflow-y: auto;">
-    <table class="table table-hover table-bordered table-text-center">
+<div class="bycdao-category tab-content" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
+    <ul class="nav nav-list">
+        <li>
+            <a href="javascript:" style="cursor:default;">接口</a>
+        </li>
+    </ul>
+</div>
+<div class="bycdao-header">
+    <ul id="tabIndex" class="nav nav-tabs">
+        <li class="active">
+            <a class="" href="#home" data-toggle="tab" style="">
+                首页
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="bycdao-main tab-content" id="content" style="height: 100%;overflow-y: auto;">
+    <table id="home" class="table table-hover table-bordered table-text-center">
         <thead>
         <tr>
             <th colspan="2" style="text-align:center">一款优秀的Swagger开源项目</th>
