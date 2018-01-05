@@ -23,7 +23,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.4.3-RELEASE</version>
+    <version>1.4.4-RELEASE</version>
 </dependency>
 ```
 
@@ -43,6 +43,10 @@ public class Application {
 
 # 更新记录 #
 ```
+1.4.4
+  发布时间：2018年01月05日
+  更新内容：
+    1.优化选项卡切换
 1.4.3
   发布时间：2017年12月22日
   更新内容：
