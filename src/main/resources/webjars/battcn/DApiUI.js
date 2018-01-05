@@ -82,12 +82,12 @@
         var tabsContainer = $('<div id="tabIndex' + i + '" class="tabs-container tab-pane active" style="width:99%;margin:0 auto;"></div>');
         var ul = $('<ul class="nav nav-tabs" style="position:fixed;z-index:99;top:64px;"></ul>');
         ul.append($('<li><a data-toggle="tab" href="#tab' + i + '" aria-expanded="false"> 接口说明</a></li>'));
-        ul.append($('<li class=""><a data-toggle="tab" href="#tab1' + i + '" aria-expanded="true"> 在线调试</a></li>'));
+        ul.append($('<li class=""><a data-toggle="tab" href="#tabTwo' + i + '" aria-expanded="true"> 在线调试</a></li>'));
         tabsContainer.append(ul);
         var tabContent = $('<div style="margin-top: 35px;" class="tab-content"></div>');
 
         tabContent.append($('<div id="tab' + i + '" class="tab-pane"><div class="panel-body"><strong>接口详细说明</strong><p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p></div></div>'));
-        tabContent.append($('<div id="tab1' + i + '" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
+        tabContent.append($('<div id="tabTwo' + i + '" class="tab-pane"><div class="panel-body"><strong>正在开发中,敬请期待......</strong></div></div>'));
         tabsContainer.append(tabContent);
         //内容覆盖
         DApiUI.getDoc().append(tabsContainer);
@@ -550,8 +550,8 @@
         debugContainer.append(respcleanDiv);
 
 
-        DApiUI.getDoc().find("#" + elName[0] + " #tab1" + elName[1]).find(".panel-body").html("");
-        DApiUI.getDoc().find("#" + elName[0] + " #tab1" + elName[1]).find(".panel-body").append(debugContainer);
+        DApiUI.getDoc().find("#" + elName[0] + " #tabTwo" + elName[1]).find(".panel-body").html("");
+        DApiUI.getDoc().find("#" + elName[0] + " #tabTwo" + elName[1]).find(".panel-body").append(debugContainer);
 
 
         //发送事件
@@ -568,7 +568,7 @@
             var validateobj = {};
 
             //获取参数
-            var paramBody = DApiUI.getDoc().find("#tab1" + elName[1]).find("#paramBody");
+            var paramBody = DApiUI.getDoc().find("#tabTwo" + elName[1]).find("#paramBody");
             //组装请求url
             var url = DApiUI.getStringValue(apiInfo.url);
             var cacheData = DApiUI.getDoc().data("data");
