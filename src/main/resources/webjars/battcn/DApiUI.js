@@ -1,9 +1,23 @@
 (function ($) {
     //初始化类
     var DApiUI = {};
+
+    function getWebRootPath() {
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPath = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPath + projectName);
+    }
+
     DApiUI.init = function () {
         $.ajax({
-            url: "swagger-resources",
+            url: getWebRootPath() + "/" + "swagger-resources",
             dataType: "json",
             type: "get",
             async: false,
@@ -18,7 +32,7 @@
                 }
                 var menu = data[0];
                 $.ajax({
-                    url: encodeURI(menu.location),
+                    url: encodeURI(getWebRootPath() + "/" + menu.location),
                     dataType: "json",
                     type: "get",
                     async: false,
@@ -43,7 +57,7 @@
     DApiUI.paging = function (data) {
         var menu = data[parseInt($(".bycdao-left .form-control").children('option:selected').attr('order'))];
         $.ajax({
-            url: encodeURI(menu.location),
+            url: encodeURI(getWebRootPath() + "/" + menu.location),
             dataType: "json",
             type: "get",
             async: false,
@@ -771,11 +785,13 @@
                         var curlUrl = "\'" + contentUrl + this.url + "\'";
                         if (this.type.toLowerCase() === "get") {
                             var curltable = ("curl -X " + this.type + " --header \'Accept:  " + apiInfo.consumes[0] + "\' " +
-                                headerss + curlUrl);/* .replace(/[\r\n]/g, "") */
+                            headerss + curlUrl);
+                            /* .replace(/[\r\n]/g, "") */
                         } else {
                             /* d data 非头部附带数据,只用于非get类型请求 */
-                            var curlData = " -d \'" + (this.data?this.data.replace(/[\r\n]/g," \\\n"):"")  + "\' ";
-                            var curltable = ("curl -X " + this.type + contentType + curlAccept + headerss + curlData + curlUrl);/* .replace(/[\r\n]/g, "") */
+                            var curlData = " -d \'" + (this.data ? this.data.replace(/[\r\n]/g, " \\\n") : "") + "\' ";
+                            var curltable = ("curl -X " + this.type + contentType + curlAccept + headerss + curlData + curlUrl);
+                            /* .replace(/[\r\n]/g, "") */
                         }
                         //设置curl内容
                         resp4.find(".panel-body").html("");
@@ -878,8 +894,9 @@
                             var curltable = ("curl -X " + this.type + " --header \'Accept:  " + apiInfo.consumes[0] + "\' " + headerss + curlUrl);
                         } else {
                             /* d data 非头部附带数据,只用于非get类型请求 */
-                            var curlData = " -d \'" + (this.data?this.data.replace(/[\r\n]/g," \\\n"):"")  + "\' ";
-                            var curltable = ("curl -X " + this.type + contentType + curlAccept + headerss + curlData + curlUrl);/* .replace(/[\r\n]/g, "") */
+                            var curlData = " -d \'" + (this.data ? this.data.replace(/[\r\n]/g, " \\\n") : "") + "\' ";
+                            var curltable = ("curl -X " + this.type + contentType + curlAccept + headerss + curlData + curlUrl);
+                            /* .replace(/[\r\n]/g, "") */
                         }
                         //设置curl内容
                         resp4.find(".panel-body").html("");

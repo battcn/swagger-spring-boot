@@ -6,7 +6,7 @@
 
     <groupId>com.battcn</groupId>
     <artifactId>spring-boot-starter-swagger</artifactId>
-    <version>1.4.4-RELEASE</version>
+    <version>1.4.5-RELEASE</version>
     <!-- SNAPSHOT RELEASE -->
 
     <name>spring-boot-starter-swagger</name>
@@ -56,7 +56,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <springfox.version>2.7.0</springfox.version>
-        <spring-boot.version>1.5.6.RELEASE</spring-boot.version>
+        <spring-boot.version>1.5.10.RELEASE</spring-boot.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}
