@@ -3,7 +3,7 @@
 > 源码地址
 
 - GitHub：[https://github.com/battcn/spring-boot-starter-swagger](https://github.com/battcn/spring-boot-starter-swagger "https://github.com/battcn/spring-boot-starter-swagger")
-- 码云：
+- 码云：[https://gitee.com/battcn/spring-boot-starter-swagger/](https://gitee.com/battcn/spring-boot-starter-swagger/ "https://gitee.com/battcn/spring-boot-starter-swagger/")
 
 `spring-boot-starter-swagger` 是一款建立在`swagger`基础之上的工具包，利用SpringBoot自动装配的特性，简化了传统`swagger`的繁琐配置
 
