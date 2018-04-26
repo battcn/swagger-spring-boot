@@ -181,9 +181,9 @@ _Rock：995269937@qq.com
 
 # 常用注解说明 #
 
-* `@Api`:一般用于Controller中,用于接口分组
+* `@Api`:一般用于Controller中,用于接口分组。（**`如：@Api(value = "用户接口", description = "用户接口", tags = {"1.1.0"})`**
 
-* `@ApiOperation`:接口说明,用于api方法上
+* `@ApiOperation`:接口说明,用于api方法上。（**`如： @ApiOperation(value = "用户查询", notes = "根据ID查询用户信息")`**）
 
 * `@ApiImplicitParam`:参数说明,适用于只有一个请求参数,主要参数
 
