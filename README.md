@@ -22,7 +22,7 @@
 ``` xml
 <dependency>
     <groupId>com.battcn</groupId>
-    <artifactId>spring-boot-starter-swagger</artifactId>
+    <artifactId>swagger-spring-boot-starter</artifactId>
     <version>1.4.5-RELEASE</version>
 </dependency>
 ```
