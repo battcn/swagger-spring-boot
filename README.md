@@ -154,7 +154,7 @@ spring:
     contact:
       name: 维护者信息
     base-package: swagger扫描的基础包，默认：全扫描(分组情况下此处可不配置)
-	#全局参数,比如Token之类的验证信息可以全局话配置
+    #全局参数,比如Token之类的验证信息可以全局话配置
     global-operation-parameters:
     -   description: 'Token信息,必填项'
         modelRef: 'string'
