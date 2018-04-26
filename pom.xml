@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.battcn</groupId>
-    <artifactId>spring-boot-starter-swagger</artifactId>
+    <artifactId>swagger-spring-boot-starter</artifactId>
     <version>1.4.5-RELEASE</version>
     <!-- SNAPSHOT RELEASE -->
 
-    <name>spring-boot-starter-swagger</name>
+    <name>swagger-spring-boot-starter</name>
     <url>https://github.com/battcn/spring-boot-starter-swagger.git</url>
     <description>基于swagger2.7.0做的一款扩展工具包</description>
 
