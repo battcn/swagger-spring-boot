@@ -94,7 +94,7 @@
              * 对name一致的进行保存
              * */
             this.quantity[count] ? this.$set(this.quantity, count, this.quantity[count] + 1) : this.$set(this.quantity, count, 1);
-            if (count == this.leftDropDownBoxContent.tags[this.count].name) {
+            if (count === this.leftDropDownBoxContent.tags[this.count].name) {
               current.push({pathName: i, name: n, pathInfo: this.leftDropDownBoxContent.paths[i][n]})
             }
           }

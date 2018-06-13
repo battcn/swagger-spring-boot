@@ -147,6 +147,9 @@
       }
     },
     computed: {
+      /**
+       * @return {string}
+       */
       InterfaceResponse: function () {/* 响应参数 */
         let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
         let respBasis = false;
@@ -190,6 +193,9 @@
           }
         }
       },
+      /**
+       * @return {{}}
+       */
       InterfaceRequest: function () {
         if (!this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.parameters) {
           return false;
@@ -209,9 +215,9 @@
         let resultCopy = deepCopy(result);
         for (let key in resultCopy) {
           /* 如果该字段没有type属性且存在子字段，子字段内有类型type属性 */
-          if ((!resultCopy[key].type && resultCopy[key].properties && resultCopy[key].properties.type == "object") || resultCopy[key].type == 'array' && resultCopy[key].properties) {
+          if ((!resultCopy[key].type && resultCopy[key].properties && resultCopy[key].properties.type === "object") || resultCopy[key].type === 'array' && resultCopy[key].properties) {
             /* 包含子字段 */
-            if (resultCopy[key].type == 'array' && resultCopy[key].properties) {
+            if (resultCopy[key].type === 'array' && resultCopy[key].properties) {
               this.parameterValue[key] = [];
               this.parameterValue[key].push(this.iniObject(resultCopy[key].properties.properties))
             } else {
@@ -276,9 +282,9 @@
       iniObject: function (properties) {/* 传入对象，对其进行类型初始化 */
         let obj = {}
         for (let key in properties) {
-          if ((properties[key].type && properties[key].properties && properties[key].type == "object") || (properties[key].type == 'array' && properties[key].properties)) {
+          if ((properties[key].type && properties[key].properties && properties[key].type === "object") || (properties[key].type === 'array' && properties[key].properties)) {
             /* 包含子字段 */
-            if (properties[key].type == 'array' && properties[key].properties) {
+            if (properties[key].type === 'array' && properties[key].properties) {
               obj[key] = {};
               obj[key] = (Object.values(this.iniObject(properties[key].properties)))
             } else {
@@ -320,13 +326,13 @@
         let result = {};
         let definitions = deepCopy(this.leftDropDownBoxContent.definitions);
         for (let key in definitions) {
-          if (key.toLowerCase() == objName.toLowerCase()) {
+          if (key.toLowerCase() === objName.toLowerCase()) {
             result = deepCopy(definitions[key]);
             let properties = definitions[key].properties;
             for (let k in properties) {
               if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
                 let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref
-                if (properties[k].type == 'array') {
+                if (properties[k].type === 'array') {
                   result.properties[k].properties = [];
                   let adds = this.formatRequest(Ref);
                   adds.name ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
@@ -358,7 +364,7 @@
           }
         }
         for (let key in deftion) {
-          if (deftion[key].$ref && deftion[key].type == "array") {
+          if (deftion[key].$ref && deftion[key].type === "array") {
             deftion[key] = {};
             continue;
           }
@@ -373,7 +379,7 @@
               continue;
             }
           }
-          if (deftion[key].type == "array" && deftion[key].items) {
+          if (deftion[key].type === "array" && deftion[key].items) {
             let schema = deftion[key];
             let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
             let regex = new RegExp("#/definitions/(.*)$", "ig");
@@ -385,19 +391,19 @@
               continue;
             }
           }
-          if (deftion[key].type == "array") {
+          if (deftion[key].type === "array") {
             deftion[key] = [];
             continue;
           }
-          if (deftion[key].type == "boolean") {
+          if (deftion[key].type === "boolean") {
             deftion[key] = true;
             continue;
           }
-          if (deftion[key].type == "integer") {
+          if (deftion[key].type === "integer") {
             deftion[key] = 0;
             continue;
           }
-          if (deftion[key].type == "string") {
+          if (deftion[key].type === "string") {
             deftion[key] = "";
             continue;
           }
@@ -435,7 +441,7 @@
           if (result[i][2]["in"] === "path") {
             url = url.replace("{" + result[i][0] + "}", result[i][1]);
           } else if (result[i][2]["in"] === "query") {
-            url += ((isQuery ? '&' : isQuery = true && '?') + result[i][0] + '=' + result[i][1]);
+            url += ((isQuery ? '&' : isQuery = '?') + result[i][0] + '=' + result[i][1]);
           } else {
             if (result[i][2]["in"] === "body") {
               bodyparams += JSON.stringify(result[i][1]);
@@ -477,9 +483,9 @@
         }
         /*  生成curl命令组成部分 */
         /* 头部数据 */
-        headerss != "" ? headerss = " --header \'" + headerss + "\' " : "";
+        headerss !== "" ? headerss = " --header \'" + headerss + "\' " : "";
         let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' "
-        if (_this.swaggerCategory[this.countTo].name.toLowerCase() == 'get') {
+        if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
           let curltable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
           " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
           headerss + contentUrl);
@@ -487,22 +493,22 @@
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
           let curlData = " -d \'" + (reqdata ? this.formatterJson(reqdata).replace(/[\r\n]/g, " \\\n") : "") + "\' ";
-          let curltable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() + contentType + curlAccept + headerss + (reqdata == '{}' ? "" : curlData) + contentUrl);
+          let curltable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() + contentType + curlAccept + headerss + (reqdata === '{}' ? "" : curlData) + contentUrl);
           _this.curlMode = curltable;
         }
         /* 响应内容JSON序列化 */
         try {
           let obj = JSON.parse(this.debugResponse.bodyText);
-          if (typeof obj == 'object' && obj) {
+          if (typeof obj === 'object' && obj) {
             this.isJsonObject = true;
             this.jsonObjectTo = obj;
           } else {
             this.isJsonObject = false;
-            this.jsonObjectTo = new String(this.debugResponse.bodyText);
+            this.jsonObjectTo = String(this.debugResponse.bodyText);
           }
         } catch (e) {
           this.isJsonObject = false;
-          this.jsonObjectTo = new String(this.debugResponse.bodyText);
+          this.jsonObjectTo = String(this.debugResponse.bodyText);
         }
         this.resultShow = true;
         /* 显示结果 */
