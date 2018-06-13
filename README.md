@@ -7,6 +7,11 @@
 
 `swagger-spring-boot-starter` 是一款建立在`swagger`基础之上的工具包，利用SpringBoot自动装配的特性，简化了传统`swagger`的繁琐配置
 
+> 项目介绍
+
+- **`swagger-vue` ：采用 Vue 编写的源代码**
+- **`swagger-vue-ui` ：编译后的纯 HTML 文件**
+- **`swagger-spring-boot-starter` ： 自动装配 swagger 的扩展包 **
 
 有兴趣扩展自己的Starter包的可以参考文章：[编写自己的starter项目](http://blog.battcn.com/2017/07/13/springboot/springboot-starter-swagger/ "编写自己的starter项目")
 
