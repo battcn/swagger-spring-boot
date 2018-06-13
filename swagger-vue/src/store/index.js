@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
+
 Vue.use(Vuex);
 Vue.use(VueResource);
 
@@ -39,7 +40,9 @@ function init() {
     }
   })
 }
+
 init();
+
 /* 调试模块 */
 const debugRequest = {
   state: {data: [], count: 0, debugResponse: {}},
@@ -55,7 +58,7 @@ const debugRequest = {
         })
     }
   }
-}
+};
 /* 公共模块，功能性方法 */
 
 export default new Vuex.Store({

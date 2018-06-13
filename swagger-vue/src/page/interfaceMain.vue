@@ -486,15 +486,15 @@
         headerss !== "" ? headerss = " --header \'" + headerss + "\' " : "";
         let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' "
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
-          let curltable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
+          let curlTable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
           " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
           headerss + contentUrl);
-          _this.curlMode = curltable;
+          _this.curlMode = curlTable;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
           let curlData = " -d \'" + (reqdata ? this.formatterJson(reqdata).replace(/[\r\n]/g, " \\\n") : "") + "\' ";
-          let curltable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() + contentType + curlAccept + headerss + (reqdata === '{}' ? "" : curlData) + contentUrl);
-          _this.curlMode = curltable;
+          let curlTable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() + contentType + curlAccept + headerss + (reqdata === '{}' ? "" : curlData) + contentUrl);
+          _this.curlMode = curlTable;
         }
         /* 响应内容JSON序列化 */
         try {
