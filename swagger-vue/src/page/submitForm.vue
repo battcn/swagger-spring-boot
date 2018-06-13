@@ -102,11 +102,14 @@
               }
             }
             this.$emit('getCollection', this.copyChildForm);
+            return true;
           } else {
             this.$emit('getCollection', this.copyChildForm);
+            return true;
           }
         }
         this.$emit('getCollection', this.copyChildForm);
+        return true;
       },
       PromptPopUpShow: function (hint) {
         this.$layer.msg(hint, {time: 2})

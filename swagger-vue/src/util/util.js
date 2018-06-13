@@ -1,21 +1,21 @@
 /* 对象拷贝 */
 const deepCopy = function (source) {
+  let result="";
   if (typeof source === 'object') {
-    /* if (source.constructor === Array)  {
+     if (source.constructor === Array)  {
      return treatArray(source);
      }
-     return treatObj(source);*/
-    return JSON.parse(JSON.stringify(source));
+     return treatObj(source);
+    // return JSON.parse(JSON.stringify(source));
   } else {
     return source;
   }
 
-  /*function treatObj(source) { //处理对象类型
+  function treatObj(source) { //处理对象类型
    result = {};
    for (let key in source) {
    result[key] = deepCopy(source[key]);
    }
-   console.log(result);
    return result;
    }
 
@@ -30,7 +30,7 @@ const deepCopy = function (source) {
    function treatBasic(source) { //处理基本类型
    result = source;
    return result;
-   }*/
+   }
 }
 /* 传入参数类型名字，返回该类型初始化的值 */
 const basicTypeInit = function (type) {

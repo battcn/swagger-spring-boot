@@ -4,7 +4,8 @@
       <ul class="nav-list">
         <select class="form-control" v-model.lazy="selected">
           <option v-for="(item,index) in swaggerLeftHead" :value="index">
-            {{item.serviceInstances && item.serviceInstances[0] && item.serviceInstances[0].serviceId}}
+            <!--{{item.serviceInstances && item.serviceInstances[0] && item.serviceInstances[0].serviceId}}-->
+            {{item.url||item.location}}
           </option>
         </select>
         <li v-for="(item,index) in leftDropDownBoxContent.tags" @click="count=index"
@@ -38,7 +39,7 @@
     data() {
       return {
         indentation: 1,
-        testObject: {
+        /*testObject: {
           "test1": "wx9fdb8ble7ce3c68f",
           "test2": "123456789",
           "testData1": {
@@ -52,7 +53,7 @@
             ]
           },
           "testData2": [{"a": 23}]
-        },
+        },*/
         selected: 0,
         count: 0,
         countTo: 0,

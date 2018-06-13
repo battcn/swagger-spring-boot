@@ -53,9 +53,11 @@
         </li>
         <li><span>响应Model</span>
           <div v-if="typeof jsonObject=='array'||typeof jsonObject=='object' ">
+            {
             <ul v-for="(item,key) in jsonObject">
               <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
             </ul>
+            }
           </div>
           <div v-else>无</div>
         </li>
@@ -93,9 +95,13 @@
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <div v-if="isJsonObject">
-              <ul v-for="(item,key) in jsonObjectTo">
+              {
+              <ul>
+              <li v-for="(item,key) in jsonObjectTo">
                 <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
+              </li>
               </ul>
+              }
             </div>
             <li v-else>{{jsonObjectTo}}</li>
           </div>

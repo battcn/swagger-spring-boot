@@ -1,15 +1,15 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div class="jsonView" v-bind:style="{marginLeft:indentation*5+'px'}">
-    <div v-if="typeof obj=='array'||typeof obj=='object'">
+    <div v-if="isSet">
       <li class="jsonViewLi" @click="toggleStatus">
         <span class="font-basic">
           <span style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
           {{keyTo}}
         </span>
-        <span class="quantity">
-          {{ obj.length ? '[' + obj.length + ']' : (typeof obj == 'object' ? '{' + subQuantity(obj) + '}' : '')}}
-        </span>
-      </li>
+         <span class="quantity">
+           {{ obj['length'] ? '[' + obj['length'] + ']' : (typeof obj == 'object' ? '{' + subQuantity(obj) + '}' : '')}}
+         </span>
+       </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"
                  :obj="item"></json-view>
     </div>
@@ -31,7 +31,7 @@
   export default {
     name: 'json-view',
     data() {
-      return {showStatus: true}
+      return {showStatus: true,isSet:(typeof obj) === 'array' || (typeof obj) === 'object'}
     },
     props: ['obj', 'indentation', 'keyTo'],
     methods: {
