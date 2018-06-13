@@ -2,7 +2,7 @@
 
 > 源码地址
 
-- GitHub：[https://github.com/battcn/swagger-spring-boot-starter](https://github.com/battcn/swagger-spring-boot-starter "https://github.com/battcn/swagger-spring-boot-starter")
+- GitHub：[https://github.com/battcn/swagger-spring-boot](https://github.com/battcn/swagger-spring-boot "https://github.com/battcn/swagger-spring-boot")
 - 码云：[https://gitee.com/battcn/swagger-spring-boot-starter/](https://gitee.com/battcn/swagger-spring-boot-starter/ "https://gitee.com/battcn/swagger-spring-boot-starter/")
 
 `swagger-spring-boot-starter` 是一款建立在`swagger`基础之上的工具包，利用SpringBoot自动装配的特性，简化了传统`swagger`的繁琐配置
@@ -90,20 +90,20 @@ public class Application {
 
 > 操作风格 - 1.4.3支持
 
-![接口说明](https://github.com/battcn/swagger-spring-boot-starter/blob/master/doc/img/4.png)
+![接口说明](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/4.png)
 
 > 接口说明：折叠式Model
 
-![接口说明](https://github.com/battcn/swagger-spring-boot-starter/blob/master/doc/img/1.png)
+![接口说明](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/1.png)
 
 
 > 接口说明：折叠式表单响应内容，告别长长的滚动条
 
-![接口说明](https://github.com/battcn/swagger-spring-boot-starter/blob/master/doc/img/2.png)
+![接口说明](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/2.png)
 
 > 在线调试
 
-![在线调试](https://github.com/battcn/swagger-spring-boot-starter/blob/master/doc/img/3.png)
+![在线调试](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/3.png)
 
 
 ## 配置说明 ##
