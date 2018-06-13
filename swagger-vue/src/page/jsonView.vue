@@ -3,11 +3,11 @@
     <div v-if="typeof obj=='array'||typeof obj=='object'">
       <li class="jsonViewLi" @click="toggleStatus">
         <span class="font-basic">
-          <span style="color: #4C4C4C;">{{showStatus?'&#9662;':'&#9656;'}}</span>
+          <span style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
           {{keyTo}}
         </span>
         <span class="quantity">
-          {{ obj.length?'['+obj.length+']':(typeof obj=='object'?'{'+subQuantity(obj)+'}':'')}}
+          {{ obj.length ? '[' + obj.length + ']' : (typeof obj == 'object' ? '{' + subQuantity(obj) + '}' : '')}}
         </span>
       </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"
@@ -17,7 +17,7 @@
       <li @click="toggleStatus">
         <span class="font-basic">
           <span style="visibility: hidden">
-            {{showStatus?'&#9662;':'&#9656;'}}
+            {{showStatus ? '&#9662;' : '&#9656;'}}
           </span>{{keyTo}}
         </span>:
         <span :style="{color:(typeof obj)=='number'?'#ee422e':'green'}">
@@ -45,9 +45,12 @@
   }
 </script>
 <style>
-  .quantity{
-    color:grey;font-size: 10pt;margin-left: 8px;
+  .quantity {
+    color: grey;
+    font-size: 10pt;
+    margin-left: 8px;
   }
+
   .font-basic {
     color: #1A1A1A;
     font-size: 18px;

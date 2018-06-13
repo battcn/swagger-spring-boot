@@ -15,18 +15,21 @@
     <div class="content-parameter">
       <ul>
         <li class="parameter-head">
-          <input  :checked="isSelectAll" style="margin-top:10px;" type="checkbox"
+          <input :checked="isSelectAll" style="margin-top:10px;" type="checkbox"
                  @click="selectAll=!selectAll"/>
           <span>参数名称</span>
           <span style="border-right: 7px solid transparent;">参数值</span>
           <span>操作</span>
         </li>
-        <li v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters" v-for="(item,key) in copyChildForm">
+        <li
+          v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters"
+          v-for="(item,key) in copyChildForm">
           <input style="margin-top:10px;" class="parameter-checkbox" type="checkbox"
                  :disabled="copyChildForm[key].required" v-model="item.required" :checked="item.required||selectAll"/>
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
-              <textarea rows="10" v-on:input="oninput($event.target.value,key)"  v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'"
+              <textarea rows="10" v-on:input="oninput($event.target.value,key)"
+                        v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text">{{copyChildForm[key].default}}</textarea>
             <input v-else-if="linkageSection==item.name"
@@ -46,7 +49,7 @@
   export default {
     name: "submit-form",
     data() {
-      return { keyValue: '', selectAll: false, a: 0, linkageSection: "", s: false}
+      return {keyValue: '', selectAll: false, a: 0, linkageSection: "", s: false}
     },
     props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
@@ -109,11 +112,11 @@
         this.$layer.msg(hint, {time: 2})
       },
       deleteInterfaceRequest: function (key, item) {
-          if (item.required) {
-            this.PromptPopUpShow(item.name + "为必选字段");
-            return false;
-          }
-        this.copyChildForm.splice(key,1);
+        if (item.required) {
+          this.PromptPopUpShow(item.name + "为必选字段");
+          return false;
+        }
+        this.copyChildForm.splice(key, 1);
         this.selectAll = !this.selectAll;
         this.selectAll = !this.selectAll;
       }

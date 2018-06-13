@@ -25,8 +25,8 @@
         </li>
       </ul>
     </div>
-     <interfaceMain v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
-                    v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:countTo="countTo"></interfaceMain>
+    <interfaceMain v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
+                   v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:countTo="countTo"></interfaceMain>
   </div>
 </template>
 <script type="text/ecmascript-6">

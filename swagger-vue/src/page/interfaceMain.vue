@@ -76,7 +76,8 @@
     </div>
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
-      <submit-form v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm" :bg="bg" v-on:shijian="fatherValue"
+      <submit-form v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm"
+                   :bg="bg" v-on:shijian="fatherValue"
                    :parameterValue="parameterValue" :leftDropDownBoxContent="leftDropDownBoxContent"
                    v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
                    :swaggerCategory="swaggerCategory" :countTo="countTo" :InterfaceRequest="InterfaceRequest">
@@ -238,16 +239,16 @@
         return this.$store.state.debugRequest.debugResponse;
       },
       /*linkagePath(){
-        let path=(this.swaggerCategory&&this.swaggerCategory[this.countTo]&&this.swaggerCategory[this.countTo].pathName)?this.swaggerCategory[this.countTo].pathName:"";
-        let digits=path.indexOf("{")
-        let digitsEnd=path.indexOf("}")
-        if(path!==undefined&&digits>0){
-          let linkageNoun=path.slice(digits+1,digitsEnd)
-          this.linkageSection=path.slice(digits+1,digitsEnd)
-          return [path.slice(0,digits+1),path.slice(digitsEnd)] ;
-        }
-        return path;
-      }*/
+       let path=(this.swaggerCategory&&this.swaggerCategory[this.countTo]&&this.swaggerCategory[this.countTo].pathName)?this.swaggerCategory[this.countTo].pathName:"";
+       let digits=path.indexOf("{")
+       let digitsEnd=path.indexOf("}")
+       if(path!==undefined&&digits>0){
+       let linkageNoun=path.slice(digits+1,digitsEnd)
+       this.linkageSection=path.slice(digits+1,digitsEnd)
+       return [path.slice(0,digits+1),path.slice(digitsEnd)] ;
+       }
+       return path;
+       }*/
     },
     watch: {
       countTo: function () {
@@ -256,7 +257,7 @@
       }
     },
     methods: {
-      deleteChildForm:function (key) {
+      deleteChildForm: function (key) {
         this.$delete(this.childForm, key);
       },
       fatherValue: function (myValue) {
@@ -480,8 +481,8 @@
         let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' "
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() == 'get') {
           let curltable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
-            " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
-            headerss + contentUrl);
+          " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
+          headerss + contentUrl);
           _this.curlMode = curltable;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
@@ -497,11 +498,11 @@
             this.jsonObjectTo = obj;
           } else {
             this.isJsonObject = false;
-            this.jsonObjectTo= new String(this.debugResponse.bodyText);
+            this.jsonObjectTo = new String(this.debugResponse.bodyText);
           }
         } catch (e) {
           this.isJsonObject = false;
-          this.jsonObjectTo= new String(this.debugResponse.bodyText);
+          this.jsonObjectTo = new String(this.debugResponse.bodyText);
         }
         this.resultShow = true;
         /* 显示结果 */
