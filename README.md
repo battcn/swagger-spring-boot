@@ -11,7 +11,7 @@
 
 - **`swagger-vue` ：采用 Vue 编写的源代码**
 - **`swagger-vue-ui` ：编译后的纯 HTML 文件**
-- **`swagger-spring-boot-starter` ： 自动装配 swagger 的扩展包 **
+- **`swagger-spring-boot-starter` ： 自动装配 swagger 的扩展包**
 
 有兴趣扩展自己的Starter包的可以参考文章：[编写自己的starter项目](http://blog.battcn.com/2017/07/13/springboot/springboot-starter-swagger/ "编写自己的starter项目")
 
@@ -20,7 +20,6 @@
 
 # 使用 #
 
-只需一个小小的注解`@EnableSwagger2Doc`即可完成默认装配，当然更强大的功能在后面
 
 - 在`pom.xml`中引入依赖：
 
@@ -28,26 +27,32 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>1.4.5-RELEASE</version>
+    <version>${最新版本}</version>
 </dependency>
 ```
 
-- 在应用主类中增加`@EnableSwagger2Doc`注解
+- 在`application.yml`中添加
 
-``` java
-@EnableSwagger2Doc
-@SpringBootApplication
-public class Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
-}
+``` yaml
+spring:
+  swagger:
+    enable: true
 ```
+
+- 在`application.properties`中添加
+
+``` properties 
+spring.swagger.enable=true
+```
+
 
 # 更新记录 #
 ```
+2.0.1
+  发布时间：未定
+  更新内容：
+    1.重写UI
+    2.升级Spring Boot 为2.0.2
 1.4.5
   发布时间：2018年04月26日
   更新内容：
@@ -91,7 +96,6 @@ public class Application {
 
 # 重写UI #
 
-默认的UI在多个接口和大量参数下显得有点力不从心了，这时候在网上发现一款名为 [Swagger-Bootstrap-UI](https://github.com/xiaoymin/Swagger-Bootstrap-UI "https://github.com/xiaoymin/Swagger-Bootstrap-UI") 引起了我浓烈的兴趣，但使用下来发现问题也不不少，故而在此基础之上做了二次开发
 
 > 操作风格 - 1.4.3支持
 
@@ -113,7 +117,7 @@ public class Application {
 
 ## 配置说明 ##
 
-`spring.swagger.enabled`：默认使用 `@EnableSwagger2Doc` 后就是 true，提供该配置目的是方便多环境关闭，一般生产环境中不会暴露它，这时候就可以通过 `java -jar xx.jar --spring.swagger.enabled=false` 动态关闭，也可以在多环境配置写好
+`spring.swagger.enabled`：提供该配置目的是方便多环境关闭，一般生产环境中不会暴露它，这时候就可以通过 `java -jar xx.jar --spring.swagger.enabled=false` 动态关闭，也可以在多环境配置写好
 
 
 ### properties ###
