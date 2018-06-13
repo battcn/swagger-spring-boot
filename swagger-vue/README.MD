@@ -1,1 +1,1 @@
-存放 vue-swagger 源代码
+存放 vue-swagger-ui 源代码
