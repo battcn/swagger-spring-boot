@@ -15,8 +15,7 @@
 
 有兴趣扩展自己的Starter包的可以参考文章：[编写自己的starter项目](http://blog.battcn.com/2017/07/13/springboot/springboot-starter-swagger/ "编写自己的starter项目")
 
-** 如果该项目对您有帮助，欢迎Fork和Star，有疑问可以加 ** `QQ：1837307557`一起交流 ，如发现项目BUG可以提交`Issue`
-
+**如果该项目对您有帮助，欢迎Fork和Star，有疑问可以加 `QQ：1837307557`一起交流 ，如发现项目BUG可以提交`Issue`**
 
 # 使用 #
 
@@ -185,7 +184,6 @@ Levin：1837307557@qq.com
 - 个人博文：[http://blog.battcn.com](http://blog.battcn.com "http://blog.battcn.com")
 
 _Rock：995269937@qq.com
-
 
 
 # 常用注解说明 #
