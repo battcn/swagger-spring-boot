@@ -7,6 +7,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -39,11 +40,12 @@ import static java.util.stream.Collectors.toSet;
  * @author Levin
  */
 @Configuration
-@ConditionalOnProperty(name = "spring.swagger.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.swagger.enabled", havingValue = "true", matchIfMissing = true)
 @Import({
         Swagger2DocumentationConfiguration.class,
         BeanValidatorPluginsConfiguration.class
 })
+@EnableAutoConfiguration
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     private static final String DEFAULT_GROUP_NAME = "default";
