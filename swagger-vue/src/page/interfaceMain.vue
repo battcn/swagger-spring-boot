@@ -483,14 +483,14 @@
         let _this = this;
         let headerss = "";
         let contentUrl = "\'" + _this.debugResponse.url + "\'";
-        let curlAccept = " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' ";
+        let curlAccept = " --header \'Accept:  " + _this.debugResponse.headers['map']&&_this.debugResponse.headers['map']['content-type']&&_this.debugResponse.headers['map']['content-type'][0] + "\' ";
         for (let key in headerParams) {
           headerss += (key + ": " + headerParams[key]);
         }
         /*  生成curl命令组成部分 */
         /* 头部数据 */
         headerss !== "" ? headerss = " --header \'" + headerss + "\' " : "";
-        let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' "
+        let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map']&&_this.debugResponse.headers['map']['content-type']&&_this.debugResponse.headers['map']['content-type'][0] + "\' "
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
           let curlTable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
           " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
