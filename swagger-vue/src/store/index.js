@@ -21,7 +21,7 @@ const leftDropDownBoxContent = {
 };
 /* 初始化:获取单选框数据， */
 function init() {
-  Vue.http.get(process.env.SWAGGER_URL+'/swagger-resources').then((response) => {
+  Vue.http.get(process.env.SWAGGER_URL + "/swagger-resources").then((response) => {
     dropDown.state.data = response.body;
     return true;
   }, (response) => {
@@ -30,7 +30,7 @@ function init() {
   }).then((a) => {
     if (a && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count].location) {
       /* dropDown.state.data[0]控制当前是第几个接口 */
-      Vue.http.get(process.env.SWAGGER_URL+dropDown.state.data[dropDown.state.count].location).then((response) => {
+      Vue.http.get(process.env.SWAGGER_URL + dropDown.state.data[dropDown.state.count].location).then((response) => {
         leftDropDownBoxContent.state.data = response.body;
         return true;
       }, (response) => {

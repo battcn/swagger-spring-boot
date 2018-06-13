@@ -25,7 +25,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
-        { from: /.*/, to: path.join(config.dev.assetsPublicPath, 'index.html') },
+        { from: /.*/, to: path.join(config.dev.assetsPublicPath, 'swagger-ui.html') },
       ],
     },
     hot: true,
@@ -53,8 +53,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
+      filename: 'swagger-ui.html',
+      template: 'swagger-ui.html',
       inject: true
     }),
     // copy custom static assets
