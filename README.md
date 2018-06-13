@@ -26,7 +26,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>${最新版本}</version>
+    <version>${最新版本：当前2.0.1还在开发 请用 1.4.5-RELEASE}</version>
 </dependency>
 ```
 
