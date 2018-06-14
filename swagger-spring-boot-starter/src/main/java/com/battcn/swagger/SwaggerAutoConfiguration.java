@@ -1,6 +1,9 @@
 package com.battcn.swagger;
 
+import com.battcn.swagger.configuration.MyBeanValidatorPluginsConfiguration;
 import com.battcn.swagger.properties.SwaggerProperties;
+import com.battcn.swagger.properties.SwaggerSecurityProperties;
+import com.battcn.swagger.security.SwaggerSecurity;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;
@@ -13,7 +16,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -32,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Predicates.*;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -41,10 +44,7 @@ import static java.util.stream.Collectors.toSet;
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.swagger.enabled", havingValue = "true", matchIfMissing = true)
-@Import({
-        Swagger2DocumentationConfiguration.class,
-        BeanValidatorPluginsConfiguration.class
-})
+@Import({Swagger2DocumentationConfiguration.class, MyBeanValidatorPluginsConfiguration.class})
 @EnableAutoConfiguration
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
@@ -58,6 +58,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         this.beanFactory = beanFactory;
     }
 
+
     @Bean
     @ConditionalOnMissingBean
     public SwaggerProperties swaggerProperties() {
@@ -66,7 +67,19 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public List<Docket> createRestApi(SwaggerProperties swaggerProperties) {
+    public SwaggerSecurityProperties swaggerSecurityProperties() {
+        return new SwaggerSecurityProperties();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SwaggerSecurity swaggerSecurity() {
+        return new SwaggerSecurity(swaggerSecurityProperties());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public List<Docket> createRestApi(SwaggerProperties swaggerProperties, SwaggerSecurity swaggerSecurity) {
         ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
         List<Docket> docketList = new LinkedList<>();
 
@@ -105,7 +118,9 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .select()
                     .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
                     .paths(and(not(or(excludePath)), or(basePath)))
-                    .build();
+                    .build()
+                    .securitySchemes(newArrayList(swaggerSecurity.apiKey()))
+                    .securityContexts(newArrayList(swaggerSecurity.securityContext()));
 
             configurableBeanFactory.registerSingleton(DEFAULT_GROUP_NAME, docket);
             docketList.add(docket);
@@ -151,7 +166,9 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .select()
                     .apis(RequestHandlerSelectors.basePackage(groupInfo.getBasePackage()))
                     .paths(and(not(or(excludePath)), or(basePath)))
-                    .build();
+                    .build()
+                    .securitySchemes(newArrayList(swaggerSecurity.apiKey()))
+                    .securityContexts(newArrayList(swaggerSecurity.securityContext()));
 
             configurableBeanFactory.registerSingleton(groupName, docket);
             docketList.add(docket);
@@ -214,4 +231,6 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     private static String defaultString(final String str, final String defaultStr) {
         return str == null || Objects.equals(str.trim(), "") || str.length() == 0 ? defaultStr : str;
     }
+
+
 }

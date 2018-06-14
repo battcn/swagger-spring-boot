@@ -1,16 +1,13 @@
 package com.battcn.controller.book;
 
 import com.battcn.entity.Book;
-import com.battcn.entity.User;
 import com.battcn.swagger.properties.ApiDataType;
 import com.battcn.swagger.properties.ApiParamType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * swagger

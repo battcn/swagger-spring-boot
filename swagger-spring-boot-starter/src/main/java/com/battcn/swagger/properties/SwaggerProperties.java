@@ -84,6 +84,18 @@ public class SwaggerProperties {
      */
     private List<GlobalOperationParameter> globalOperationParameters;
 
+    /**
+     * 是否开启验证插件支持（默认关闭）
+     */
+    private boolean validatorPlugin = false;
+
+    public boolean isValidatorPlugin() {
+        return validatorPlugin;
+    }
+
+    public void setValidatorPlugin(boolean validatorPlugin) {
+        this.validatorPlugin = validatorPlugin;
+    }
 
     @Data
     @NoArgsConstructor

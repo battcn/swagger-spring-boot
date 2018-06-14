@@ -1,14 +1,15 @@
-package com.battcn.controller.user;
+package com.battcn.controller;
 
 import com.battcn.entity.User;
-import com.battcn.swagger.properties.ApiDataType;
-import com.battcn.swagger.properties.ApiParamType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * swagger
@@ -26,18 +27,18 @@ public class UserController {
     @GetMapping
     @ApiOperation(value = "条件查询（DONE）")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", dataType = ApiDataType.STRING, paramType = ApiParamType.QUERY),
-            @ApiImplicitParam(name = "password", value = "密码", dataType = ApiDataType.STRING, paramType = ApiParamType.QUERY),
+            @ApiImplicitParam(name = "username", value = "用户名"),
+            @ApiImplicitParam(name = "password", value = "密码"),
     })
-    public User query(String username, String password) {
-        log.info("多个参数用  @ApiImplicitParams");
+    public User query(String username, String password, HttpServletRequest request) {
+        log.info("Authorization : {}", request.getHeader("Authorization"));
         return new User(1L, username, password);
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "主键查询（DONE）")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户编号", dataType = ApiDataType.LONG, paramType = ApiParamType.PATH),
+            @ApiImplicitParam(name = "id", value = "用户编号"),
     })
     public User get(@PathVariable Long id) {
         log.info("单个参数用  @ApiImplicitParam");
@@ -46,7 +47,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除用户（DONE）")
-    @ApiImplicitParam(name = "id", value = "用户编号", dataType = ApiDataType.LONG, paramType = ApiParamType.PATH)
+    @ApiImplicitParam(name = "id", value = "用户编号")
     public void delete(@PathVariable Long id) {
         log.info("单个参数用 ApiImplicitParam");
     }
