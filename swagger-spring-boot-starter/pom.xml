@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -32,14 +32,13 @@
             <artifactId>springfox-bean-validators</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.battcn</groupId>
+            <artifactId>swagger-vue-ui</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.battcn</groupId>
-            <artifactId>swagger-vue-ui</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

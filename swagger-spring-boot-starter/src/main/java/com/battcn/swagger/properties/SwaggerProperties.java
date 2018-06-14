@@ -1,8 +1,10 @@
 package com.battcn.swagger.properties;
 
+import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,7 +20,7 @@ import java.util.Map;
 public class SwaggerProperties {
 
 
-    private static final String DEFAULT_NULL = "";
+    private static final String DEFAULT_VALUE = "";
 
     /**
      * 是否开启swagger
@@ -27,37 +29,37 @@ public class SwaggerProperties {
     /**
      * 标题
      */
-    private String title = DEFAULT_NULL;
+    private String title = DEFAULT_VALUE;
     /**
      * 描述
      */
-    private String description = DEFAULT_NULL;
+    private String description = DEFAULT_VALUE;
     /**
      * 版本
      */
-    private String version = DEFAULT_NULL;
+    private String version = DEFAULT_VALUE;
     /**
      * 许可证
      */
-    private String license = DEFAULT_NULL;
+    private String license = DEFAULT_VALUE;
     /**
      * 许可证URL
      */
-    private String licenseUrl = DEFAULT_NULL;
+    private String licenseUrl = DEFAULT_VALUE;
     /**
      * 服务条款URL
      */
-    private String termsOfServiceUrl = DEFAULT_NULL;
+    private String termsOfServiceUrl = DEFAULT_VALUE;
 
     /**
      * swagger会解析的包路径
      */
-    private String basePackage = DEFAULT_NULL;
+    private String basePackage = DEFAULT_VALUE;
 
     /**
      * host信息
      */
-    private String host = DEFAULT_NULL;
+    private String host = DEFAULT_VALUE;
 
     /**
      * 联系人信息
@@ -85,6 +87,11 @@ public class SwaggerProperties {
     private List<GlobalOperationParameter> globalOperationParameters;
 
     /**
+     * 全局响应配置
+     */
+    private Map<RequestMethod, List<ResponseMessageBody>> globalResponseMessages = Maps.newLinkedHashMap();
+
+    /**
      * 是否开启验证插件支持（默认关闭）
      */
     private boolean validatorPlugin = false;
@@ -98,7 +105,22 @@ public class SwaggerProperties {
     }
 
     @Data
-    @NoArgsConstructor
+    public static class ResponseMessageBody {
+        /**
+         * 状态码
+         */
+        private int code;
+        /**
+         * 响应的消息内容
+         */
+        private String message;
+        /**
+         * 响应体（对象）
+         */
+        private String modelRef;
+    }
+
+    @Data
     public static class GlobalOperationParameter {
 
         /**
@@ -138,38 +160,38 @@ public class SwaggerProperties {
         /**
          * 标题
          */
-        private String title = DEFAULT_NULL;
+        private String title = DEFAULT_VALUE;
         /**
          * 描述
          */
-        private String description = DEFAULT_NULL;
+        private String description = DEFAULT_VALUE;
 
         /**
          * 版本
          */
-        private String version = DEFAULT_NULL;
+        private String version = DEFAULT_VALUE;
 
         /**
          * 许可证
          */
-        private String license = DEFAULT_NULL;
+        private String license = DEFAULT_VALUE;
 
         /**
          * 许可证URL
          */
-        private String licenseUrl = DEFAULT_NULL;
+        private String licenseUrl = DEFAULT_VALUE;
 
         /**
          * 服务条款URL
          */
-        private String termsOfServiceUrl = DEFAULT_NULL;
+        private String termsOfServiceUrl = DEFAULT_VALUE;
 
         private Contact contact = new Contact();
 
         /**
          * swagger会解析的包路径
          */
-        private String basePackage = DEFAULT_NULL;
+        private String basePackage = DEFAULT_VALUE;
 
         /**
          * swagger会解析的url规则
@@ -193,15 +215,15 @@ public class SwaggerProperties {
         /**
          * 联系人
          */
-        private String name = DEFAULT_NULL;
+        private String name = DEFAULT_VALUE;
         /**
          * 联系人url
          */
-        private String url = DEFAULT_NULL;
+        private String url = DEFAULT_VALUE;
         /**
          * 联系人email
          */
-        private String email = DEFAULT_NULL;
+        private String email = DEFAULT_VALUE;
 
     }
 

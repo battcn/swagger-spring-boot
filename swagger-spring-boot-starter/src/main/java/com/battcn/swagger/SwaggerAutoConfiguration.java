@@ -16,22 +16,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ParameterBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
+import springfox.documentation.builders.*;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Parameter;
+import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Predicates.*;
 import static com.google.common.collect.Lists.newArrayList;
@@ -79,7 +77,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public List<Docket> createRestApi(SwaggerProperties swaggerProperties, SwaggerSecurity swaggerSecurity) {
+    public List<Docket> createRestApi(SwaggerProperties swaggerProperties, SwaggerSecurityProperties swaggerSecurityProperties, SwaggerSecurity swaggerSecurity) {
         ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
         List<Docket> docketList = new LinkedList<>();
 
@@ -118,10 +116,15 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                     .select()
                     .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
                     .paths(and(not(or(excludePath)), or(basePath)))
-                    .build()
-                    .securitySchemes(newArrayList(swaggerSecurity.apiKey()))
-                    .securityContexts(newArrayList(swaggerSecurity.securityContext()));
-
+                    .build();
+            // 配置全局响应
+            if (!CollectionUtils.isEmpty(swaggerProperties.getGlobalResponseMessages())) {
+                buildGlobalResponseMessage(swaggerProperties, docket);
+            }
+            // 配置接口授权
+            if (Objects.nonNull(swaggerSecurityProperties.getApiKey())) {
+                docket.securitySchemes(newArrayList(swaggerSecurity.apiKey())).securityContexts(newArrayList(swaggerSecurity.securityContext()));
+            }
             configurableBeanFactory.registerSingleton(DEFAULT_GROUP_NAME, docket);
             docketList.add(docket);
             return docketList;
@@ -160,16 +163,20 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
             Docket docket = new Docket(DocumentationType.SWAGGER_2)
                     .host(swaggerProperties.getHost())
                     .apiInfo(apiInfo)
-                    .globalOperationParameters(assemblyGlobalOperationParameters(swaggerProperties.getGlobalOperationParameters(),
-                            groupInfo.getGlobalOperationParameters()))
+                    .globalOperationParameters(assemblyGlobalOperationParameters(swaggerProperties.getGlobalOperationParameters(), groupInfo.getGlobalOperationParameters()))
                     .groupName(groupName)
                     .select()
                     .apis(RequestHandlerSelectors.basePackage(groupInfo.getBasePackage()))
                     .paths(and(not(or(excludePath)), or(basePath)))
-                    .build()
-                    .securitySchemes(newArrayList(swaggerSecurity.apiKey()))
-                    .securityContexts(newArrayList(swaggerSecurity.securityContext()));
-
+                    .build();
+            // 配置全局响应
+            if (!CollectionUtils.isEmpty(swaggerProperties.getGlobalResponseMessages())) {
+                buildGlobalResponseMessage(swaggerProperties, docket);
+            }
+            // 配置接口授权
+            if (Objects.nonNull(swaggerSecurityProperties.getApiKey())) {
+                docket.securitySchemes(newArrayList(swaggerSecurity.apiKey())).securityContexts(newArrayList(swaggerSecurity.securityContext()));
+            }
             configurableBeanFactory.registerSingleton(groupName, docket);
             docketList.add(docket);
         }
@@ -177,27 +184,39 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     }
 
     /**
-     * 读取SwaggerProperties配置,构建全局操作参数
+     * 读取 SwaggerProperties 配置,构建全局响应结果
+     *
+     * @param swaggerProperties swaggerProperties
+     * @param docket            docket 追加对象
+     */
+    private void buildGlobalResponseMessage(SwaggerProperties swaggerProperties, Docket docket) {
+        final Map<RequestMethod, List<SwaggerProperties.ResponseMessageBody>> responseMessages = swaggerProperties.getGlobalResponseMessages();
+        final Set<RequestMethod> methods = responseMessages.keySet();
+        for (RequestMethod method : methods) {
+            final List<SwaggerProperties.ResponseMessageBody> responseMessageBodies = responseMessages.get(method);
+            final List<ResponseMessage> messages = responseMessageBodies.stream().map(my -> new ResponseMessageBuilder().code(my.getCode()).message(my.getMessage()).responseModel(new ModelRef(my.getModelRef())).build()).collect(toList());
+            docket.globalResponseMessage(method, messages);
+        }
+    }
+
+
+    /**
+     * 读取 SwaggerProperties 配置,构建全局操作参数
      *
      * @param globalOperationParameters 全局参数
      * @return 参数集
      */
     private List<Parameter> buildGlobalOperationParameters(List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters) {
-        List<Parameter> parameters = Lists.newArrayList();
-
         if (Objects.isNull(globalOperationParameters)) {
-            return parameters;
+            return Lists.newArrayList();
         }
-        for (SwaggerProperties.GlobalOperationParameter globalOperationParameter : globalOperationParameters) {
-            parameters.add(new ParameterBuilder()
-                    .name(globalOperationParameter.getName())
-                    .description(globalOperationParameter.getDescription())
-                    .modelRef(new ModelRef(globalOperationParameter.getModelRef()))
-                    .parameterType(globalOperationParameter.getParameterType())
-                    .required(globalOperationParameter.getRequired())
-                    .build());
-        }
-        return parameters;
+        return globalOperationParameters.stream().map(globalOperationParameter -> new ParameterBuilder()
+                .name(globalOperationParameter.getName())
+                .description(globalOperationParameter.getDescription())
+                .modelRef(new ModelRef(globalOperationParameter.getModelRef()))
+                .parameterType(globalOperationParameter.getParameterType())
+                .required(globalOperationParameter.getRequired())
+                .build()).collect(toList());
     }
 
     /**
@@ -210,27 +229,21 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     private List<Parameter> assemblyGlobalOperationParameters(
             List<SwaggerProperties.GlobalOperationParameter> globalOperationParameters,
             List<SwaggerProperties.GlobalOperationParameter> groupOperationParameters) {
-        if (Objects.isNull(groupOperationParameters) || groupOperationParameters.isEmpty()) {
+        if (CollectionUtils.isEmpty(groupOperationParameters)) {
             return buildGlobalOperationParameters(globalOperationParameters);
         }
-        Set<String> groupNames = groupOperationParameters.stream().map(SwaggerProperties.GlobalOperationParameter::getName).collect(toSet());
-
-        List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters = Lists.newArrayList();
-        if (Objects.nonNull(globalOperationParameters)) {
-            for (SwaggerProperties.GlobalOperationParameter parameter : globalOperationParameters) {
-                if (!groupNames.contains(parameter.getName())) {
-                    resultOperationParameters.add(parameter);
-                }
-            }
+        if (CollectionUtils.isEmpty(globalOperationParameters)) {
+            return buildGlobalOperationParameters(groupOperationParameters);
         }
+        Set<String> groupNames = groupOperationParameters.stream().map(SwaggerProperties.GlobalOperationParameter::getName).collect(toSet());
+        List<SwaggerProperties.GlobalOperationParameter> resultOperationParameters =
+                globalOperationParameters.stream().filter(parameter -> !groupNames.contains(parameter.getName())).collect(Collectors.toList());
         resultOperationParameters.addAll(groupOperationParameters);
         return buildGlobalOperationParameters(resultOperationParameters);
     }
 
-
     private static String defaultString(final String str, final String defaultStr) {
         return str == null || Objects.equals(str.trim(), "") || str.length() == 0 ? defaultStr : str;
     }
-
 
 }
