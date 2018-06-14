@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.ModelRef;
@@ -194,7 +195,13 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         final Set<RequestMethod> methods = responseMessages.keySet();
         for (RequestMethod method : methods) {
             final List<SwaggerProperties.ResponseMessageBody> responseMessageBodies = responseMessages.get(method);
-            final List<ResponseMessage> messages = responseMessageBodies.stream().map(my -> new ResponseMessageBuilder().code(my.getCode()).message(my.getMessage()).responseModel(new ModelRef(my.getModelRef())).build()).collect(toList());
+            final List<ResponseMessage> messages = responseMessageBodies.stream().map(my -> {
+                ResponseMessageBuilder builder = new ResponseMessageBuilder().code(my.getCode()).message(my.getMessage());
+                if (!StringUtils.isEmpty(my.getModelRef())) {
+                    builder.responseModel(new ModelRef(my.getModelRef()));
+                }
+                return builder.build();
+            }).collect(toList());
             docket.globalResponseMessage(method, messages);
         }
     }
