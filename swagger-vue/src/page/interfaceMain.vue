@@ -31,24 +31,42 @@
         </li>
         <li><span>请求参数</span>
           <div>
-            <div class="request-table"
-                 v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
-              <ul>
-                <li class="table-tr table-head">
-                  <span class="table-td">参数名称</span>
-                  <span class="table-td">说明</span>
-                  <span class="table-td">类型</span>
-                  <span class="table-td">条件</span>
-                  <span class="table-td">in</span>
-                  <span class="table-td">是否必须</span>
-                </li>
-                <div v-for="(item,key) in InterfaceRequest">
-                  <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
-                             :item="item"></form-fold>
-                </div>
-              </ul>
-            </div>
-            <span v-else>暂无</span>
+          <div class="request-table"
+               v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
+            <ul>
+              <li class="table-tr table-head">
+                <span class="table-td">参数名称</span>
+                <span class="table-td">说明</span>
+                <span class="table-td">类型</span>
+                <span class="table-td">条件</span>
+                <span class="table-td">in</span>
+                <span class="table-td">是否必须</span>
+              </li>
+              <div v-for="(item,key) in InterfaceRequest">
+                <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                           :item="item"></form-fold>
+              </div>
+            </ul>
+          <!--  <table style="table-layout: fixed;    width: 100%;">
+              <thead>
+              <tr>
+                <th style="width: 20%;">参数名称</th>
+                <th>说明</th>
+                <th style="width: 10%;">类型</th>
+                <th style="width: 20%;">条件</th>
+                <th style="width: 5%;">in</th>
+                <th style="width: 10%;">是否必须</th>
+              </tr>
+              </thead>
+              <tbody>
+              <div  v-for="(item,key) in InterfaceRequest">
+                <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                           :item="item"></form-fold>
+              </div>
+              </tbody>
+            </table>-->
+          </div>
+          <span v-else>暂无</span>
           </div>
         </li>
         <li><span>响应Model</span>
@@ -97,9 +115,9 @@
             <div v-if="isJsonObject">
               {
               <ul>
-              <li v-for="(item,key) in jsonObjectTo">
-                <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
-              </li>
+                <li v-for="(item,key) in jsonObjectTo">
+                  <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
+                </li>
               </ul>
               }
             </div>
@@ -483,18 +501,18 @@
         let _this = this;
         let headerss = "";
         let contentUrl = "\'" + _this.debugResponse.url + "\'";
-        let curlAccept = " --header \'Accept:  " + _this.debugResponse.headers['map']&&_this.debugResponse.headers['map']['content-type']&&_this.debugResponse.headers['map']['content-type'][0] + "\' ";
+        let curlAccept = " --header \'Accept:  " + _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0] + "\' ";
         for (let key in headerParams) {
           headerss += (key + ": " + headerParams[key]);
         }
         /*  生成curl命令组成部分 */
         /* 头部数据 */
         headerss !== "" ? headerss = " --header \'" + headerss + "\' " : "";
-        let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map']&&_this.debugResponse.headers['map']['content-type']&&_this.debugResponse.headers['map']['content-type'][0] + "\' "
+        let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0] + "\' "
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
           let curlTable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
-          " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
-          headerss + contentUrl);
+            " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
+            headerss + contentUrl);
           _this.curlMode = curlTable;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
@@ -806,6 +824,12 @@
     box-shadow: 0 3px #89BF05 inset;
     color: #89BF05;
     border-bottom: 1px solid #FFFFFF;
+  }
+  /* 响应式 */
+  @media screen and (min-width: 1600px){
+    .swagger-main{
+      margin-left: 36%;
+    }
   }
 
 </style>

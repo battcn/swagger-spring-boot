@@ -15,7 +15,7 @@
     <div class="content-parameter">
       <ul>
         <li class="parameter-head">
-          <input :checked="isSelectAll" style="margin-top:10px;" type="checkbox"
+          <input :checked="isSelectAll||selectAll" style="margin-top:10px;" type="checkbox"
                  @click="selectAll=!selectAll"/>
           <span>参数名称</span>
           <span style="border-right: 7px solid transparent;">参数值</span>
@@ -25,7 +25,7 @@
           v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters"
           v-for="(item,key) in copyChildForm">
           <input style="margin-top:10px;" class="parameter-checkbox" type="checkbox"
-                 :disabled="copyChildForm[key].required" v-model="item.required" :checked="item.required||selectAll"/>
+                 :disabled="copyChildForm[key].required"  :checked="item.required||selectAll"/>
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
               <textarea rows="10" v-on:input="oninput($event.target.value,key)"

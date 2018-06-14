@@ -227,4 +227,13 @@
     height: auto;
     max-width: 260px;
   }
+  /* 响应式 */
+  @media screen and (min-width: 1600px){
+    .swagger-left{
+      width: 18%;
+    }
+    .swagger-category{
+      width: 18%;margin-left: 18%;
+    }
+  }
 </style>
