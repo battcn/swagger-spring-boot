@@ -9,8 +9,8 @@
 
 > 项目介绍
 
-- **`swagger-vue` ：采用 Vue 编写的源代码**
-- **`swagger-vue-ui` ：编译后的纯 HTML 文件**
+- **`swagger-vue` ：采用 Vue 编写的源代码，如果您对UI有更好的想法或者建议可以在该项目上进行扩展，它就是 UI 的源文件**
+- **`swagger-vue-ui` ：编译后的纯 HTML 文件，如果你对 `swagger-spring-boot-starter` 包中的 UI 感到不满，你也可以选择排除 `swagger-vue-ui` 然后用第三方的...**
 - **`swagger-spring-boot-starter` ： 自动装配 swagger 的扩展包**
 
 有兴趣扩展自己的Starter包的可以参考文章：[编写自己的starter项目](http://blog.battcn.com/2017/07/13/springboot/springboot-starter-swagger/ "编写自己的starter项目")
