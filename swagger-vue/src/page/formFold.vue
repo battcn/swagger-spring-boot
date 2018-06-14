@@ -8,10 +8,21 @@
       <span class="table-td">{{item.in ? item.in : ""}}</span>
       <span class="table-td">{{(typeof item.required == 'boolean') ? item.required : ""}}</span>
     </li>
+    <!--<tr :class="{fontColor:properties}" @click="toggleChildren">
+      <td  style="width: 20%;">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
+      <td  style="width: 30%;">{{item.description ? item.description : "无"}}</td>
+      <td style="width: 10%;">{{item.type}}</td>
+      <td style="width: 20%;">无</td>
+      <td style="width: 10%;">{{item.in ? item.in : ""}}</td>
+      <td style="width: 10%;">{{(typeof item.required == 'boolean') ? item.required : ""}}</td>
+    </tr>-->
     <transition-group name="slide-fade" tag="div">
-      <form-fold :key="key" :depth="depth + 1" v-show="showChildren" v-for="(item,key) in properties"
+       <form-fold :key="key" :depth="depth + 1" v-show="showChildren" v-for="(item,key) in properties"
+                  :item="item" :keyTo="key" :properties="item.properties">
+       </form-fold>
+      <!--<form-fold :key="key" :depth="depth + 1" v-show="showChildren" v-for="(item,key) in properties"
                  :item="item" :keyTo="key" :properties="item.properties">
-      </form-fold>
+      </form-fold>-->
     </transition-group>
   </div>
 </template>
@@ -58,16 +69,21 @@
 
   .table-head .table-td {
     padding: 8px 4px;
+    /*padding-bottom: 1000px;
+    margin-bottom: -1000px;
+    height: 30px;
+    line-height: 30px;*/
   }
 
   .table-td {
     border-right: 1px solid #ddd;
     width: 15%;
-    min-height: 18px;
     float: left;
     padding: 8px 4px;
-    /*padding-bottom: 1000px;*/
-    /*margin-bottom: -1000px;*/
+    /*padding-bottom: 1000px;
+    margin-bottom: -1000px;
+    min-height: 30px;*/
+    /*line-height: 30px;*/
     text-align: left;
   }
 

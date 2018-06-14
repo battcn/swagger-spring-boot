@@ -21,7 +21,7 @@
           </span>{{keyTo}}
         </span>:
         <span :style="{color:(typeof obj)=='number'?'#ee422e':'green'}">
-          {{obj}}
+          {{obj===""?'""':obj}}
         </span>
       </li>
     </div>
