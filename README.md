@@ -52,6 +52,9 @@ spring.swagger.enable=true
   更新内容：
     1.重写UI
     2.升级Spring Boot 为2.0.2
+    3.支持接口全局认证（设置一次 Token 需验证的地址自动将值写入到请求头/请求体中）
+    4.全局响应返回
+    5.支持可选的 Bean 验证插件；由于日常开发中发现默认启动的验证插件扫描耗时比较久（大概几秒，但我电脑弱...）故而将插件修改为可选的，默认是关闭
 1.4.5
   发布时间：2018年04月26日
   更新内容：
@@ -145,6 +148,16 @@ spring.swagger.globalOperationParameters[0].required=指定参数是否必传，
 spring.swagger.groups.<name>.basePackage=swagger扫描的路径
 #比如
 spring.swagger.groups.基础信息.basePackage=com.battcn.controller.basic
+
+# 关闭 JSR
+spring.swagger.validator-plugin=false
+# 全局消息体
+spring.swagger.global-response-messages.GET[0].code=400
+spring.swagger.global-response-messages.GET[0].message=server response 400
+spring.swagger.global-response-messages.POST[0].code=400
+spring.swagger.global-response-messages.POST[0].message=server response 400
+spring.swagger.global-response-messages.POST[1].code=404
+spring.swagger.global-response-messages.POST[1].message=server response 404
 ```
 
 
