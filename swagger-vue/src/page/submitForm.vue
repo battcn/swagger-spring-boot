@@ -10,12 +10,12 @@
         <input v-else v-model:value="linkagePath"
                style="width:100%;height: 23px;line-height: 23px;" type="text"/>
       </div>
-      <button type="submit" @click="formCollection">发送</button>
+      <button type="button" @click="formCollection">发送</button>
     </div>
     <div class="content-parameter">
       <ul>
         <li class="parameter-head">
-          <input :checked="isSelectAll||selectAll" style="margin-top:10px;" type="checkbox"
+          <input v-model="selectAll" style="margin-top:10px;" type="checkbox"
                  @click="selectAll=!selectAll"/>
           <span>参数名称</span>
           <span style="border-right: 7px solid transparent;">参数值</span>
@@ -25,7 +25,7 @@
           v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters"
           v-for="(item,key) in copyChildForm">
           <input style="margin-top:10px;" class="parameter-checkbox" type="checkbox"
-                 :disabled="copyChildForm[key].required"  :checked="item.required||selectAll"/>
+                 :disabled="childForm[key].required" ref="phoneNum"  :checked="item.required||selectAll"/>
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
               <textarea rows="10" v-on:input="oninput($event.target.value,key)"
@@ -53,6 +53,9 @@
     },
     props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
+      isCheck(){
+        return new Array(this.copyChildForm.length);
+      },
       copyChildForm(){
         return deepCopy(this.childForm);
       },
@@ -92,19 +95,23 @@
         }
       },
       formCollection: function () { //收集表单信息
-        for (let key in this.copyChildForm) {
+        let data=deepCopy(this.copyChildForm);
+        for(let key in this.$refs.phoneNum){
+          data[key].required= this.$refs.phoneNum[key].checked;
+        }
+        for(let key in data) {
           let digits = this.linkagePath.indexOf("{");
           let digitsEnd = this.linkagePath.indexOf("}");
           if (digits > 0 && digitsEnd > 0) {//路径中有参数
-            for (let key in this.copyChildForm) {
-              if (this.copyChildForm[key].name === this.linkageSection) {
-                this.copyChildForm[key].default = this.keyValue;
+            for (let i in data) {
+              if (data[key].name === this.linkageSection) {
+                data[key].default = this.keyValue;
               }
             }
-            this.$emit('getCollection', this.copyChildForm);
+            this.$emit('getCollection', data);
             return true;
           } else {
-            this.$emit('getCollection', this.copyChildForm);
+            this.$emit('getCollection', data);
             return true;
           }
         }

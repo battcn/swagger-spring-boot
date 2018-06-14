@@ -128,12 +128,12 @@
   .form-control {
     display: block;
     width: 86%;
-    margin: 8px auto;
+    margin: 0 auto 5px;
     padding: 4px 6px;
-    height: 36px;
     border: 0;
     border-bottom: 1px solid #555;
     outline: none;
+    height: 50px;
   }
 
   .nav-list {
@@ -143,7 +143,7 @@
 
   .nav-list > li {
     display: block;
-    margin: 0;
+    margin: 0 auto 5px;
     border: 0;
     position: relative;
     border-left: 5px solid #fff;

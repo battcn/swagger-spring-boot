@@ -4,7 +4,13 @@ import VueResource from 'vue-resource'
 
 Vue.use(Vuex);
 Vue.use(VueResource);
-
+let curWwwPath=window.document.location.href;
+let pathName=window.document.location.pathname;
+let pos=curWwwPath.indexOf(pathName);
+//获取主机地址，如： http://localhost:8083
+let localhostPaht=curWwwPath.substring(0,pos);
+const SWAGGER_URL= process.env.SWAGGER_URL===""?localhostPaht:process.env.SWAGGER_URL;
+console.log(SWAGGER_URL,process.env.SWAGGER_URL)
 /* 下拉框数据 */
 const dropDown = {
   state: {data: [], count: 0},
@@ -21,7 +27,7 @@ const leftDropDownBoxContent = {
 };
 /* 初始化:获取单选框数据， */
 function init() {
-  Vue.http.get(process.env.SWAGGER_URL + "/swagger-resources").then((response) => {
+  Vue.http.get(process.env.SWAGGER_URL + "swagger-resources").then((response) => {
     dropDown.state.data = response.body;
     return true;
   }, (response) => {
@@ -48,6 +54,7 @@ const debugRequest = {
   state: {data: [], count: 0, debugResponse: {}},
   mutations: {
     send(state, n){
+      console.log(n)
       Vue.http({url: n.url, body: n.data, method: n.type.toUpperCase(), headers: n.headerParams})
         .then(function (response) {
           debugRequest.state.debugResponse = response;
