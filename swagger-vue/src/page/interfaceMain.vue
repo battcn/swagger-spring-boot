@@ -501,26 +501,24 @@
       StitchingCurl: function (headerParams, reqdata) {
         let _this = this;
         let headerss = "";
-        let contentUrl = "\'" + _this.debugResponse.url + "\'";
-        let curlAccept = " --header \'Accept:  " + _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0] + "\' ";
+        let contentUrl = `'${_this.debugResponse.url}'`;
+        let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0]}'`;
         for (let key in headerParams) {
-          headerss += (key + ": " + headerParams[key]);
+          headerss += `${key}: ${headerParams[key]}`;
         }
         /*  生成curl命令组成部分 */
         /* 头部数据 */
-        headerss !== "" ? headerss = " --header \'" + headerss + "\' " : "";
-        let contentType = " --header \'Content-Type:  " + _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0] + "\' "
-        /*if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
-          let curlTable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() +
-            " --header \'Accept:  " + _this.debugResponse.headers['map']['content-type'][0] + "\' " +
-            headerss + contentUrl);
+        headerss !== "" ? headerss = ` --header '${ headerss}' ` : "";
+        let contentType = ` --header  'Content-Type:   ${ _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0]}' `
+        if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
+          let curlTable = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()}  --header 'Accept:  ${ _this.debugResponse.headers['map']['content-type'][0] }' ${headerss} ${contentUrl}`;
           _this.curlMode = curlTable;
-        } else {*/
+        } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
-          let curlData = " -d \'" + (reqdata ? this.formatterJson(reqdata).replace(/[\r\n]/g, " \\\n") : "") + "\' ";
-          let curlTable = ("curl -X " + _this.swaggerCategory[this.countTo].name.toUpperCase() + contentType + curlAccept + headerss + (reqdata === '{}' ? "" : curlData) + contentUrl);
+          let curlData = ` -d  '${reqdata ? this.formatterJson(reqdata) : ""}' `;
+          let curlTable = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType}   ${curlAccept}   ${headerss}  ${reqdata === '{}' ? "" : curlData}   ${contentUrl}`;
           _this.curlMode = curlTable;
-//        }
+        }
         /* 响应内容JSON序列化 */
         try {
           let obj = JSON.parse(this.debugResponse.bodyText);
@@ -801,7 +799,7 @@
   }
 
   .switch {
-    margin-top: 15px;
+    margin-top: 10px;
     text-align: left;
     padding-left: 20px;
     font-size: 0;

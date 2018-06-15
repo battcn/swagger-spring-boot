@@ -64,7 +64,6 @@ const debugRequest = {
   state: {data: [], count: 0, debugResponse: {}},
   mutations: {
     send(state, n){
-      console.log(n)
       Vue.http({url: n.url, body: n.data, method: n.type.toUpperCase(), headers: n.headerParams})
         .then(function (response) {
           debugRequest.state.debugResponse = response;

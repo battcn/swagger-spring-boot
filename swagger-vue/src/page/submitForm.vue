@@ -33,7 +33,7 @@
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text">{{copyChildForm[key].default}}</textarea>
             <input v-else-if="linkageSection==item.name"
-                   v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
+                   v-model="keyValue"  type="text" style="width:100%;margin-top: 8px;"/>
             <input v-else v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
 
           </div>
@@ -49,13 +49,10 @@
   export default {
     name: "submit-form",
     data() {
-      return {keyValue: '', selectAll: false, a: 0, linkageSection: "", s: false}
+      return {keyValue:"", selectAll: false, a: 0, linkageSection: "", s: false}
     },
     props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
-      isCheck(){
-        return new Array(this.copyChildForm.length);
-      },
       copyChildForm(){
         return deepCopy(this.childForm);
       },
@@ -64,7 +61,6 @@
         let digits = path.indexOf("{");
         let digitsEnd = path.indexOf("}");
         if (path !== undefined && digits > 0) { //判断是否有参数在PATH路径上
-          let linkageNoun = path.slice(digits + 1, digitsEnd);
           this.linkageSection = path.slice(digits + 1, digitsEnd);
           for (let key in this.copyChildForm) {
             if (this.copyChildForm[key].name === this.linkageSection) {
@@ -74,19 +70,13 @@
         }
         return path;
       },
-      copyInterfaceRequest() {
-        return deepCopy(this.InterfaceRequest);
-      },
-      isSelectAll: function () {
-        for (let key in this.copyChildForm) {
-          if (!this.copyChildForm[key].required) { //如果存在一个为不勾选，则不勾选全选
-            return false;
-          }
-        }
-        return true;
-      },
     },
     methods: {
+      init(){
+        this.keyValue="";
+        this.selectAll=false;
+        this.s=false;
+      },
       oninput(val, key) {
         try {
           this.copyChildForm[key].default = JSON.parse(val);
@@ -130,7 +120,7 @@
         this.selectAll = !this.selectAll;
         this.selectAll = !this.selectAll;
       }
-    },
+    }
   }
 </script>
 <style>
