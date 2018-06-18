@@ -96,11 +96,11 @@
     </div>
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
-      <submit-form v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm"
+      <submit-form  v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm"
                    :bg="bg" v-on:shijian="fatherValue"
                    :parameterValue="parameterValue" :leftDropDownBoxContent="leftDropDownBoxContent"
                    v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
-                   :swaggerCategory="swaggerCategory" :countTo="countTo" :InterfaceRequest="InterfaceRequest">
+                   :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo" :InterfaceRequest="InterfaceRequest">
       </submit-form>
       <div class="debugging-result" v-show="resultShow">
       <span style="cursor:pointer;" @click="debugging='content'"
@@ -147,7 +147,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapMutations} from 'vuex'
+  import {mapMutations,mapActions} from 'vuex'
   import FormFold from './formFold.vue'
   import {deepCopy, basicTypeInit} from './../util/util'
   import SubmitForm from './submitForm.vue'
@@ -267,18 +267,7 @@
       },
       debugResponse() {/* 从请求中获取到的响应参数 */
         return this.$store.state.debugRequest.debugResponse;
-      },
-      /*linkagePath(){
-       let path=(this.swaggerCategory&&this.swaggerCategory[this.countTo]&&this.swaggerCategory[this.countTo].pathName)?this.swaggerCategory[this.countTo].pathName:"";
-       let digits=path.indexOf("{")
-       let digitsEnd=path.indexOf("}")
-       if(path!==undefined&&digits>0){
-       let linkageNoun=path.slice(digits+1,digitsEnd)
-       this.linkageSection=path.slice(digits+1,digitsEnd)
-       return [path.slice(0,digits+1),path.slice(digitsEnd)] ;
-       }
-       return path;
-       }*/
+      }
     },
     watch: {
       countTo: function () {
@@ -287,6 +276,7 @@
       }
     },
     methods: {
+      ...mapActions(["carriedSend"]),
       deleteChildForm: function (key) {
         this.$delete(this.childForm, key);
       },
@@ -488,15 +478,19 @@
           }
         }
         let jsonReqdata = reqdata;
-        this.$store.commit('send', {
+        this.$store.dispatch('carriedSend',{
           url: "http://" + _this.leftDropDownBoxContent.host + url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
-          data: reqdata,
-          method: function () {
-            _this.StitchingCurl(headerParams, jsonReqdata)
-          }
-        });
+          data: reqdata
+        }).then(function (){
+          _this.StitchingCurl(headerParams, jsonReqdata)
+        })
+
+//        this.$store.commit('send', );
+        /*method: function () {
+          _this.StitchingCurl(headerParams, jsonReqdata)
+        }*/
       },
       StitchingCurl: function (headerParams, reqdata) {
         let _this = this;
@@ -538,7 +532,7 @@
       },
       ...mapMutations(['send']),
     },
-    props: ['swaggerCategory', 'countTo', 'bg', 'leftDropDownBoxContent'],
+    props: ['swaggerCategory','selected','count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView}
   }
 </script>
@@ -681,60 +675,6 @@
     border-right: 0;
   }
 
-  /* 调试：附带参数列表 */
-
-  /*!* 调试页面 *!
-  .content-url {
-    overflow: hidden;
-    height: 35px;
-    margin-bottom: 10px;
-    position: relative;
-  }
-
-  .content-url > span {
-    width: 80px;
-    color: #fff;
-    text-align: center;
-    height: 100%;
-    line-height: 35px;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-
-  .content-url > div {
-    display: block;
-    margin-left: 80px;
-    margin-right: 88px;
-    height: 35px;
-  }
-
-  .content-url > div input {
-    color: #858585;
-    background-color: #fff;
-    border: 1px solid #d5d5d5;
-    padding: 5px 4px;
-    line-height: 1.2;
-    font-size: 14px;
-    font-family: inherit;
-  }
-
-  .content-url > button{
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 35px;
-    background: #40A8FF;
-    padding: 0 23px;
-    border: 0;
-    color: #fff;
-  }
-
-  .content-url > button:active {
-    background-color: #1b6aaa !important;
-    border-color: #428bca;
-  }
-*/
   /* 接口详细信息列表 */
   .swagger-content, .debugging-content {
     border-top: 1px solid #dbdbdb;

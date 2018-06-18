@@ -20,7 +20,6 @@ function rootPath() {
 }
 
 const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SWAGGER_URL;
-console.log(SWAGGER_URL, process.env.SWAGGER_URL)
 /* 下拉框数据 */
 const dropDown = {
   state: {data: [], count: 0},
@@ -35,6 +34,7 @@ const dropDown = {
 const leftDropDownBoxContent = {
   state: {data: []}
 };
+
 /* 初始化:获取单选框数据， */
 function init() {
   Vue.http.get(SWAGGER_URL + "swagger-resources").then((response) => {
@@ -64,24 +64,44 @@ const debugRequest = {
   state: {data: [], count: 0, debugResponse: {}},
   mutations: {
     send(state, n){
-      Vue.http({url: n.url, body: n.data, method: n.type.toUpperCase(), headers: n.headerParams})
-        .then(function (response) {
-          debugRequest.state.debugResponse = response;
-          n.method();
-        }, function (response) {
-          debugRequest.state.debugResponse = response;
-          n.method();
-        })
+        Vue.http({url: n.url, body: n.data, method: n.type.toUpperCase(), headers: n.headerParams})
+          .then(function (response) {
+            debugRequest.state.debugResponse = response;
+            n.resolve()
+          }, function (response) {
+            debugRequest.state.debugResponse = response;
+            n.resolve();
+          })
+    }
+  },
+  actions:{
+    carriedSend(content,n){
+      return new Promise((resolve,reject)=>{
+        n.resolve=resolve;
+        content.commit('send',n);
+      })
     }
   }
 };
-/* 公共模块，功能性方法 */
+/* tab页数据操作:实际存储的是调试页数据 */
+const tabData={
+  state:{infoData:{},show:""},
+  mutations:{
+    addTab(state,item){
+      tabData.state.infoData[item.key]=item.value;
+    },
+    changeShow(state,val){
+      tabData.state.show=val;
+    }
+  }
+}
 
 export default new Vuex.Store({
   modules: {
     swaggerLeftHead: dropDown,
     leftDropDownBoxContent: leftDropDownBoxContent,
-    debugRequest: debugRequest
+    debugRequest: debugRequest,
+    tabData:tabData
   }
 })
 

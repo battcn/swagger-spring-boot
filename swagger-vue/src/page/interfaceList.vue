@@ -18,7 +18,7 @@
     </div>
     <div class="swagger-category" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
       <ul style="margin: 0;padding: 0;">
-        <li class="categoryLi" v-for="item,index in swaggerCategory" @click="countTo=index"
+        <li class="categoryLi" v-for="item,index in swaggerCategory" @click="changeCountTo(index)"
             :style="{backgroundColor:bg[item.name.toUpperCase()]}">
           <span class="categoryLi-type">{{item.name ? item.name.toUpperCase() : ""}}</span>
           <code class="categoryLi-path">{{item.pathName ? item.pathName.toLowerCase() : ""}}</code>
@@ -26,12 +26,17 @@
         </li>
       </ul>
     </div>
+    <div class="tabSwitch">
+      <ul>
+        <li  v-for="(value,key) in tabData" :class="{active:showKey==key}" @click="selected=value[2],count=value[3],countTo=value[4]"><span>{{key}}</span><a href="javascript:">X</a></li>
+      </ul>
+    </div>
     <interfaceMain v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
-                   v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:countTo="countTo"></interfaceMain>
+                   v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected" v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapMutations} from 'vuex'
+  import {mapState,mapMutations} from 'vuex'
   import interfaceMain from './interfaceMain.vue'
 
   export default {
@@ -72,13 +77,18 @@
       }
     },
     methods: {
+      changeCountTo:function (index) {
+        this.countTo=index;
+      },
       PromptPopUpShow: function (hint) {
-        this.$layer.msg(hint, {time: 2})
+        this.$layer.msg(hint, {time: 2})/*  提示框插件 */
       },
       ...mapMutations(['switch']),
     },
     components: {interfaceMain},
     computed: {
+      ...mapState({tabData:state =>state.tabData.infoData,showKey:state=>state.tabData.show
+      }),
       swaggerLeftHead() {
         return this.$store.state.swaggerLeftHead.data
       },
@@ -101,7 +111,13 @@
           }
         }
         return current;
-      }
+      },
+      /*tabData(){
+          let _this=this;
+          return this.$store.state.tabData.infoData;
+        }*/
+      },
+    created(){
     }
   }
 </script>
@@ -227,6 +243,62 @@
     height: auto;
     max-width: 260px;
   }
+/*  tab切换选项 */
+  .tabSwitch{
+    margin-left: 43%;
+    margin-right: 15px;
+    padding-left: 10px;
+    transition: all 0.2s;
+  }
+  .tabSwitch ul{
+    font-size: 0;
+    white-space: nowrap;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    text-align: left;
+  }
+  /* 滚动条样式 */
+  .tabSwitch ul::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 8px;
+  }
+  .tabSwitch ul::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #EBEBEB;
+  }
+  .tabSwitch ul::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: #FFF;
+  }
+
+  .tabSwitch li{
+    padding: 10px 6px 10px 15px;
+    font-size: 14px;font-weight: 500;
+    border-top: 1px solid #dbdbdb;
+    cursor: pointer;display: inline-block;
+    float: none;
+    box-shadow: 1px 1px 2px #e9e4e4;
+  }
+  .tabSwitch li.active{
+    background-color: #89BF05;color:#fff;
+  }
+  .tabSwitch li span{
+    padding-right: 9px;
+  }
+  .tabSwitch li a{
+    text-decoration: none;color:black;
+  }
+  .tabSwitch li.active span,
+  .tabSwitch li.active a{
+    color:#fff;
+  }
+  .tabSwitch li a:hover,
+  .tabSwitch li.active a:hover{
+    color:rgb(235, 91, 91);
+  }
+
   /* 响应式 */
   @media screen and (min-width: 1600px){
     .swagger-left{
@@ -234,6 +306,9 @@
     }
     .swagger-category{
       width: 18%;margin-left: 18%;
+    }
+    .tabSwitch{
+      margin-left: 36%;
     }
   }
 </style>
