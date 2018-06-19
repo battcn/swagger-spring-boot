@@ -10,7 +10,7 @@
     </parent>
     <artifactId>swagger-spring-boot-starter</artifactId>
     <packaging>jar</packaging>
-
+    <version>${parent.version}</version>
 
     <dependencies>
         <dependency>
