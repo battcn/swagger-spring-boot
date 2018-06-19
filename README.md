@@ -102,6 +102,14 @@ spring.swagger.enable=true
 
 # 重写UI #
 
+> 操作风格 - 2.0.1 版本
+
+![接口说明](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/2_1.png)
+
+![接口说明](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/2_2.png)
+
+![接口说明](https://github.com/battcn/swagger-spring-boot/blob/master/doc/img/2_3.png)
+
 
 > 操作风格 - 1.4.3支持
 
