@@ -9,6 +9,7 @@
         <version>2.0.1-RELEASE</version>
     </parent>
     <artifactId>swagger-spring-boot-starter</artifactId>
+    <name>swagger-spring-boot-starter</name>
     <packaging>jar</packaging>
     <version>${parent.version}</version>
 

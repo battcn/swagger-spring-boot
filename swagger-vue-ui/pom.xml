@@ -10,6 +10,7 @@
     </parent>
     <artifactId>swagger-vue-ui</artifactId>
     <packaging>jar</packaging>
+    <name>swagger-vue-ui</name>
     <version>${parent.version}</version>
 
     <properties>
