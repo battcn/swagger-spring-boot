@@ -16,7 +16,7 @@ function rootPath() {
   const localhostPaht = curWwwPath.substring(0, pos);
   //获取带"/"的项目名，如：/battcn
   const projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-  return (localhostPaht + projectName) + "/";
+  return (localhostPaht + projectName);
 }
 
 const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SWAGGER_URL;
@@ -37,7 +37,7 @@ const leftDropDownBoxContent = {
 
 /* 初始化:获取单选框数据， */
 function init() {
-  Vue.http.get(SWAGGER_URL + "swagger-resources").then((response) => {
+  Vue.http.get(SWAGGER_URL + "/swagger-resources").then((response) => {
     dropDown.state.data = response.body;
     return true;
   }, (response) => {
