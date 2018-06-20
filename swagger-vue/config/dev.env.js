@@ -4,5 +4,5 @@ const prodEnv = require('./prod.env');
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  SWAGGER_URL: '"http://47.100.64.64:9098"'
+  SWAGGER_URL: '"http://localhost:8080"'
 });
