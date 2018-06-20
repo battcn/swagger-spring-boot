@@ -26,7 +26,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>${最新版本：当前2.0.1还在开发 请用 1.4.5-RELEASE}</version>
+    <version>2.0.1-RELEASE</version>
 </dependency>
 ```
 
@@ -47,6 +47,13 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
+2.0.2
+  发布时间：暂定
+  更新内容：
+    1.UI添加响应结果
+    2.UI添加全局认证窗口
+    3.修复接口过多导致内存溢出泄露BUG
+    4.优化代码风格与标准
 2.0.1
   发布时间：2018年06月19日
   更新内容：
