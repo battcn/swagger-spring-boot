@@ -34,7 +34,7 @@
                         type="text">{{copyChildForm[key].default}}</textarea>
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue"   type="text" style="width:100%;margin-top: 8px;"/>
-            <input v-else v-on:input="a(key)"  v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
+            <input v-else   v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
 
           </div>
           <span v-if="copyChildForm[key].default==''||(typeof copyChildForm[key].default)!='object'"
@@ -103,9 +103,6 @@
         data.value=[this.copyChildForm,this.keyValue,this.selected,this.count,this.countTo];
         this.addTab(data);
       },
-      a(key){
-        console.log(this.copyChildForm)
-      },
       initInfo(){
         this.selectAll=false;
         this.s=false;
@@ -156,6 +153,17 @@
       }
     },
     watch:{
+      selected(){
+        console.log(this.selected);
+        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
+        this.changeShow(key);
+        this.initInfo();
+      },
+      count(){
+        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
+        this.changeShow(key);
+        this.initInfo();
+      },
       countTo(){
         let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
         this.changeShow(key);

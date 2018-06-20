@@ -88,7 +88,13 @@ const tabData={
   state:{infoData:{},show:""},
   mutations:{
     addTab(state,item){
-      tabData.state.infoData[item.key]=item.value;
+      Vue.set(tabData.state.infoData,item.key,item.value)
+      // tabData.state.infoData[item.key]=item.value;
+    },
+    deleteTab(state,key){
+      if(key&&tabData.state.infoData[key]!==undefined){
+        Vue.delete(tabData.state.infoData,key)
+      }
     },
     changeShow(state,val){
       tabData.state.show=val;

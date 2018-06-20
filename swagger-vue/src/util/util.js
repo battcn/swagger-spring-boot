@@ -1,6 +1,7 @@
 /* 对象拷贝 */
 const deepCopy = function (source) {
   let result = "";
+  if(source === undefined || source === null){ return undefined;}
   if (typeof source === 'object') {
     if (source.constructor === Array) {
       return treatArray(source);
