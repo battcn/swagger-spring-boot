@@ -14,6 +14,7 @@
     <description>基于swagger springfox做的一款扩展工具包</description>
 
     <modules>
+        <module>swagger-spring-boot-autoconfigure</module>
         <module>swagger-spring-boot-starter</module>
         <module>swagger-vue-ui</module>
     </modules>
