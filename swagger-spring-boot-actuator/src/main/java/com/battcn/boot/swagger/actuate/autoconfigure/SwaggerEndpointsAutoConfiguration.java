@@ -17,7 +17,7 @@ import org.springframework.context.annotation.PropertySource;
 @EnableAutoConfiguration
 @PropertySource(
         name = "Swagger Endpoints Default Properties",
-        value = "classpath:/META-INF/resources/META-INF/swagger-endpoins-default.properties")
+        value = "classpath:/META-INF/swagger-endpoins-default.properties")
 public class SwaggerEndpointsAutoConfiguration {
 
     @Bean
