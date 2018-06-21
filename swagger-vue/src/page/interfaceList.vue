@@ -28,7 +28,7 @@
     </div>
     <div class="tabSwitch">
       <ul>
-        <li  v-for="(value,key) in tabData" :class="{active:showKey==key}" @click="selected=value[2],count=value[3],countTo=value[4]"><span>{{key}}</span><a href="javascript:">X</a></li>
+        <li  v-for="(value,key) in tabData" @click="" :class="{active:showKey==key}"><span>{{key}}</span><a @click="deleteTab(key)" href="javascript:">X</a></li>
       </ul>
     </div>
     <interfaceMain v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
@@ -83,7 +83,7 @@
       PromptPopUpShow: function (hint) {
         this.$layer.msg(hint, {time: 2})/*  提示框插件 */
       },
-      ...mapMutations(['switch']),
+      ...mapMutations(['switch','deleteTab']),
     },
     components: {interfaceMain},
     computed: {
@@ -111,11 +111,7 @@
           }
         }
         return current;
-      },
-      /*tabData(){
-          let _this=this;
-          return this.$store.state.tabData.infoData;
-        }*/
+      }
       },
     created(){
     }
@@ -228,15 +224,14 @@
     padding: 2px 4px;
     font-size: 90%;
     color: #c7254e;
-    white-space: nowrap;
     background-color: #f9f2f4;
     border-radius: 4px;
+    word-break: break-all;
   }
 
   .categoryLi .categoryLi-name {
     display: block;
-    height: 20px;
-    line-height: 20px;
+    padding: 2px 0 0;
   }
 
   .notify .notify-msg {
@@ -249,25 +244,32 @@
     margin-right: 15px;
     padding-left: 10px;
     transition: all 0.2s;
-  }
-  .tabSwitch ul{
-    font-size: 0;
     white-space: nowrap;
     overflow-y: hidden;
     overflow-x: scroll;
+    height: 50px;
+  }
+  .tabSwitch ul{
+    font-size: 0;
     text-align: left;
   }
   /* 滚动条样式 */
-  .tabSwitch ul::-webkit-scrollbar {/*滚动条整体样式*/
+  .swagger-left::-webkit-scrollbar,
+  .tabSwitch::-webkit-scrollbar,
+  .swagger-category::-webkit-scrollbar{/*滚动条整体样式*/
     width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
     height: 8px;
   }
-  .tabSwitch ul::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  .swagger-left::-webkit-scrollbar-thumb,
+  .tabSwitch::-webkit-scrollbar-thumb,
+  .swagger-category::-webkit-scrollbar-thumb{/*滚动条里面小方块*/
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     background: #EBEBEB;
   }
-  .tabSwitch ul::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  .swagger-left::-webkit-scrollbar-track,
+  .tabSwitch::-webkit-scrollbar-track,
+  .swagger-category::-webkit-scrollbar-track{/*滚动条里面轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     border-radius: 10px;
     background: #FFF;

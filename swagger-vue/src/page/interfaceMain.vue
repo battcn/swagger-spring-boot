@@ -31,42 +31,42 @@
         </li>
         <li><span>请求参数</span>
           <div>
-          <div class="request-table"
-               v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
-            <ul>
-              <li class="table-tr table-head">
-                <span class="table-td">参数名称</span>
-                <span class="table-td">说明</span>
-                <span class="table-td">类型</span>
-                <span class="table-td">条件</span>
-                <span class="table-td">in</span>
-                <span class="table-td">是否必须</span>
-              </li>
-              <div v-for="(item,key) in InterfaceRequest">
-                <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
-                           :item="item"></form-fold>
-              </div>
-            </ul>
-          <!--  <table style="table-layout: fixed;    width: 100%;">
-              <thead>
-              <tr>
-                <th style="width: 20%;">参数名称</th>
-                <th>说明</th>
-                <th style="width: 10%;">类型</th>
-                <th style="width: 20%;">条件</th>
-                <th style="width: 5%;">in</th>
-                <th style="width: 10%;">是否必须</th>
-              </tr>
-              </thead>
-              <tbody>
-              <div  v-for="(item,key) in InterfaceRequest">
-                <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
-                           :item="item"></form-fold>
-              </div>
-              </tbody>
-            </table>-->
-          </div>
-          <span v-else>暂无</span>
+            <div class="request-table"
+                 v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
+              <ul>
+                <li class="table-tr table-head">
+                  <span class="table-td">参数名称</span>
+                  <span class="table-td">说明</span>
+                  <span class="table-td">类型</span>
+                  <span class="table-td">条件</span>
+                  <span class="table-td">in</span>
+                  <span class="table-td">是否必须</span>
+                </li>
+                <div v-for="(item,key) in InterfaceRequest">
+                  <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                             :item="item"></form-fold>
+                </div>
+              </ul>
+              <!--  <table style="table-layout: fixed;    width: 100%;">
+                  <thead>
+                  <tr>
+                    <th style="width: 20%;">参数名称</th>
+                    <th>说明</th>
+                    <th style="width: 10%;">类型</th>
+                    <th style="width: 20%;">条件</th>
+                    <th style="width: 5%;">in</th>
+                    <th style="width: 10%;">是否必须</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <div  v-for="(item,key) in InterfaceRequest">
+                    <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                               :item="item"></form-fold>
+                  </div>
+                  </tbody>
+                </table>-->
+            </div>
+            <span v-else>暂无</span>
           </div>
         </li>
         <li><span>响应Model</span>
@@ -92,15 +92,31 @@
             </ul>
           </div>
         </li>
+        <li>
+          <span>响应</span>
+          <div class="ResponseCode">
+            <span v-show="(typeof InterfaceResponse) != 'object'">{{InterfaceResponse}}</span>
+            <ul v-show="(typeof InterfaceResponse) == 'object'">
+              <li class="head"><span>状态码</span><span>说明</span><span>Schema</span></li>
+              <li v-for="(item,index) in InterfaceResponseCode">
+                <span>{{index}}</span>
+                <span>{{item.description ? item.description : "无"}}</span>
+                <span>{{item.schema?(item.schema.$ref ? item.schema.$ref : (item.schema.type && item.schema.type === "array" && item.schema.items)?item.schema["items"].$ref:"无"):"无"}}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </li>
       </ul>
     </div>
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
-      <submit-form  v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm"
+      <submit-form v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm"
                    :bg="bg" v-on:shijian="fatherValue"
                    :parameterValue="parameterValue" :leftDropDownBoxContent="leftDropDownBoxContent"
                    v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
-                   :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo" :InterfaceRequest="InterfaceRequest">
+                   :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo"
+                   :InterfaceRequest="InterfaceRequest">
       </submit-form>
       <div class="debugging-result" v-show="resultShow">
       <span style="cursor:pointer;" @click="debugging='content'"
@@ -147,7 +163,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapMutations,mapActions} from 'vuex'
+  import {mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
   import {deepCopy, basicTypeInit} from './../util/util'
   import SubmitForm from './submitForm.vue'
@@ -178,6 +194,9 @@
         let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
         let respBasis = false;
         let respState;
+        if (resp === undefined) {
+          return "加载失败";
+        }
         for (let key in resp) {
           if (parseInt(key) >= 200 && parseInt(key) <= 299) {
             respBasis = true;
@@ -197,6 +216,9 @@
               let definitionsArray = deepCopy(this.leftDropDownBoxContent && this.leftDropDownBoxContent.definitions);
               let deftion = null;
               let definition = null;
+              if (definitionsArray === undefined) {
+                return "加载失败";
+              }
               for (let i in definitionsArray) {
                 if (i === refType) {
                   definition = deepCopy(definitionsArray[i].properties);
@@ -220,6 +242,25 @@
       /**
        * @return {{}}
        */
+      InterfaceResponseCode: function () {
+        let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
+        let respBasis = false;
+        let respState;
+        if (resp === undefined) {
+          return "加载失败";
+        }
+        for (let key in resp) {
+          if (parseInt(key) >= 200 && parseInt(key) <= 299) {
+            respBasis = true;
+            respState = key;
+            break;
+          }
+        }
+        if (respBasis) {
+          return resp;
+        }
+        return {};
+      },
       InterfaceRequest: function () {
         if (!this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.parameters) {
           return false;
@@ -228,10 +269,13 @@
         let result = {};
         let parameters = deepCopy(this.swaggerCategory[this.countTo].pathInfo.parameters);
         let definitions = deepCopy(this.leftDropDownBoxContent.definitions);
+        if (parameters === undefined) {
+          return result;
+        }
         for (let i in parameters) {
           if ((parameters[i].schema && parameters[i].schema.$ref) || parameters[i].$ref) {
             result[i] = parameters[i];
-            result[i]['properties'] = this.formatRequest(parameters[i].schema.$ref || parameters[i].$ref);
+            result[i]['properties'] = this.formatRequest((parameters[i].schema && parameters[i].schema.$ref) || parameters[i].$ref);
           } else {
             result[i] = parameters[i];
           }
@@ -294,7 +338,7 @@
         return true;
       },
       iniObject: function (properties) {/* 传入对象，对其进行类型初始化 */
-        let obj = {}
+        let obj = {};
         for (let key in properties) {
           if ((properties[key].type && properties[key].properties && properties[key].type === "object") || (properties[key].type === 'array' && properties[key].properties)) {
             /* 包含子字段 */
@@ -336,20 +380,29 @@
         return res;
       },
       formatRequest: function (itemsRef) {
-        let objName = itemsRef.match("#/definitions/(.*)")[1];
         let result = {};
+        if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
+          return result;
+        }
+        let objName = itemsRef.match("#/definitions/(.*)") && itemsRef.match("#/definitions/(.*)")[1];
         let definitions = deepCopy(this.leftDropDownBoxContent.definitions);
+        if (objName === null || objName === undefined || definitions === undefined) {
+          return result;
+        }
         for (let key in definitions) {
           if (key.toLowerCase() === objName.toLowerCase()) {
             result = deepCopy(definitions[key]);
             let properties = definitions[key].properties;
+            if (properties === undefined || properties === null || (typeof properties) === "string") {
+              return result;
+            }
             for (let k in properties) {
               if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
-                let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref
+                let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
                 if (properties[k].type === 'array') {
                   result.properties[k].properties = [];
                   let adds = this.formatRequest(Ref);
-                  adds.name ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
+                  adds.name === undefined || adds.name === null ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
                   result.properties[k].properties.push(adds);
                   continue;
                 }
@@ -370,12 +423,18 @@
       JSONinit: function (refType) {
         let _this = this;
         let definitionsArray = deepCopy(_this.leftDropDownBoxContent && _this.leftDropDownBoxContent.definitions);
-        let deftion = null;
+        let deftion = undefined;
+        if (definitionsArray === undefined) {
+          return deftion;
+        }
         for (let i in definitionsArray) {
           if (i === refType) {
             deftion = definitionsArray[i].properties;
             break
           }
+        }
+        if (deftion === null || deftion === undefined) {
+          return deftion;
         }
         for (let key in deftion) {
           if (deftion[key].$ref && deftion[key].type === "array") {
@@ -386,9 +445,9 @@
             let schema = deftion[key];
             let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
             let regex = new RegExp("#/definitions/(.*)$", "ig");
-            if (regex.test(ref)) {
+            if ((typeof ref === "string") && regex.test(ref)) {
               let a = ref.match("#/definitions/(.*)");
-              let refType2 = a[1];
+              let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
               deftion[key] = this.JSONinit(refType2);
               continue;
             }
@@ -397,9 +456,9 @@
             let schema = deftion[key];
             let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
             let regex = new RegExp("#/definitions/(.*)$", "ig");
-            if (regex.test(ref)) {
+            if ((typeof ref === "string") && regex.test(ref)) {
               let a = ref.match("#/definitions/(.*)");
-              let refType2 = a[1];
+              let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
               deftion[key] = [];
               deftion[key].push(this.JSONinit(refType2));
               continue;
@@ -478,19 +537,15 @@
           }
         }
         let jsonReqdata = reqdata;
-        this.$store.dispatch('carriedSend',{
+        this.$store.dispatch('carriedSend', {
           url: "http://" + _this.leftDropDownBoxContent.host + url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: reqdata
-        }).then(function (){
+        }).then(function () {
           _this.StitchingCurl(headerParams, jsonReqdata)
         })
 
-//        this.$store.commit('send', );
-        /*method: function () {
-          _this.StitchingCurl(headerParams, jsonReqdata)
-        }*/
       },
       StitchingCurl: function (headerParams, reqdata) {
         let _this = this;
@@ -532,7 +587,7 @@
       },
       ...mapMutations(['send']),
     },
-    props: ['swaggerCategory','selected','count', 'countTo', 'bg', 'leftDropDownBoxContent'],
+    props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView}
   }
 </script>
@@ -569,6 +624,43 @@
 
   .ResponseParameter > ul li > span:last-child {
     border-right: 0;
+  }
+
+  /*  响应状态码部分 */
+  .ResponseCode .head {
+    font-size: 16px;
+    font-weight: 700;
+    background-color: #F8F8F8;
+  }
+
+  .ResponseCode > ul {
+    overflow: hidden;
+    border: 1px solid #ddd;
+  }
+
+  .ResponseCode > ul li {
+    overflow: hidden;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .ResponseCode > ul li:last-child {
+    border-bottom: 0;
+  }
+
+  .ResponseCode > ul li > span {
+    width: 50%;
+    float: left;
+    padding: 8px 4px;
+    border-right: 1px solid #ddd;
+  }
+
+  .ResponseCode > ul li > span:first-child {
+    width: 15%;
+  }
+
+  .ResponseCode > ul li > span:last-child {
+    border-right: 0;
+    width: 25%;
   }
 
   /* 调试结果区域样式 */
@@ -739,7 +831,7 @@
   }
 
   .switch {
-    margin-top: 10px;
+    margin-top: 15px;
     text-align: left;
     padding-left: 20px;
     font-size: 0;
@@ -764,9 +856,10 @@
     color: #89BF05;
     border-bottom: 1px solid #FFFFFF;
   }
+
   /* 响应式 */
-  @media screen and (min-width: 1600px){
-    .swagger-main{
+  @media screen and (min-width: 1600px) {
+    .swagger-main {
       margin-left: 36%;
     }
   }
