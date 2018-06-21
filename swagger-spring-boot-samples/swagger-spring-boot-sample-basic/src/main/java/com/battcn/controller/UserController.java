@@ -1,8 +1,8 @@
 package com.battcn.controller;
 
+import com.battcn.boot.swagger.model.DataType;
+import com.battcn.boot.swagger.model.ParamType;
 import com.battcn.entity.User;
-import com.battcn.swagger.properties.ApiDataType;
-import com.battcn.swagger.properties.ApiParamType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,8 +27,8 @@ public class UserController {
     @GetMapping
     @ApiOperation(value = "条件查询（DONE）")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", dataType = ApiDataType.STRING, paramType = ApiParamType.QUERY),
-            @ApiImplicitParam(name = "password", value = "密码", dataType = ApiDataType.STRING, paramType = ApiParamType.QUERY),
+            @ApiImplicitParam(name = "username", value = "用户名", dataType = DataType.STRING, paramType = ParamType.QUERY),
+            @ApiImplicitParam(name = "password", value = "密码", dataType = DataType.STRING, paramType = ParamType.QUERY),
     })
     public User query(String username, String password) {
         log.info("多个参数用  @ApiImplicitParams");
@@ -38,7 +38,7 @@ public class UserController {
     @GetMapping("/{id}")
     @ApiOperation(value = "主键查询（DONE）")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户编号", dataType = ApiDataType.LONG, paramType = ApiParamType.PATH),
+            @ApiImplicitParam(name = "id", value = "用户编号", dataType = DataType.LONG, paramType = ParamType.PATH),
     })
     public User get(@PathVariable Long id) {
         log.info("单个参数用  @ApiImplicitParam");
@@ -47,7 +47,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除用户（DONE）")
-    @ApiImplicitParam(name = "id", value = "用户编号", dataType = ApiDataType.LONG, paramType = ApiParamType.PATH)
+    @ApiImplicitParam(name = "id", value = "用户编号", dataType = DataType.LONG, paramType = ParamType.PATH)
     public void delete(@PathVariable Long id) {
         log.info("单个参数用 ApiImplicitParam");
     }

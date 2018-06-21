@@ -1,8 +1,8 @@
 package com.battcn.controller.user;
 
 import com.battcn.entity.User;
-import com.battcn.swagger.properties.ApiDataType;
-import com.battcn.swagger.properties.ApiParamType;
+import com.battcn.boot.swagger.properties.ApiDataType;
+import com.battcn.boot.swagger.properties.ApiParamType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

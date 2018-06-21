@@ -1,13 +1,14 @@
 package com.battcn.controller.book;
 
+import com.battcn.boot.swagger.model.DataType;
+import com.battcn.boot.swagger.model.ParamType;
 import com.battcn.entity.Book;
-import com.battcn.swagger.properties.ApiDataType;
-import com.battcn.swagger.properties.ApiParamType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * swagger
@@ -31,8 +32,9 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除用户（DONE）")
-    @ApiImplicitParam(name = "id", value = "用户编号", dataType = ApiDataType.LONG, paramType = ApiParamType.PATH)
+    @ApiImplicitParam(name = "id", value = "用户编号", dataType = DataType.LONG, paramType = ParamType.PATH)
     public void delete(@PathVariable Long id) {
+
         log.info(" delete books by id : {}", id);
     }
 
