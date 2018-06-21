@@ -48,7 +48,7 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
-                <!--<targetPath>META-INF/resources/</targetPath>-->
+                <targetPath>META-INF/resources/</targetPath>
             </resource>
         </resources>
         <plugins>
