@@ -104,6 +104,9 @@
         this.addTab(data);
       },
       initInfo(){
+        {data:{
+          
+        }}
         this.selectAll=false;
         this.s=false;
         this.saveTab();

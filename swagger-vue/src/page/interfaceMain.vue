@@ -84,11 +84,15 @@
             <span v-show="(typeof InterfaceResponse) != 'object'">{{InterfaceResponse}}</span>
             <ul v-show="(typeof InterfaceResponse) == 'object'">
               <li class="head"><span>参数名称</span><span>类型</span><span>说明</span></li>
-              <li v-for="(item,index) in InterfaceResponse">
+              <!--<li v-for="(item,index) in InterfaceResponse">
                 <span>{{index}}</span>
                 <span>{{item.type}}</span>
-                <span>{{item.description ? item.description : "无"}}</span>
-              </li>
+                <span>{{item.description ? item.description : "无"}}</span>-->
+              <div v-for="(item,key) in InterfaceResponse">
+                <form-fold :name="'response'" :depth="0" :properties="item.properties" :keyTo="key"
+                           :item="item"></form-fold>
+              </div>
+              <!--</li>-->
             </ul>
           </div>
         </li>
@@ -212,9 +216,11 @@
             let regex = new RegExp("#/definitions/(.*)$", "ig");
             if (regex.test(ref)) {
               let refType = RegExp.$1;
-              let flag = false;
+              let deftion = undefined;
+              let definition = {};
+              definition[refType]=this.formatRequest(ref);
+             /* let flag = false;
               let definitionsArray = deepCopy(this.leftDropDownBoxContent && this.leftDropDownBoxContent.definitions);
-              let deftion = null;
               let definition = null;
               if (definitionsArray === undefined) {
                 return "加载失败";
@@ -224,7 +230,8 @@
                   definition = deepCopy(definitionsArray[i].properties);
                   break
                 }
-              }
+              }*/
+
               deftion = this.JSONinit(refType);
               this.jsonObject = deftion;
               return definition;
@@ -236,13 +243,15 @@
               }
               return "无";
             }
+          }else{
+            return "无";
           }
+
+        }else{
+          return "没有指定响应成功信息";
         }
       },
-      /**
-       * @return {{}}
-       */
-      InterfaceResponseCode: function () {
+      InterfaceResponseCode: function () {/*  响应码 */
         let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
         let respBasis = false;
         let respState;
@@ -261,7 +270,7 @@
         }
         return {};
       },
-      InterfaceRequest: function () {
+      InterfaceRequest: function () {/* 请求参数 */
         if (!this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.parameters) {
           return false;
         }
@@ -379,7 +388,7 @@
         }
         return res;
       },
-      formatRequest: function (itemsRef) {
+      formatRequest: function (itemsRef) {/* 传入#/definitions/User，进行格式化 */
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
           return result;
@@ -416,6 +425,9 @@
           }
         }
         return result;
+      },
+      formatResponse:function () {
+
       },
       titleCase5: function (str) {
         return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());

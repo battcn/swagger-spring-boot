@@ -7,7 +7,7 @@
           {{keyTo}}
         </span>
          <span class="quantity">
-           {{ obj['length'] ? '[' + obj['length'] + ']' : (typeof obj == 'object' ? '{' + subQuantity(obj) + '}' : '')}}
+           {{  obj["length"] ? "["+obj.length+"]" : (typeof obj == "object" ? "{" + subQuantity(obj) + "}" : "")}}
          </span>
        </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"
@@ -31,15 +31,23 @@
   export default {
     name: 'json-view',
     data() {
-      return {showStatus: true,isSet:(typeof obj) === 'array' || (typeof obj) === 'object'}
+      return {showStatus: true}
     },
     props: ['obj', 'indentation', 'keyTo'],
     methods: {
       subQuantity: function (item) {
-        return Object.getOwnPropertyNames(item).length - 1;
+        return Object.keys(item).length;
       },
       toggleStatus: function () {
         this.showStatus = !this.showStatus;
+      }
+    },
+    computed:{
+      isSet(){
+        if((typeof this.obj) === 'array' || (typeof this.obj) === 'object'){
+          return true;
+        }
+        return false;
       }
     }
   }
