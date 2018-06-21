@@ -5,7 +5,7 @@ package com.battcn.boot.swagger.properties;
  *
  * @author Levin
  */
-public final class ApiDataType {
+public final class DataType {
 
     public final static String STRING = "String";
     public final static String INT = "int";
