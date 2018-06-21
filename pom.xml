@@ -15,6 +15,7 @@
 
     <modules>
         <module>swagger-spring-boot-autoconfigure</module>
+        <module>swagger-spring-boot-actuator</module>
         <module>swagger-spring-boot-starter</module>
         <module>swagger-vue-ui</module>
     </modules>
