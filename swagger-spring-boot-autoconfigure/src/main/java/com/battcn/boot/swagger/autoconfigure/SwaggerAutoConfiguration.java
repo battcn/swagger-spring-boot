@@ -1,9 +1,9 @@
-package com.battcn.swagger;
+package com.battcn.boot.swagger.autoconfigure;
 
-import com.battcn.swagger.configuration.MyBeanValidatorPluginsConfiguration;
-import com.battcn.swagger.properties.SwaggerProperties;
-import com.battcn.swagger.properties.SwaggerSecurityProperties;
-import com.battcn.swagger.security.SwaggerSecurity;
+import com.battcn.boot.swagger.configuration.MyBeanValidatorPluginsConfiguration;
+import com.battcn.boot.swagger.properties.SwaggerProperties;
+import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
+import com.battcn.boot.swagger.security.SwaggerSecurity;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;

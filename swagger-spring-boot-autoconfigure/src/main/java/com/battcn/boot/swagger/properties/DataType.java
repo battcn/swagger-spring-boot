@@ -1,4 +1,4 @@
-package com.battcn.swagger.properties;
+package com.battcn.boot.swagger.properties;
 
 /**
  * 方便Swagger 中 @ApiImplicitParam(paramType = ApiParamType.HEADER)

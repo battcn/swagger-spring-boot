@@ -1,11 +1,11 @@
-package com.battcn.swagger.properties;
+package com.battcn.boot.swagger.properties.enums;
 
 /**
  * 方便Swagger 中 @ApiImplicitParam(paramType = ApiParamType.HEADER)
  *
  * @author Levin
  */
-public final class ApiParamType {
+public final class ParamType {
 
     public final static String QUERY = "query";
     public final static String HEADER = "header";
@@ -14,4 +14,3 @@ public final class ApiParamType {
     public final static String FORM = "form";
 
 }
-

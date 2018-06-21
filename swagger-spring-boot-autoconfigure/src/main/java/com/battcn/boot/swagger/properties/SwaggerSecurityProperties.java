@@ -1,6 +1,6 @@
-package com.battcn.swagger.properties;
+package com.battcn.boot.swagger.properties;
 
-import com.battcn.swagger.properties.enums.PathType;
+import com.battcn.boot.swagger.model.PathType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
