@@ -113,27 +113,27 @@ spring.swagger.enable=true
 
 ![接口说明](doc/img/2_1.png)
 
-![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/2_2.png)
+![接口说明](doc/img/2_2.png)
 
-![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/2_3.png)
+![接口说明](doc/img/2_3.png)
 
 
 > 操作风格 - 1.4.3支持
 
-![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/4.png)
+![接口说明](doc/img/4.png)
 
 > 接口说明：折叠式Model
 
-![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/1.png)
+![接口说明](doc/img/1.png)
 
 
 > 接口说明：折叠式表单响应内容，告别长长的滚动条
 
-![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/2.png)
+![接口说明](doc/img/2.png)
 
 > 在线调试
 
-![在线调试](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/3.png)
+![在线调试](doc/img/3.png)
 
 
 ## 配置说明 ##
