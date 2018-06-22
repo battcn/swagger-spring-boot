@@ -111,7 +111,7 @@ spring.swagger.enable=true
 
 > 操作风格 - 2.0.1 版本
 
-![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/2_1.png)
+![接口说明](doc/img/2_1.png)
 
 ![接口说明](https://gitee.com/battcn/spring-boot-starter-swagger/blob/master/doc/img/2_2.png)
 
