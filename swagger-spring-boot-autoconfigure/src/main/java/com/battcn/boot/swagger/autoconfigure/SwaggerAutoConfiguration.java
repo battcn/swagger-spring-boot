@@ -1,9 +1,9 @@
 package com.battcn.boot.swagger.autoconfigure;
 
-import com.battcn.boot.swagger.configuration.MyBeanValidatorPluginsConfiguration;
+import com.battcn.boot.swagger.configuration.SwaggerBeanValidatorPluginsConfiguration;
+import com.battcn.boot.swagger.configuration.SwaggerSecurityFilterPluginsConfiguration;
 import com.battcn.boot.swagger.properties.SwaggerProperties;
-import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
-import com.battcn.boot.swagger.security.SwaggerSecurity;
+import com.battcn.boot.swagger.security.GlobalAccess;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;
@@ -13,6 +13,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -37,14 +39,15 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-
 /**
- * @author Levin
+ * @author <a href="mailto:1837307557@qq.com">Levin</a>
+ * @since 2.0.2
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.swagger.enabled", havingValue = "true", matchIfMissing = true)
-@Import({Swagger2DocumentationConfiguration.class, MyBeanValidatorPluginsConfiguration.class})
+@Import({Swagger2DocumentationConfiguration.class, SwaggerBeanValidatorPluginsConfiguration.class})
 @EnableAutoConfiguration
+@EnableConfigurationProperties(SwaggerProperties.class)
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     private static final String DEFAULT_GROUP_NAME = "default";
@@ -57,28 +60,25 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
         this.beanFactory = beanFactory;
     }
 
+    @Bean
+    @ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.security.filter-plugin"}, havingValue = "true")
+    public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration() {
+        FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration());
+        registration.addUrlPatterns("/v2/api-docs","/swagger-resources");
+        return registration;
+    }
+
 
     @Bean
     @ConditionalOnMissingBean
-    public SwaggerProperties swaggerProperties() {
-        return new SwaggerProperties();
+    public GlobalAccess globalAccess(SwaggerProperties swaggerProperties) {
+        return new GlobalAccess(swaggerProperties);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SwaggerSecurityProperties swaggerSecurityProperties() {
-        return new SwaggerSecurityProperties();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public SwaggerSecurity swaggerSecurity() {
-        return new SwaggerSecurity(swaggerSecurityProperties());
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public List<Docket> createRestApi(SwaggerProperties swaggerProperties, SwaggerSecurityProperties swaggerSecurityProperties, SwaggerSecurity swaggerSecurity) {
+    public List<Docket> createRestApi(SwaggerProperties swaggerProperties, GlobalAccess globalAccess) {
         ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
         List<Docket> docketList = new LinkedList<>();
 
@@ -123,8 +123,8 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                 buildGlobalResponseMessage(swaggerProperties, docket);
             }
             // 配置接口授权
-            if (Objects.nonNull(swaggerSecurityProperties.getApiKey())) {
-                docket.securitySchemes(newArrayList(swaggerSecurity.apiKey())).securityContexts(newArrayList(swaggerSecurity.securityContext()));
+            if (Objects.nonNull(swaggerProperties.getApiKey())) {
+                docket.securitySchemes(newArrayList(globalAccess.apiKey())).securityContexts(newArrayList(globalAccess.securityContext()));
             }
             configurableBeanFactory.registerSingleton(DEFAULT_GROUP_NAME, docket);
             docketList.add(docket);
@@ -175,8 +175,8 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
                 buildGlobalResponseMessage(swaggerProperties, docket);
             }
             // 配置接口授权
-            if (Objects.nonNull(swaggerSecurityProperties.getApiKey())) {
-                docket.securitySchemes(newArrayList(swaggerSecurity.apiKey())).securityContexts(newArrayList(swaggerSecurity.securityContext()));
+            if (Objects.nonNull(swaggerProperties.getApiKey())) {
+                docket.securitySchemes(newArrayList(globalAccess.apiKey())).securityContexts(newArrayList(globalAccess.securityContext()));
             }
             configurableBeanFactory.registerSingleton(groupName, docket);
             docketList.add(docket);

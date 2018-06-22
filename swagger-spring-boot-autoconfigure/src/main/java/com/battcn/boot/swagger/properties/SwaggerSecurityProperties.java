@@ -1,46 +1,48 @@
 package com.battcn.boot.swagger.properties;
 
-import com.battcn.boot.swagger.model.PathType;
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 
 /**
  * @author Levin
  */
-@Data
 @ConfigurationProperties("spring.swagger.security")
 public class SwaggerSecurityProperties {
 
-    private ApiKey apiKey;
+    /**
+     * 安全过滤器插件开关
+     */
+    private boolean filterPlugin;
+    /**
+     * 用户名
+     */
+    private String username;
+    /**
+     * 密码
+     */
+    private String password;
 
-    @Data
-    public static class ApiKey {
+    public boolean isFilterPlugin() {
+        return filterPlugin;
+    }
 
-        /**
-         * 鉴权策略ID；对应 SecurityReferences ID
-         */
-        private String name = "X-Authorization";
+    public void setFilterPlugin(boolean filterPlugin) {
+        this.filterPlugin = filterPlugin;
+    }
 
-        /**
-         * 传递的鉴权参数字段名
-         */
-        private String keyName = "token";
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        /**
-         * 自定义匹配路径的正则(如：/anyPath.*)
-         */
-        private String authRegex = "/anyPath.*";
+    public String getPassword() {
+        return password;
+    }
 
-        /**
-         * 匹配的路径（默认所有）
-         */
-        private PathType pathType = PathType.ANY;
-
-        /**
-         * 传递参数的类型；默认 header 存放
-         */
-        private String paramType = "header";
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

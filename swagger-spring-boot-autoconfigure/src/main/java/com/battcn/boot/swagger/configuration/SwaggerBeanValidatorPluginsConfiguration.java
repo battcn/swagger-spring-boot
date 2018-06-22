@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 
 /**
- * @author Levin
- * @since 2018/6/14 0014
+ * @author <a href="mailto:1837307557@qq.com">Levin</a>
+ * @since 2.0.2
  */
 @Configuration
-@ConditionalOnProperty(name = "spring.swagger.validator-plugin", havingValue = "true")
-public class MyBeanValidatorPluginsConfiguration extends BeanValidatorPluginsConfiguration {
+@ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.validator-plugin"}, havingValue = "true")
+public class SwaggerBeanValidatorPluginsConfiguration extends BeanValidatorPluginsConfiguration {
 
 }

@@ -1,7 +1,7 @@
 package com.battcn.boot.swagger.security;
 
-import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
 import com.battcn.boot.swagger.model.PathType;
+import com.battcn.boot.swagger.properties.SwaggerProperties;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
@@ -18,17 +18,17 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Levin
  * @since 2018/6/14 0014
  */
-public class SwaggerSecurity {
+public class GlobalAccess {
 
-    private final SwaggerSecurityProperties swaggerSecurityProperties;
+    private final SwaggerProperties swaggerProperties;
 
-    public SwaggerSecurity(SwaggerSecurityProperties swaggerSecurityProperties) {
-        this.swaggerSecurityProperties = swaggerSecurityProperties;
+    public GlobalAccess(SwaggerProperties swaggerProperties) {
+        this.swaggerProperties = swaggerProperties;
     }
 
 
     public ApiKey apiKey() {
-        final SwaggerSecurityProperties.ApiKey apiKey = swaggerSecurityProperties.getApiKey();
+        final SwaggerProperties.ApiKey apiKey = swaggerProperties.getApiKey();
         return new ApiKey(apiKey.getName(), apiKey.getKeyName(), apiKey.getParamType());
     }
 
@@ -39,7 +39,7 @@ public class SwaggerSecurity {
      * @return SecurityContext
      */
     public SecurityContext securityContext() {
-        final SwaggerSecurityProperties.ApiKey apiKey = swaggerSecurityProperties.getApiKey();
+        final SwaggerProperties.ApiKey apiKey = swaggerProperties.getApiKey();
         final PathType pathType = apiKey.getPathType();
         return SecurityContext.builder()
                 .securityReferences(defaultAuth(apiKey))
@@ -52,7 +52,7 @@ public class SwaggerSecurity {
      *
      * @return List<SecurityReference>
      */
-    private List<SecurityReference> defaultAuth(SwaggerSecurityProperties.ApiKey apiKey) {
+    private List<SecurityReference> defaultAuth(SwaggerProperties.ApiKey apiKey) {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         return newArrayList(new SecurityReference(apiKey.getName(), new AuthorizationScope[]{authorizationScope}));
     }
