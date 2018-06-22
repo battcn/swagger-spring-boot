@@ -1,0 +1,9 @@
+spring:
+  swagger:
+    enabled: true
+    base-package: com.battcn
+    groups:
+      [用户]:
+        base-package: com.battcn.controller.user
+      [书籍]:
+        base-package: com.battcn.controller.book
