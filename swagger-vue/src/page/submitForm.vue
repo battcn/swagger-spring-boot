@@ -60,7 +60,16 @@
         if(this.$store.state.tabData.infoData[key] !== undefined){
           return this.$store.state.tabData.infoData&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key][0]
         }
-        return deepCopy(this.childForm);
+        let copyChildForm=deepCopy(this.childForm);
+        let copyChildFormDefault=copyChildForm[0]&&copyChildForm[0].default;
+        for(let key in copyChildFormDefault){/*   替换undefined的字段对象(暂代) */
+          console.log(key,"结果",copyChildFormDefault[key]);
+         if(copyChildFormDefault[key]=== undefined){
+           copyChildFormDefault[key]={};
+         }
+        }
+        copyChildForm[0].default=copyChildFormDefault;
+        return copyChildForm;
       },
       copylinkagePath(){
           return (this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathName) ? this.swaggerCategory[this.countTo].pathName : "";
@@ -104,9 +113,6 @@
         this.addTab(data);
       },
       initInfo(){
-        {data:{
-          
-        }}
         this.selectAll=false;
         this.s=false;
         this.saveTab();

@@ -81,13 +81,9 @@
         </li>
         <li><span>响应参数说明</span>
           <div class="ResponseParameter">
-            <span v-show="(typeof InterfaceResponse) != 'object'">{{InterfaceResponse}}</span>
-            <ul v-show="(typeof InterfaceResponse) == 'object'">
+            <span v-if="(typeof InterfaceResponse) != 'object'">{{InterfaceResponse}}</span>
+            <ul v-else>
               <li class="head"><span>参数名称</span><span>类型</span><span>说明</span></li>
-              <!--<li v-for="(item,index) in InterfaceResponse">
-                <span>{{index}}</span>
-                <span>{{item.type}}</span>
-                <span>{{item.description ? item.description : "无"}}</span>-->
               <div v-for="(item,key) in InterfaceResponse">
                 <form-fold :name="'response'" :depth="0" :properties="item.properties" :keyTo="key"
                            :item="item"></form-fold>
@@ -103,10 +99,17 @@
             <ul v-show="(typeof InterfaceResponse) == 'object'">
               <li class="head"><span>状态码</span><span>说明</span><span>Schema</span></li>
               <li v-for="(item,index) in InterfaceResponseCode">
-                <span>{{index}}</span>
-                <span>{{item.description ? item.description : "无"}}</span>
-                <span>{{item.schema?(item.schema.$ref ? item.schema.$ref : (item.schema.type && item.schema.type === "array" && item.schema.items)?item.schema["items"].$ref:"无"):"无"}}
+                <div>
+                  <span>{{index}}</span>
+                </div>
+                <div>
+                  <span>{{item.description ? item.description : "无"}}</span>
+                </div>
+                <div>
+                  <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor" href="javascript:">{{responseCodePre&&responseCodePre[index]&&responseCodePre[index]==true?'收缩':'展开'}}</a>
+                  <span :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema?(item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items)?jsonObject:"无"):"无"}}
                 </span>
+                </div>
               </li>
             </ul>
           </div>
@@ -130,6 +133,7 @@
         <span style="cursor:pointer;" @click="debugging='header'"
               :class="[debugging=='header'?'active':'']">Header</span>
         <span style="cursor:pointer;" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
+        <b>Time:<a href="javascript:">    {{requestTime}}  ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <div v-if="isJsonObject">
@@ -187,7 +191,8 @@
         debugging: 'content',
         curlMode: "",
         linkageSection: "",
-        parameterValue: {}
+        parameterValue: {},
+        responseCodePre:[]
       }
     },
     computed: {
@@ -218,19 +223,7 @@
               let refType = RegExp.$1;
               let deftion = undefined;
               let definition = {};
-              definition[refType]=this.formatRequest(ref);
-             /* let flag = false;
-              let definitionsArray = deepCopy(this.leftDropDownBoxContent && this.leftDropDownBoxContent.definitions);
-              let definition = null;
-              if (definitionsArray === undefined) {
-                return "加载失败";
-              }
-              for (let i in definitionsArray) {
-                if (i === refType) {
-                  definition = deepCopy(definitionsArray[i].properties);
-                  break
-                }
-              }*/
+              definition[refType] = this.formatRequest(ref);
 
               deftion = this.JSONinit(refType);
               this.jsonObject = deftion;
@@ -243,11 +236,11 @@
               }
               return "无";
             }
-          }else{
+          } else {
             return "无";
           }
 
-        }else{
+        } else {
           return "没有指定响应成功信息";
         }
       },
@@ -320,6 +313,9 @@
       },
       debugResponse() {/* 从请求中获取到的响应参数 */
         return this.$store.state.debugRequest.debugResponse;
+      },
+      requestTime(){
+        return this.$store.state.debugRequest.requestTime;
       }
     },
     watch: {
@@ -330,6 +326,17 @@
     },
     methods: {
       ...mapActions(["carriedSend"]),
+      responseCodeSchema:function (item) {/* 响应码部分 数据是否存在Schema字段 */
+
+        return (item.schema&&item.schema.type && item.schema.type === 'array' && item.schema.items)||(item.schema&&item.schema.$ref);
+      },
+      responseCodePreToggle:function (index) {/* 响应码部分数据JSON格式化展开收缩切换 */
+        if(this.responseCodePre&&this.responseCodePre[index]&&this.responseCodePre[index]){
+          this.$set(this.responseCodePre,index,!this.responseCodePre[index])
+        }else{
+          this.$set(this.responseCodePre,index,true)
+        }
+      },
       deleteChildForm: function (key) {
         this.$delete(this.childForm, key);
       },
@@ -426,7 +433,7 @@
         }
         return result;
       },
-      formatResponse:function () {
+      formatResponse: function () {
 
       },
       titleCase5: function (str) {
@@ -446,7 +453,9 @@
           }
         }
         if (deftion === null || deftion === undefined) {
-          return deftion;
+          let obj = new Object();
+          obj[refType] = deftion;
+          return obj;
         }
         for (let key in deftion) {
           if (deftion[key].$ref && deftion[key].type === "array") {
@@ -560,6 +569,7 @@
 
       },
       StitchingCurl: function (headerParams, reqdata) {
+        console.log("Curl处理")
         let _this = this;
         let headerss = "";
         let contentUrl = `'${_this.debugResponse.url}'`;
@@ -615,7 +625,7 @@
 
   .ResponseParameter > ul {
     overflow: hidden;
-    border: 1px solid #ddd;
+    border: 1px solid #ddd;border-bottom: 0;
   }
 
   .ResponseParameter > ul li {
@@ -634,12 +644,17 @@
     border-right: 1px solid #ddd;
   }
 
+  .ResponseParameter .head span {
+    text-align: center;
+  }
+
   .ResponseParameter > ul li > span:last-child {
     border-right: 0;
+    width: 35%;
   }
 
   /*  响应状态码部分 */
-  .ResponseCode .head {
+  .ResponseCode li.head {
     font-size: 16px;
     font-weight: 700;
     background-color: #F8F8F8;
@@ -653,26 +668,49 @@
   .ResponseCode > ul li {
     overflow: hidden;
     border-bottom: 1px solid #ddd;
+    position: relative;
   }
 
   .ResponseCode > ul li:last-child {
     border-bottom: 0;
   }
 
-  .ResponseCode > ul li > span {
+  .ResponseCode > ul li > div,
+  .ResponseCode li.head span{
     width: 50%;
-    float: left;
-    padding: 8px 4px;
-    border-right: 1px solid #ddd;
+    float: left;position: relative;
+    padding-bottom: 8px;
+    box-sizing: border-box;
   }
+  .ResponseCode li.head span{padding: 8px 4px;border-right: 1px solid #ddd;}
 
-  .ResponseCode > ul li > span:first-child {
+  .ResponseCode > ul li > div:first-child,
+  .ResponseCode li.head span:first-child{
     width: 15%;
   }
 
-  .ResponseCode > ul li > span:last-child {
+  .ResponseCode > ul li > div:last-child,
+  .ResponseCode li.head span:last-child{
     border-right: 0;
-    width: 25%;
+    width: 35%;
+  }
+  .ResponseCode > ul li > div:last-child a{
+    text-decoration: none;font-size: 12px;position: absolute;right: 0;top:5px;
+  }
+
+  .ResponseCode > ul li > div span{
+    padding-bottom: 1000px;margin-bottom:-1000px;
+    display: block;
+    border-right: 1px solid #ddd;
+    padding-top: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .ResponseCode > ul li div span.format {
+    white-space: pre-wrap;
+  }
+  .ResponseCode > ul li > div:last-child span{
+    border-right: 0;
   }
 
   /* 调试结果区域样式 */
@@ -689,6 +727,12 @@
     position: relative;
     border-right: 0;
     bottom: -1px;
+  }
+  .debugging-result >b{
+    font-size: 12px;float: right;color:#858585;    margin-top: 12px;
+  }
+  .debugging-result >b a{
+    text-decoration: none;color:#2E8BF0;
   }
 
   .debugging-result > span:last-of-type {

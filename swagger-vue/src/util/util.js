@@ -1,7 +1,9 @@
 /* 对象拷贝 */
 const deepCopy = function (source) {
   let result = "";
-  if(source === undefined || source === null){ return undefined;}
+  if(source === undefined || source === null){
+    return undefined;
+  }
   if (typeof source === 'object') {
     if (source.constructor === Array) {
       return treatArray(source);
@@ -16,6 +18,7 @@ const deepCopy = function (source) {
     result = {};
     for (let key in source) {
       result[key] = deepCopy(source[key]);
+      // result[key] = val?val:{};
     }
     return result;
   }

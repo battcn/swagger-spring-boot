@@ -61,14 +61,19 @@ init();
 
 /* 调试模块 */
 const debugRequest = {
-  state: {data: [], count: 0, debugResponse: {}},
+  state: {data: [], count: 0, debugResponse: {},requestTime:0,},
   mutations: {
     send(state, n){
+      let enterTime = new Date();
         Vue.http({url: n.url, body: n.data, method: n.type.toUpperCase(), headers: n.headerParams})
           .then(function (response) {
+            let outTime = new Date();
+            debugRequest.state.requestTime=outTime-enterTime;
             debugRequest.state.debugResponse = response;
+            console.log("请求发送成功");
             n.resolve()
           }, function (response) {
+            console.log("请求发送失败");
             debugRequest.state.debugResponse = response;
             n.resolve();
           })
@@ -78,6 +83,7 @@ const debugRequest = {
     carriedSend(content,n){
       return new Promise((resolve,reject)=>{
         n.resolve=resolve;
+        console.log("回调开始")
         content.commit('send',n);
       })
     }

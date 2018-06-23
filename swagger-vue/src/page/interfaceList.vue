@@ -28,17 +28,18 @@
     </div>
     <div class="tabSwitch">
       <ul>
-        <li  v-for="(value,key) in tabData" @click="" :class="{active:showKey==key}"><span>{{key}}</span><a @click="deleteTab(key)" href="javascript:">X</a></li>
+        <li  v-for="(value,key) in tabData" @click="controlTab(key,value)" :class="{active:showKey==key}"><span>{{key}}</span><a  href="javascript:">X</a></li>
       </ul>
     </div>
-    <interfaceMain v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
+    <introduction v-if="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
+    <interfaceMain v-if="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
                    v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected" v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapState,mapMutations} from 'vuex'
+  import introduction from './introduction.vue'
   import interfaceMain from './interfaceMain.vue'
-
   export default {
     name: 'app',
     data() {
@@ -61,7 +62,7 @@
         },*/
         selected: 0,
         count: 0,
-        countTo: 0,
+        countTo: -1,
         control: false,
         hint: "",
         quantity: {},
@@ -77,6 +78,24 @@
       }
     },
     methods: {
+      controlTab:function(key,value){
+        let a =  window.event;
+        let target = a.target || a.srcElement;
+        if(this.selected===value[2]&&this.count===value[3]&&this.countTo===value[4]){
+          if(target&&target.nodeName&&target.nodeName.toLowerCase() === 'a'){
+            this.deleteTab(key)
+            this.countTo=-1;
+          }
+          return false;
+        }
+        if(target&&target.nodeName&&target.nodeName.toLowerCase() === 'a'){
+          this.deleteTab(key)
+        }else{
+          this.selected=value[2];
+          this.count=value[3];
+          this.countTo=value[4];
+        }
+      },
       changeCountTo:function (index) {
         this.countTo=index;
       },
@@ -85,7 +104,7 @@
       },
       ...mapMutations(['switch','deleteTab']),
     },
-    components: {interfaceMain},
+    components: {interfaceMain,introduction},
     computed: {
       ...mapState({tabData:state =>state.tabData.infoData,showKey:state=>state.tabData.show
       }),

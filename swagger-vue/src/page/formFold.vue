@@ -1,5 +1,5 @@
 <template xmlns="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <div class="tree-menu">
+  <div class="tree-menu" :class="{menuBorder:isResponse}">
     <li v-if="isResponse" :class="{fontColor:properties}" @click="toggleChildren" class="table-tr">
       <span :class="{fontRight:depth>0}" class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
       <span class="table-td-md">{{item.type ? item.type : "无"}}</span>
@@ -57,6 +57,9 @@
     opacity: 0;
   }
 
+  .menuBorder{
+    border-bottom:0;
+  }
   /* 请求参数表格 */
   .table-tr {
     border-bottom: 1px solid #ddd;
@@ -72,10 +75,7 @@
 
   .table-head .table-td {
     padding: 8px 4px;
-    /*padding-bottom: 1000px;
-    margin-bottom: -1000px;
-    height: 30px;
-    line-height: 30px;*/
+    text-align: center;
   }
 
   .table-td {
@@ -83,15 +83,21 @@
     width: 15%;
     float: left;
     padding: 8px 4px;
-    /*padding-bottom: 1000px;
-    margin-bottom: -1000px;
-    min-height: 30px;*/
-    /*line-height: 30px;*/
+    min-height: 18px;
     text-align: left;
   }
-
+  .table-td:nth-child(2){
+    width: 28%;
+  }
+  .table-td:nth-child(3){
+    width: 10%;
+  }
+  .table-td:nth-child(5){
+    width: 10%;
+  }
   .table-td:last-child {
     border-right: 0;
+    width: 12%;
   }
   .table-td-md{
     border-right: 1px solid #ddd;
