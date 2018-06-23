@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * swagger
@@ -63,6 +64,14 @@ public class UserController {
     @ApiOperation(value = "修改用户（DONE）")
     public void put(@PathVariable Long id, @RequestBody User user) {
         log.info("如果你不想写 @ApiImplicitParam 那么 swagger 也会使用默认的参数名作为描述信息 ");
+    }
+
+    @PostMapping("/{id}/file")
+    @ApiOperation(value = "修改用户（DONE）")
+    public void file(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        log.info(file.getContentType());
+        log.info(file.getName());
+        log.info(file.getOriginalFilename());
     }
 
 
