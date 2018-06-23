@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/file")
-    @ApiOperation(value = "修改用户（DONE）")
+    @ApiOperation(value = "文件上传（DONE）")
     public void file(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         log.info(file.getContentType());
         log.info(file.getName());
