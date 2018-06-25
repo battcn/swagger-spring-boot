@@ -40,11 +40,9 @@ public class GlobalAccess {
      */
     public SecurityContext securityContext() {
         final SwaggerProperties.ApiKey apiKey = swaggerProperties.getApiKey();
-        final PathType pathType = apiKey.getPathType();
         return SecurityContext.builder()
                 .securityReferences(defaultAuth(apiKey))
-                .forPaths(pathType == PathType.REGEX ? PathSelectors.regex(apiKey.getAuthRegex()) :
-                        pathType == PathType.ANY ? PathSelectors.any() : PathSelectors.none()).build();
+                .forPaths(PathSelectors.regex(apiKey.getAuthRegex())).build();
     }
 
     /**
