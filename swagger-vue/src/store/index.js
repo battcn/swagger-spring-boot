@@ -61,7 +61,7 @@ init();
 
 /* 调试模块 */
 const debugRequest = {
-  state: {data: [], count: 0, debugResponse: {},requestTime:0,},
+  state: {data: [], count: 0, debugResponse: {},requestTime:0,authorizeObj:{},authorization:"",},
   mutations: {
     send(state, n){
       let enterTime = new Date();
@@ -77,6 +77,12 @@ const debugRequest = {
             debugRequest.state.debugResponse = response;
             n.resolve();
           })
+    },
+    setAuthorization(state,val){
+      debugRequest.state.authorization=val;
+    },
+    setAuthorizeObj(state,obj){
+      debugRequest.state.authorizeObj=obj;
     }
   },
   actions:{

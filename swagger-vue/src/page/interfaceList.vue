@@ -34,39 +34,26 @@
     <introduction v-if="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
     <interfaceMain v-if="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
                    v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected" v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
+    <authorizations  ></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapState,mapMutations} from 'vuex'
   import introduction from './introduction.vue'
   import interfaceMain from './interfaceMain.vue'
+  import authorizations from  './authorizations.vue'
   export default {
     name: 'app',
     data() {
       return {
         indentation: 1,
-        /*testObject: {
-          "test1": "wx9fdb8ble7ce3c68f",
-          "test2": "123456789",
-          "testData1": {
-            "testdatason1": "97895455",
-            "testdatason2": 3,
-            "testData222": [
-              {
-                "testdatason4": "wosh",
-                "testdatason5": "shijie"
-              }
-            ]
-          },
-          "testData2": [{"a": 23}]
-        },*/
         selected: 0,
         count: 0,
         countTo: -1,
         control: false,
         hint: "",
         quantity: {},
-        bg: {"GET": '#D1EAFF', "POST": '#D1FED3', "PATCH": '#FFE2D2', "DELETE": '#FFD1D1', "PUT": "#F0E0CA"}
+        bg: {"GET": '#D1EAFF', "POST": '#D1FED3', "PATCH": '#FFE2D2', "DELETE": '#FFD1D1', "PUT": "#F0E0CA"},
       }
     },
     watch: {
@@ -83,7 +70,7 @@
         let target = a.target || a.srcElement;
         if(this.selected===value[2]&&this.count===value[3]&&this.countTo===value[4]){
           if(target&&target.nodeName&&target.nodeName.toLowerCase() === 'a'){
-            this.deleteTab(key)
+            this.deleteTab(key);
             this.countTo=-1;
           }
           return false;
@@ -104,12 +91,13 @@
       },
       ...mapMutations(['switch','deleteTab']),
     },
-    components: {interfaceMain,introduction},
+    components: {interfaceMain,introduction,authorizations},
     computed: {
-      ...mapState({tabData:state =>state.tabData.infoData,showKey:state=>state.tabData.show
+      ...mapState({tabData:state =>state.tabData.infoData,
+        showKey:state=>state.tabData.show
       }),
       swaggerLeftHead() {
-        return this.$store.state.swaggerLeftHead.data
+        return this.$store.state.swaggerLeftHead.data;
       },
       leftDropDownBoxContent() {
         return this.$store.state.leftDropDownBoxContent.data;
@@ -133,6 +121,8 @@
       }
       },
     created(){
+      let leftDropContent= this.$store.state.leftDropDownBoxContent&&this.$store.state.leftDropDownBoxContent.data;
+      let defi=leftDropContent&&leftDropContent.securityDefinitions&&leftDropContent.securityDefinitions['X-Authorization'];
     }
   }
 </script>

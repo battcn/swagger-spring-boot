@@ -171,7 +171,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapMutations, mapActions} from 'vuex'
+  import {mapState,mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
   import {deepCopy, basicTypeInit} from './../util/util'
   import SubmitForm from './submitForm.vue'
@@ -199,6 +199,7 @@
       /**
        * @return {string}
        */
+      ...mapState(['authorization']),
       InterfaceResponse: function () {/* 响应参数 */
         let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
         let respBasis = false;
@@ -316,6 +317,13 @@
       },
       requestTime(){
         return this.$store.state.debugRequest.requestTime;
+      },
+      authorizeObj(){
+        return this.$store.state.debugRequest.authorizeObj;
+      },
+      isExistSecurity(){
+        let is = this.swaggerCategory&&this.swaggerCategory[this.countTo]&&this.swaggerCategory[this.countTo].pathInfo&&this.swaggerCategory[this.countTo].pathInfo.security;
+          return !!is;
       }
     },
     watch: {
@@ -432,9 +440,6 @@
           }
         }
         return result;
-      },
-      formatResponse: function () {
-
       },
       titleCase5: function (str) {
         return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
@@ -558,7 +563,14 @@
           }
         }
         let jsonReqdata = reqdata;
-        this.$store.dispatch('carriedSend', {
+        /* 判断调试请求中是否有Security字段 */
+        if(this.isExistSecurity){/* headerParams */
+          for(let key in this.authorizeObj){
+            headerParams[key]=this.authorizeObj[key];
+            console.log(key,this.authorizeObj[key])
+          }
+        }
+        _this.$store.dispatch('carriedSend', {
           url: "http://" + _this.leftDropDownBoxContent.host + url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
