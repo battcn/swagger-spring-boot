@@ -35,7 +35,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     console.log(chalk.cyan('  Build complete.\n'))
     console.log(chalk.yellow(
       '  Tip: built files are meant to be served over an HTTP server.\n' +
-      '  Opening swagger-ui.html over file:// won\'t work.\n'
+      '  Opening index.html over file:// won\'t work.\n'
     ))
   })
 })

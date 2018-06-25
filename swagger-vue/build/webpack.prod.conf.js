@@ -57,12 +57,12 @@ const webpackConfig = merge(baseWebpackConfig, {
         ? {safe: true, map: {inline: false}}
         : {safe: true}
     }),
-    // generate dist swagger-ui.html with correct asset hash for caching.
-    // you can customize output by editing /swagger-ui.html
+    // generate dist index.html with correct asset hash for caching.
+    // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: config.build.index,
-      template: 'swagger-ui.html',
+      template: 'index.html',
       inject: true,
       minify: {
         removeComments: true,
