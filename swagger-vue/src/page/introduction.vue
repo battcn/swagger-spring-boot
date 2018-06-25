@@ -1,7 +1,7 @@
 <template>
   <div class="introduction">
     <ul>
-      <li class="head"><span>crm-service</span></li>
+      <li class="head"><span>{{infoData&&infoData.title?infoData.title:'swagger-vue-ui'}}</span></li>
       <li>
         <span>简介</span>
         <span>{{infoData&&infoData.description?infoData.description:'无'}}</span>
