@@ -10,10 +10,10 @@ export default new Router({
   routes:[
     {
       path:'/',
-      redirect: 'swagger-ui.html'
+      redirect: 'index.html'
     },
     {
-      path:'swagger-ui.html',
+      path:'index.html',
       name:'login',
       component:login
     },

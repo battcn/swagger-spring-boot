@@ -7,9 +7,9 @@ Vue.use(VueResource);
 
 //js获取项目根路径，如： http://localhost:8080/battcn
 function rootPath() {
-  //获取当前网址，如： http://localhost:8083/battcn/swagger-ui.html
+  //获取当前网址，如： http://localhost:8083/battcn/index.html
   const curWwwPath = window.document.location.href;
-  //获取主机地址之后的目录，如： battcn/swagger-ui.html
+  //获取主机地址之后的目录，如： battcn/index.html
   const pathName = window.document.location.pathname;
   const pos = curWwwPath.indexOf(pathName);
   //获取主机地址，如： http://localhost:8083
