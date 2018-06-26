@@ -8,12 +8,9 @@ import list from '@/page/interfaceList';
 export default new Router({
   mode:'history',
   routes:[
+
     {
-      path:'/',
-      redirect: 'index.html'
-    },
-    {
-      path:'index.html',
+      path:'/login',
       name:'login',
       component:login
     },
@@ -21,6 +18,13 @@ export default new Router({
       path:'/home',
       name:'list',
       component:list
+    },
+    {
+      path:'/',
+      name:'home',
+      redirect: '/login'
+      // component:login
     }
   ]
-})
+});
+

@@ -27,14 +27,24 @@
       </ul>
     </div>
     <div class="tabSwitch">
+      <div class="management">
+        <a @click="managementShow=!managementShow" class="fontColor" href="javascript:">&#9662;</a>
+        <transition name="fade">
+        <ul v-show="managementShow">
+          <li @click="closeTab">close</li>
+          <li @click="closeOthersTab">close Others</li>
+          <li @click="closeAllTab">close All</li>
+        </ul>
+        </transition>
+      </div>
       <ul>
         <li  v-for="(value,key) in tabData" @click="controlTab(key,value)" :class="{active:showKey==key}"><span>{{key}}</span><a  href="javascript:">X</a></li>
       </ul>
     </div>
-    <introduction v-if="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
-    <interfaceMain v-if="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
+    <introduction v-show="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
+    <interfaceMain v-show="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
                    v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected" v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
-    <authorizations  ></authorizations>
+    <authorizations></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -54,6 +64,7 @@
         hint: "",
         quantity: {},
         bg: {"GET": '#D1EAFF', "POST": '#D1FED3', "PATCH": '#FFE2D2', "DELETE": '#FFD1D1', "PUT": "#F0E0CA"},
+        managementShow:false
       }
     },
     watch: {
@@ -65,6 +76,30 @@
       }
     },
     methods: {
+      closeTab:function () {/* 删除当前 */
+        if(this.showKey&&this.tabData&&this.tabData[this.showKey]){
+          this.deleteTab(this.showKey);
+          this.managementShow=false;
+          this.countTo=-1;
+        }
+      },
+      closeOthersTab:function () {/* 删除其他 */
+        if(this.showKey&&this.tabData){
+          for(let key in this.tabData){
+            if(key!==this.showKey){
+              this.deleteTab(key);
+            }
+          }
+          this.managementShow=false;
+        }
+      },
+      closeAllTab:function () {
+        if(this.tabData!=={}){
+          this.emptyTab();
+        }
+        this.countTo=-1;
+        this.managementShow=false;
+      },
       controlTab:function(key,value){
         let a =  window.event;
         let target = a.target || a.srcElement;
@@ -89,7 +124,7 @@
       PromptPopUpShow: function (hint) {
         this.$layer.msg(hint, {time: 2})/*  提示框插件 */
       },
-      ...mapMutations(['switch','deleteTab']),
+      ...mapMutations(['switch','deleteTab','emptyTab']),
     },
     components: {interfaceMain,introduction,authorizations},
     computed: {
@@ -248,17 +283,17 @@
     max-width: 260px;
   }
 /*  tab切换选项 */
-  .tabSwitch{
+  .tabSwitch{position: relative;
     margin-left: 43%;
     margin-right: 15px;
-    padding-left: 10px;
+    padding-left: 36px;
     transition: all 0.2s;
     white-space: nowrap;
     overflow-y: hidden;
     overflow-x: scroll;
     height: 50px;
   }
-  .tabSwitch ul{
+  .tabSwitch >ul{
     font-size: 0;
     text-align: left;
   }
@@ -284,7 +319,7 @@
     background: #FFF;
   }
 
-  .tabSwitch li{
+  .tabSwitch > ul li{
     padding: 10px 6px 10px 15px;
     font-size: 14px;font-weight: 500;
     border-top: 1px solid #dbdbdb;
@@ -292,24 +327,55 @@
     float: none;
     box-shadow: 1px 1px 2px #e9e4e4;
   }
-  .tabSwitch li.active{
+  .tabSwitch > ul li.active{
     background-color: #89BF05;color:#fff;
   }
-  .tabSwitch li span{
+  .tabSwitch > ul li span{
     padding-right: 9px;
   }
-  .tabSwitch li a{
+  .tabSwitch > ul li a{
     text-decoration: none;color:black;
   }
-  .tabSwitch li.active span,
-  .tabSwitch li.active a{
+  .tabSwitch > ul li.active span,
+  .tabSwitch > ul li.active a{
     color:#fff;
   }
-  .tabSwitch li a:hover,
-  .tabSwitch li.active a:hover{
+  .tabSwitch > ul li a:hover,
+  .tabSwitch > ul li.active a:hover{
     color:rgb(235, 91, 91);
   }
-
+  /* 历史记录管理 */
+  .tabSwitch .management{
+position: absolute;top:0;left: 0;
+  }
+  .tabSwitch .management a{
+    text-decoration: none;color: #30ABF9;
+    font-size: 30px;
+    display: block;
+    width: 36px;
+    height: 36px;
+    line-height: 37px;
+    text-align: center;
+    border-top: 1px solid #dbdbdb;
+    box-shadow: 1px 1px 2px #e9e4e4;
+  }
+  .tabSwitch .management ul{
+    position: fixed;transition: all .4s;
+    z-index: 99;
+    text-align: left;
+    background: #30ABF9;
+    padding: 10px;    border-radius: 5px;
+    color: #fff;
+  }
+  .tabSwitch .management ul li{
+    cursor: pointer;
+    margin: 4px auto;
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+  .tabSwitch .management ul li:hover{
+    background:rgb(57, 146, 208) ;
+  }
   /* 响应式 */
   @media screen and (min-width: 1600px){
     .swagger-left{

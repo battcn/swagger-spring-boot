@@ -25,7 +25,13 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
-        { from: /.*/, to: path.join(config.dev.assetsPublicPath, 'index.html') },
+        { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
+        /*  此处导致路由重定向正常运行，但是普通刷新，路由路径输入会找不到页面，
+        正常代码：
+        { from: /.*!/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
+        原先代码： (少了.posix)
+        { from: /.*!/, to: path.join(config.dev.assetsPublicPath, 'index.html') },*/
+
       ],
     },
     hot: true,

@@ -584,17 +584,17 @@
         console.log("Curl处理")
         let _this = this;
         let headerss = "";
-        let contentUrl = `'${_this.debugResponse.url}'`;
-        let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0]}'`;
+        let contentUrl = `'${_this.debugResponse&&_this.debugResponse.config&&_this.debugResponse.config.url}'`;
+        let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}'`;
         for (let key in headerParams) {
           headerss += `${key}: ${headerParams[key]}`;
         }
         /*  生成curl命令组成部分 */
         /* 头部数据 */
         headerss !== "" ? headerss = ` --header '${ headerss}' ` : "";
-        let contentType = ` --header  'Content-Type:   ${ _this.debugResponse.headers['map'] && _this.debugResponse.headers['map']['content-type'] && _this.debugResponse.headers['map']['content-type'][0]}' `
+        let contentType = ` --header  'Content-Type:   ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}' `
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
-          let curlTable = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()}  --header 'Accept:  ${ _this.debugResponse.headers['map']['content-type'][0] }' ${headerss} ${contentUrl}`;
+          let curlTable = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()}  --header 'Accept:  ${ _this.debugResponse.headers['content-type'] }' ${headerss} ${contentUrl}`;
           _this.curlMode = curlTable;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
@@ -604,17 +604,17 @@
         }
         /* 响应内容JSON序列化 */
         try {
-          let obj = JSON.parse(this.debugResponse.bodyText);
+          let obj = (typeof this.debugResponse.data === 'object'?this.debugResponse.data:JSON.parse(this.debugResponse.data));
           if (typeof obj === 'object' && obj) {
             this.isJsonObject = true;
             this.jsonObjectTo = obj;
           } else {
             this.isJsonObject = false;
-            this.jsonObjectTo = String(this.debugResponse.bodyText);
+            this.jsonObjectTo = String(this.debugResponse.data);
           }
         } catch (e) {
           this.isJsonObject = false;
-          this.jsonObjectTo = String(this.debugResponse.bodyText);
+          this.jsonObjectTo = String(this.debugResponse.data);
         }
         this.resultShow = true;
         /* 显示结果 */

@@ -50,7 +50,10 @@ const basicTypeInit = function (type) {
   if (type === 'array') {
     return []
   }
-}
+  if(type === 'file'){
+    return {type:"file", in: "formData"}
+  }
+};
 export {
   deepCopy, basicTypeInit
 }

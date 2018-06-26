@@ -29,9 +29,10 @@
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
               <textarea rows="10" v-on:input="oninput($event.target.value,key)"
-                        v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'"
+                        v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in!=='formData'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text">{{copyChildForm[key].default}}</textarea>
+            <input type="file" v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'" ref="fileInput"/>
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue"   type="text" style="width:100%;margin-top: 8px;"/>
             <input v-else   v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
@@ -124,6 +125,7 @@
         }
       },
       formCollection: function () { //收集表单信息
+//        fileInput
         let data=deepCopy(this.copyChildForm);
         for(let key in this.$refs.phoneNum){
           data[key].required= this.$refs.phoneNum[key].checked;
