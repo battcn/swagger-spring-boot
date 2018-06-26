@@ -63,7 +63,6 @@
         let copyChildForm=deepCopy(this.childForm);
         let copyChildFormDefault=copyChildForm[0]&&copyChildForm[0].default;
         for(let key in copyChildFormDefault){/*   替换undefined的字段对象(暂代) */
-          console.log(key,"结果",copyChildFormDefault[key]);
          if(copyChildFormDefault[key]=== undefined){
            copyChildFormDefault[key]={};
          }
