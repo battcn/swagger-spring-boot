@@ -206,9 +206,9 @@ spring:
         parameter-type: 'header'
         required: true
     groups:
-      基础资料:
+      basic-group:
         base-package: com.battcn.controller.basic
-      系统设置:
+      system-group:
         base-package: com.battcn.controller.system
 ```
 
