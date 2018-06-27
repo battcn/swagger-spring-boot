@@ -5,7 +5,7 @@
         <select class="form-control" v-model.lazy="selected">
           <option v-for="(item,index) in swaggerLeftHead" :value="index">
             <!--{{item.serviceInstances && item.serviceInstances[0] && item.serviceInstances[0].serviceId}}-->
-            {{item.url||item.location}}
+            {{item.url || item.location}}
           </option>
         </select>
         <li v-for="(item,index) in leftDropDownBoxContent.tags" @click="count=index"
@@ -30,25 +30,28 @@
       <div class="management">
         <a @click="managementShow=!managementShow" class="fontColor" href="javascript:">&#9662;</a>
         <transition name="fade">
-        <ul v-show="managementShow">
-          <li @click="closeTab">close</li>
-          <li @click="closeOthersTab">close Others</li>
-          <li @click="closeAllTab">close All</li>
-        </ul>
+          <ul v-show="managementShow">
+            <li @click="closeTab">关闭当前</li>
+            <li @click="closeOthersTab">关闭其它</li>
+            <li @click="closeAllTab">关闭所有</li>
+          </ul>
         </transition>
       </div>
       <ul>
-        <li  v-for="(value,key) in tabData" @click="controlTab(key,value)" :class="{active:showKey==key}"><span>{{key}}</span><a  href="javascript:">X</a></li>
+        <li v-for="(value,key) in tabData" @click="controlTab(key,value)" :class="{active:showKey==key}">
+          <span>{{key}}</span><a href="javascript:">X</a></li>
       </ul>
     </div>
     <introduction v-show="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
-    <interfaceMain v-show="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow" v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
-                   v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected" v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
+    <interfaceMain v-show="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow"
+                   v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
+                   v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
+                   v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
     <authorizations></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState,mapMutations} from 'vuex'
+  import {mapState, mapMutations} from 'vuex'
   import introduction from './introduction.vue'
   import interfaceMain from './interfaceMain.vue'
   import authorizations from  './authorizations.vue'
@@ -64,7 +67,7 @@
         hint: "",
         quantity: {},
         bg: {"GET": '#D1EAFF', "POST": '#D1FED3', "PATCH": '#FFE2D2', "DELETE": '#FFD1D1', "PUT": "#F0E0CA"},
-        managementShow:false
+        managementShow: false
       }
     },
     watch: {
@@ -76,60 +79,62 @@
       }
     },
     methods: {
-      closeTab:function () {/* 删除当前 */
-        if(this.showKey&&this.tabData&&this.tabData[this.showKey]){
+      closeTab: function () {/* 删除当前 */
+        if (this.showKey && this.tabData && this.tabData[this.showKey]) {
           this.deleteTab(this.showKey);
-          this.managementShow=false;
-          this.countTo=-1;
+          this.managementShow = false;
+          this.countTo = -1;
         }
       },
-      closeOthersTab:function () {/* 删除其他 */
-        if(this.showKey&&this.tabData){
-          for(let key in this.tabData){
-            if(key!==this.showKey){
+      closeOthersTab: function () {/* 删除其他 */
+        if (this.showKey && this.tabData) {
+          for (let key in this.tabData) {
+            if (key !== this.showKey) {
               this.deleteTab(key);
             }
           }
-          this.managementShow=false;
+          this.managementShow = false;
         }
       },
-      closeAllTab:function () {
-        if(this.tabData!=={}){
+      closeAllTab: function () {
+        if (this.tabData !== {}) {
           this.emptyTab();
         }
-        this.countTo=-1;
-        this.managementShow=false;
+        this.countTo = -1;
+        this.managementShow = false;
       },
-      controlTab:function(key,value){
-        let a =  window.event;
+      controlTab: function (key, value) {
+        let a = window.event;
         let target = a.target || a.srcElement;
-        if(this.selected===value[2]&&this.count===value[3]&&this.countTo===value[4]){
-          if(target&&target.nodeName&&target.nodeName.toLowerCase() === 'a'){
+        if (this.selected === value[2] && this.count === value[3] && this.countTo === value[4]) {
+          if (target && target.nodeName && target.nodeName.toLowerCase() === 'a') {
             this.deleteTab(key);
-            this.countTo=-1;
+            this.countTo = -1;
           }
           return false;
         }
-        if(target&&target.nodeName&&target.nodeName.toLowerCase() === 'a'){
+        if (target && target.nodeName && target.nodeName.toLowerCase() === 'a') {
           this.deleteTab(key)
-        }else{
-          this.selected=value[2];
-          this.count=value[3];
-          this.countTo=value[4];
+        } else {
+          this.selected = value[2];
+          this.count = value[3];
+          this.countTo = value[4];
         }
       },
-      changeCountTo:function (index) {
-        this.countTo=index;
+      changeCountTo: function (index) {
+        this.countTo = index;
       },
       PromptPopUpShow: function (hint) {
-        this.$layer.msg(hint, {time: 2})/*  提示框插件 */
+        this.$layer.msg(hint, {time: 2})
+        /*  提示框插件 */
       },
-      ...mapMutations(['switch','deleteTab','emptyTab']),
+      ...mapMutations(['switch', 'deleteTab', 'emptyTab']),
     },
-    components: {interfaceMain,introduction,authorizations},
+    components: {interfaceMain, introduction, authorizations},
     computed: {
-      ...mapState({tabData:state =>state.tabData.infoData,
-        showKey:state=>state.tabData.show
+      ...mapState({
+        tabData: state => state.tabData.infoData,
+        showKey: state => state.tabData.show
       }),
       swaggerLeftHead() {
         return this.$store.state.swaggerLeftHead.data;
@@ -154,10 +159,10 @@
         }
         return current;
       }
-      },
+    },
     created(){
-      let leftDropContent= this.$store.state.leftDropDownBoxContent&&this.$store.state.leftDropDownBoxContent.data;
-      let defi=leftDropContent&&leftDropContent.securityDefinitions&&leftDropContent.securityDefinitions['X-Authorization'];
+      let leftDropContent = this.$store.state.leftDropDownBoxContent && this.$store.state.leftDropDownBoxContent.data;
+      let defi = leftDropContent && leftDropContent.securityDefinitions && leftDropContent.securityDefinitions['X-Authorization'];
     }
   }
 </script>
@@ -282,8 +287,10 @@
     height: auto;
     max-width: 260px;
   }
-/*  tab切换选项 */
-  .tabSwitch{position: relative;
+
+  /*  tab切换选项 */
+  .tabSwitch {
+    position: relative;
     margin-left: 43%;
     margin-right: 15px;
     padding-left: 36px;
@@ -293,63 +300,81 @@
     overflow-x: scroll;
     height: 50px;
   }
-  .tabSwitch >ul{
+
+  .tabSwitch > ul {
     font-size: 0;
     text-align: left;
   }
+
   /* 滚动条样式 */
   .swagger-left::-webkit-scrollbar,
   .tabSwitch::-webkit-scrollbar,
-  .swagger-category::-webkit-scrollbar{/*滚动条整体样式*/
-    width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+  .swagger-category::-webkit-scrollbar { /*滚动条整体样式*/
+    width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
     height: 8px;
   }
+
   .swagger-left::-webkit-scrollbar-thumb,
   .tabSwitch::-webkit-scrollbar-thumb,
-  .swagger-category::-webkit-scrollbar-thumb{/*滚动条里面小方块*/
+  .swagger-category::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
     border-radius: 5px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     background: #EBEBEB;
   }
+
   .swagger-left::-webkit-scrollbar-track,
   .tabSwitch::-webkit-scrollbar-track,
-  .swagger-category::-webkit-scrollbar-track{/*滚动条里面轨道*/
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  .swagger-category::-webkit-scrollbar-track { /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     background: #FFF;
   }
 
-  .tabSwitch > ul li{
+  .tabSwitch > ul li {
     padding: 10px 6px 10px 15px;
-    font-size: 14px;font-weight: 500;
+    font-size: 14px;
+    font-weight: 500;
     border-top: 1px solid #dbdbdb;
-    cursor: pointer;display: inline-block;
+    cursor: pointer;
+    display: inline-block;
     float: none;
     box-shadow: 1px 1px 2px #e9e4e4;
   }
-  .tabSwitch > ul li.active{
-    background-color: #89BF05;color:#fff;
+
+  .tabSwitch > ul li.active {
+    background-color: #89BF05;
+    color: #fff;
   }
-  .tabSwitch > ul li span{
+
+  .tabSwitch > ul li span {
     padding-right: 9px;
   }
-  .tabSwitch > ul li a{
-    text-decoration: none;color:black;
+
+  .tabSwitch > ul li a {
+    text-decoration: none;
+    color: black;
   }
+
   .tabSwitch > ul li.active span,
-  .tabSwitch > ul li.active a{
-    color:#fff;
+  .tabSwitch > ul li.active a {
+    color: #fff;
   }
+
   .tabSwitch > ul li a:hover,
-  .tabSwitch > ul li.active a:hover{
-    color:rgb(235, 91, 91);
+  .tabSwitch > ul li.active a:hover {
+    color: rgb(235, 91, 91);
   }
+
   /* 历史记录管理 */
-  .tabSwitch .management{
-position: absolute;top:0;left: 0;
+  .tabSwitch .management {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
-  .tabSwitch .management a{
-    text-decoration: none;color: #30ABF9;
+
+  .tabSwitch .management a {
+    text-decoration: none;
+    color: #30ABF9;
     font-size: 30px;
     display: block;
     width: 36px;
@@ -359,32 +384,41 @@ position: absolute;top:0;left: 0;
     border-top: 1px solid #dbdbdb;
     box-shadow: 1px 1px 2px #e9e4e4;
   }
-  .tabSwitch .management ul{
-    position: fixed;transition: all .4s;
+
+  .tabSwitch .management ul {
+    position: fixed;
+    transition: all .4s;
     z-index: 99;
     text-align: left;
     background: #30ABF9;
-    padding: 10px;    border-radius: 5px;
+    padding: 10px;
+    border-radius: 5px;
     color: #fff;
   }
-  .tabSwitch .management ul li{
+
+  .tabSwitch .management ul li {
     cursor: pointer;
     margin: 4px auto;
     padding: 4px 10px;
     border-radius: 5px;
   }
-  .tabSwitch .management ul li:hover{
-    background:rgb(57, 146, 208) ;
+
+  .tabSwitch .management ul li:hover {
+    background: rgb(57, 146, 208);
   }
+
   /* 响应式 */
-  @media screen and (min-width: 1600px){
-    .swagger-left{
+  @media screen and (min-width: 1600px) {
+    .swagger-left {
       width: 18%;
     }
-    .swagger-category{
-      width: 18%;margin-left: 18%;
+
+    .swagger-category {
+      width: 18%;
+      margin-left: 18%;
     }
-    .tabSwitch{
+
+    .tabSwitch {
       margin-left: 36%;
     }
   }

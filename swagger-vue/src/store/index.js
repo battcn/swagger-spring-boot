@@ -41,7 +41,7 @@ function init() {
     dropDown.state.data = response.data;
     if (dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count].location) {
       /* dropDown.state.data[0]控制当前是第几个接口 */
-      axios.get(SWAGGER_URL + dropDown.state.data[dropDown.state.count].location).then((response) =>{
+      axios.get(SWAGGER_URL + dropDown.state.data[dropDown.state.count].location).then((response) => {
         leftDropDownBoxContent.state.data = response.data;
       }).catch(function (err) {
         leftDropDownBoxContent.state.data = "请求失败:" + err;
@@ -50,7 +50,7 @@ function init() {
   }).catch(function (err) {
     dropDown.state.data = "请求失败:" + err;
   });
-    // .then((a) => {
+  // .then((a) => {
 
 // }
 }

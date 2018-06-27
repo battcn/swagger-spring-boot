@@ -15,7 +15,7 @@
   export default {
     name: 'login',
     data() {
-      return {username:"",password:""}
+      return {username: "", password: ""}
     }
   }
 </script>
@@ -36,10 +36,7 @@
     margin: 0 auto;
   }
 
-
-
-
-  .login .content  p {
+  .login .content p {
     text-align: left;
     font-size: 27px;
     font-weight: bold;
@@ -51,8 +48,9 @@
     box-sizing: border-box;
   }
 
-  .login .content .right  {
-    background: #fff;    float: right;
+  .login .content .right {
+    background: #fff;
+    float: right;
     border-radius: 5px;
     padding: 10px 20px 47px;
     min-width: 390px;
@@ -63,10 +61,12 @@
   }
 
   .login .content .right input {
-    display: block;    font-size: 12px;
+    display: block;
+    font-size: 12px;
     border: 1px solid #E9E9E9;
     width: 244px;
-    outline: none;border-radius: 5px;
+    outline: none;
+    border-radius: 5px;
     height: 34px;
     padding-left: 5px;
     margin: 24px auto;

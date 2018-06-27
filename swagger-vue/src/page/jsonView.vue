@@ -3,13 +3,13 @@
     <div v-if="isSet">
       <li class="jsonViewLi" @click="toggleStatus">
         <span class="font-basic">
-          <span  style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
+          <span style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
           {{keyTo}}
         </span>
-         <span class="quantity">
-           {{  obj?(obj["length"]? "["+obj.length+"]" : (typeof obj == "object" ? "{" + subQuantity(obj) + "}" : "null")):"null"}}
+        <span class="quantity">
+           {{ obj ? (obj["length"] ? "[" + obj.length + "]" : (typeof obj == "object" ? "{" + subQuantity(obj) + "}" : "null")) : "null"}}
          </span>
-       </li>
+      </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"
                  :obj="item"></json-view>
     </div>
@@ -21,7 +21,7 @@
           </span>{{keyTo}}
         </span>:
         <span :style="{color:(typeof obj)=='number'?'#ee422e':'green'}">
-          {{obj===""?'""':obj}}
+          {{obj === "" ? '""' : obj}}
         </span>
       </li>
     </div>
@@ -36,18 +36,15 @@
     props: ['obj', 'indentation', 'keyTo'],
     methods: {
       subQuantity: function (item) {
-        return Object.keys(item)&&Object.keys(item).length;
+        return Object.keys(item) && Object.keys(item).length;
       },
       toggleStatus: function () {
         this.showStatus = !this.showStatus;
       }
     },
-    computed:{
+    computed: {
       isSet(){
-        if(this.obj&&((typeof this.obj) === 'array' || (typeof this.obj) === 'object')){
-          return true;
-        }
-        return false;
+        return !!(this.obj && ((typeof this.obj) === 'array' || (typeof this.obj) === 'object'));
       }
     }
   }

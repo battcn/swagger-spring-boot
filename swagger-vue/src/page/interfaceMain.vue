@@ -106,8 +106,10 @@
                   <span>{{item.description ? item.description : "无"}}</span>
                 </div>
                 <div>
-                  <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor" href="javascript:">{{responseCodePre&&responseCodePre[index]&&responseCodePre[index]==true?'收缩':'展开'}}</a>
-                  <span :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema?(item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items)?jsonObject:"无"):"无"}}
+                  <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor"
+                     href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ? '收缩' : '展开'}}</a>
+                  <span
+                    :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
                 </span>
                 </div>
               </li>
@@ -133,7 +135,7 @@
         <span style="cursor:pointer;" @click="debugging='header'"
               :class="[debugging=='header'?'active':'']">Header</span>
         <span style="cursor:pointer;" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
-        <b>Time:<a href="javascript:">    {{requestTime}}  ms</a></b>
+        <b>Time:<a href="javascript:"> {{requestTime}}  ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <div v-if="isJsonObject">
@@ -171,7 +173,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState,mapMutations, mapActions} from 'vuex'
+  import {mapState, mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
   import {deepCopy, basicTypeInit} from './../util/util'
   import SubmitForm from './submitForm.vue'
@@ -192,7 +194,7 @@
         curlMode: "",
         linkageSection: "",
         parameterValue: {},
-        responseCodePre:[]
+        responseCodePre: []
       }
     },
     computed: {
@@ -322,8 +324,8 @@
         return this.$store.state.debugRequest.authorizeObj;
       },
       isExistSecurity(){
-        let is = this.swaggerCategory&&this.swaggerCategory[this.countTo]&&this.swaggerCategory[this.countTo].pathInfo&&this.swaggerCategory[this.countTo].pathInfo.security;
-          return !!is;
+        let is = this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.security;
+        return !!is;
       }
     },
     watch: {
@@ -334,15 +336,15 @@
     },
     methods: {
       ...mapActions(["carriedSend"]),
-      responseCodeSchema:function (item) {/* 响应码部分 数据是否存在Schema字段 */
+      responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
 
-        return (item.schema&&item.schema.type && item.schema.type === 'array' && item.schema.items)||(item.schema&&item.schema.$ref);
+        return (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) || (item.schema && item.schema.$ref);
       },
-      responseCodePreToggle:function (index) {/* 响应码部分数据JSON格式化展开收缩切换 */
-        if(this.responseCodePre&&this.responseCodePre[index]&&this.responseCodePre[index]){
-          this.$set(this.responseCodePre,index,!this.responseCodePre[index])
-        }else{
-          this.$set(this.responseCodePre,index,true)
+      responseCodePreToggle: function (index) {/* 响应码部分数据JSON格式化展开收缩切换 */
+        if (this.responseCodePre && this.responseCodePre[index] && this.responseCodePre[index]) {
+          this.$set(this.responseCodePre, index, !this.responseCodePre[index])
+        } else {
+          this.$set(this.responseCodePre, index, true)
         }
       },
       deleteChildForm: function (key) {
@@ -564,10 +566,10 @@
         }
         let jsonReqdata = reqdata;
         /* 判断调试请求中是否有Security字段 */
-        if(this.isExistSecurity){/* headerParams */
-          for(let key in this.authorizeObj){
-            headerParams[key]=this.authorizeObj[key];
-            console.log(key,this.authorizeObj[key])
+        if (this.isExistSecurity) {/* headerParams */
+          for (let key in this.authorizeObj) {
+            headerParams[key] = this.authorizeObj[key];
+            console.log(key, this.authorizeObj[key])
           }
         }
         _this.$store.dispatch('carriedSend', {
@@ -584,7 +586,7 @@
         console.log("Curl处理")
         let _this = this;
         let headerss = "";
-        let contentUrl = `'${_this.debugResponse&&_this.debugResponse.config&&_this.debugResponse.config.url}'`;
+        let contentUrl = `'${_this.debugResponse && _this.debugResponse.config && _this.debugResponse.config.url}'`;
         let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}'`;
         for (let key in headerParams) {
           headerss += `${key}: ${headerParams[key]}`;
@@ -604,7 +606,7 @@
         }
         /* 响应内容JSON序列化 */
         try {
-          let obj = (typeof this.debugResponse.data === 'object'?this.debugResponse.data:JSON.parse(this.debugResponse.data));
+          let obj = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
           if (typeof obj === 'object' && obj) {
             this.isJsonObject = true;
             this.jsonObjectTo = obj;
@@ -637,7 +639,8 @@
 
   .ResponseParameter > ul {
     overflow: hidden;
-    border: 1px solid #ddd;border-bottom: 0;
+    border: 1px solid #ddd;
+    border-bottom: 0;
   }
 
   .ResponseParameter > ul li {
@@ -688,40 +691,53 @@
   }
 
   .ResponseCode > ul li > div,
-  .ResponseCode li.head span{
+  .ResponseCode li.head span {
     width: 50%;
-    float: left;position: relative;
+    float: left;
+    position: relative;
     padding-bottom: 8px;
     box-sizing: border-box;
   }
-  .ResponseCode li.head span{padding: 8px 4px;border-right: 1px solid #ddd;}
+
+  .ResponseCode li.head span {
+    padding: 8px 4px;
+    border-right: 1px solid #ddd;
+  }
 
   .ResponseCode > ul li > div:first-child,
-  .ResponseCode li.head span:first-child{
+  .ResponseCode li.head span:first-child {
     width: 15%;
   }
 
   .ResponseCode > ul li > div:last-child,
-  .ResponseCode li.head span:last-child{
+  .ResponseCode li.head span:last-child {
     border-right: 0;
     width: 35%;
   }
-  .ResponseCode > ul li > div:last-child a{
-    text-decoration: none;font-size: 12px;position: absolute;right: 0;top:5px;
+
+  .ResponseCode > ul li > div:last-child a {
+    text-decoration: none;
+    font-size: 12px;
+    position: absolute;
+    right: 0;
+    top: 5px;
   }
 
-  .ResponseCode > ul li > div span{
-    padding-bottom: 1000px;margin-bottom:-1000px;
+  .ResponseCode > ul li > div span {
+    padding-bottom: 1000px;
+    margin-bottom: -1000px;
     display: block;
     border-right: 1px solid #ddd;
     padding-top: 8px;
     padding-left: 4px;
     padding-right: 4px;
   }
+
   .ResponseCode > ul li div span.format {
     white-space: pre-wrap;
   }
-  .ResponseCode > ul li > div:last-child span{
+
+  .ResponseCode > ul li > div:last-child span {
     border-right: 0;
   }
 
@@ -740,11 +756,17 @@
     border-right: 0;
     bottom: -1px;
   }
-  .debugging-result >b{
-    font-size: 12px;float: right;color:#858585;    margin-top: 12px;
+
+  .debugging-result > b {
+    font-size: 12px;
+    float: right;
+    color: #858585;
+    margin-top: 12px;
   }
-  .debugging-result >b a{
-    text-decoration: none;color:#2E8BF0;
+
+  .debugging-result > b a {
+    text-decoration: none;
+    color: #2E8BF0;
   }
 
   .debugging-result > span:last-of-type {

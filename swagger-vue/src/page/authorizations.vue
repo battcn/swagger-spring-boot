@@ -1,20 +1,20 @@
-<template xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<template>
   <div class="authorizations">
     <a @click="setAuthorizeShow" class="sign" href="javascript:">A</a>
-    <div v-show="authorieShow">
+    <div v-show="authorizeShow">
       <div>
         <div class="header">
           <h3>Available authorizations</h3>
           <a href="javascript:" @click="closeAuthorize" class="close">X</a>
         </div>
         <div class="content">
-          <p class="title">X-Authorization ({{authorizeInfo&&authorizeInfo.type?authorizeInfo.type:''}})</p>
-          <p>Name: {{authorizeInfo&&authorizeInfo.name?authorizeInfo.name:''}}</p>
-          <p>In: {{authorizeInfo&&authorizeInfo.in?authorizeInfo.in:''}}</p>
+          <p class="title">X-Authorization ({{authorizeInfo && authorizeInfo.type ? authorizeInfo.type : ''}})</p>
+          <p>Name: {{authorizeInfo && authorizeInfo.name ? authorizeInfo.name : ''}}</p>
+          <p>In: {{authorizeInfo && authorizeInfo.in ? authorizeInfo.in : ''}}</p>
           <p>Value</p>
           <input v-model="authorizeVal" class="enter" type="text">
           <div class="control">
-            <button @click="setAuthorizeVal">Authorie</button>
+            <button @click="setAuthorizeVal">Authorize</button>
             <button @click="closeAuthorize">Close</button>
           </div>
         </div>
@@ -28,55 +28,55 @@
   export default {
     name: 'authorizations',
     data() {
-      return {authorieShow: false, authorizeVal: ""}
+      return {authorizeShow: false, authorizeVal: ""}
     },
     computed: {
       authorizeValStore() {
         return this.$store.state.debugRequest.authorization;
       },
       leftDropContent(){
-        return this.$store.state.leftDropDownBoxContent&&this.$store.state.leftDropDownBoxContent.data;
+        return this.$store.state.leftDropDownBoxContent && this.$store.state.leftDropDownBoxContent.data;
       },
       authorizeInfo() {
-        return this.leftDropContent&&this.leftDropContent.securityDefinitions&&this.leftDropContent.securityDefinitions['X-Authorization'];
+        return this.leftDropContent && this.leftDropContent.securityDefinitions && this.leftDropContent.securityDefinitions['X-Authorization'];
       }
     },
     methods: {
-      ...mapMutations(['setAuthorization','setAuthorizeObj']),
+      ...mapMutations(['setAuthorization', 'setAuthorizeObj']),
       setAuthorizeShow: function () {
-        this.authorieShow = !this.authorieShow;
+        this.authorizeShow = !this.authorizeShow;
       },
       setAuthorizeVal: function () {
         this.setAuthorization(this.authorizeVal);
         if (window.sessionStorage) {
-          let arr = [this.authorizeInfo&&this.authorizeInfo.name,this.authorizeVal];
+          let arr = [this.authorizeInfo && this.authorizeInfo.name, this.authorizeVal];
           sessionStorage.setItem("authorize", JSON.stringify(arr));
         }
         this.setAuObj(this.authorizeInfo.name);
         this.PromptPopUpShow("修改 X-Authorization 成功");
         this.closeAuthorize();
       },
-      setAuObj:function (name) {/* 保存对象 */
-        let key =name||(this.authorizeInfo&&this.authorizeInfo.name);
+      setAuObj: function (name) {/* 保存对象 */
+        let key = name || (this.authorizeInfo && this.authorizeInfo.name);
         let value = this.authorizeVal;
-        let obj={};
-        obj[key]=value;
+        let obj = {};
+        obj[key] = value;
         this.setAuthorizeObj(obj)
       },
       PromptPopUpShow: function (hint) {/* 修改成功提示 */
         this.$layer.msg(hint, {time: 2})
       },
       closeAuthorize: function () {
-        this.authorieShow = false;
+        this.authorizeShow = false;
       }
     },
     watch: {
-      authorieShow() {
+      authorizeShow() {
         this.authorizeVal = this.authorizeValStore;
       }
     },
     created(){
-      let _this=this;
+      let _this = this;
       if (window.sessionStorage) {
         let val = sessionStorage.getItem("authorize");
         if (val) {

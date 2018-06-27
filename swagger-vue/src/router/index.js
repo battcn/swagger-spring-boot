@@ -6,22 +6,22 @@ import login from '@/page/login'
 import list from '@/page/interfaceList';
 
 export default new Router({
-  mode:'history',
-  routes:[
+  mode: 'history',
+  routes: [
 
     {
-      path:'/login',
-      name:'login',
-      component:login
+      path: '/login',
+      name: 'login',
+      component: login
     },
     {
-      path:'/home',
-      name:'list',
-      component:list
+      path: '/home',
+      name: 'list',
+      component: list
     },
     {
-      path:'/',
-      name:'home',
+      path: '/',
+      name: 'home',
       redirect: '/login'
       // component:login
     }

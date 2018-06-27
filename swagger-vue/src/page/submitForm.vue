@@ -7,7 +7,7 @@
       <div>
         <input v-if="(typeof linkagePath)=='string'" v-bind:value="linkagePath"
                style="width:100%;height: 23px;line-height: 23px;" type="text"/>
-        <input v-else  v-bind:value="linkagePath"
+        <input v-else v-bind:value="linkagePath"
                style="width:100%;height: 23px;line-height: 23px;" type="text"/>
       </div>
       <button type="button" @click="formCollection">发送</button>
@@ -25,17 +25,20 @@
           v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters"
           v-for="(item,key) in copyChildForm">
           <input style="margin-top:10px;" class="parameter-checkbox" type="checkbox"
-                 :disabled="childForm[key].required||linkageSection==item.name" ref="phoneNum"  :checked="item.required||selectAll||linkageSection==item.name"/>
+                 :disabled="childForm[key].required||linkageSection==item.name" ref="phoneNum"
+                 :checked="item.required||selectAll||linkageSection==item.name"/>
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
-              <textarea rows="10" v-on:input="oninput($event.target.value,key)"
+              <textarea rows="10" v-on:input="onInput($event.target.value,key)"
                         v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in!=='formData'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text">{{copyChildForm[key].default}}</textarea>
-            <input type="file" v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'" ref="fileInput"/>
+            <input type="file"
+                   v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'"
+                   ref="fileInput"/>
             <input v-else-if="linkageSection==item.name"
-                   v-model="keyValue"   type="text" style="width:100%;margin-top: 8px;"/>
-            <input v-else   v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
+                   v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
+            <input v-else v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
 
           </div>
           <span v-if="copyChildForm[key].default==''||(typeof copyChildForm[key].default)!='object'"
@@ -47,77 +50,77 @@
 </template>
 <script>
   import {deepCopy, basicTypeInit} from './../util/util'
-  import {mapState,mapMutations} from 'vuex'
+  import {mapState, mapMutations} from 'vuex'
   export default {
     name: "submit-form",
     data() {
-      return {keyValue:"", selectAll: false,   s: false}
+      return {keyValue: "", selectAll: false, s: false}
     },
-    props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent','selected','count', 'countTo', 'InterfaceRequest', 'parameterValue'],
+    props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent', 'selected', 'count', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
       ...mapState(['infoData']),
       copyChildForm(){ /* 数据字段  */
-        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
-        if(this.$store.state.tabData.infoData[key] !== undefined){
-          return this.$store.state.tabData.infoData&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key][0]
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        if (this.$store.state.tabData.infoData[key] !== undefined) {
+          return this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][0]
         }
-        let copyChildForm=deepCopy(this.childForm);
-        let copyChildFormDefault=copyChildForm[0]&&copyChildForm[0].default;
-        for(let key in copyChildFormDefault){/*   替换undefined的字段对象(暂代) */
-         if(copyChildFormDefault[key]=== undefined){
-           copyChildFormDefault[key]={};
-         }
+        let copyChildForm = deepCopy(this.childForm);
+        let copyChildFormDefault = copyChildForm[0] && copyChildForm[0].default;
+        for (let key in copyChildFormDefault) {/*   替换undefined的字段对象(暂代) */
+          if (copyChildFormDefault[key] === undefined) {
+            copyChildFormDefault[key] = {};
+          }
         }
-        copyChildForm[0].default=copyChildFormDefault;
+        copyChildForm[0].default = copyChildFormDefault;
         return copyChildForm;
       },
-      copylinkagePath(){
-          return (this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathName) ? this.swaggerCategory[this.countTo].pathName : "";
+      copyLinkPath(){
+        return (this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathName) ? this.swaggerCategory[this.countTo].pathName : "";
       },
       linkagePath() {/*   */
-        let path = this.copylinkagePath;
+        let path = this.copyLinkPath;
         let digits = path.indexOf("{");
         let digitsEnd = path.indexOf("}");
-        if (path !== undefined && digits > 0 && digitsEnd>0) { //判断是否有参数在PATH路径上
-          if(this.keyValue===""){
+        if (path !== undefined && digits > 0 && digitsEnd > 0) { //判断是否有参数在PATH路径上
+          if (this.keyValue === "") {
             return path;
           }
           for (let key in this.copyChildForm) {
             if (this.copyChildForm[key].name === this.linkageSection) {
-              this.copyChildForm[key].default= this.keyValue;
+              this.copyChildForm[key].default = this.keyValue;
             }
           }
-          return this.copylinkagePath.match(/(\S*)\{/)[1]+this.keyValue+this.copylinkagePath.match(/\}(\S*)/)[1]
+          return this.copyLinkPath.match(/(\S*)\{/)[1] + this.keyValue + this.copyLinkPath.match(/\}(\S*)/)[1]
         }
         return path;
       },
       linkageSection(){/* 路径参数 */
-        let path= this.copylinkagePath;
+        let path = this.copyLinkPath;
         if (path !== undefined && path.indexOf("{") > 0) { //判断是否有参数在PATH路径上
-          let s = path.match(/\{.+\}/)&&path.match(/\{.+\}/)[0];
-          return s.slice(1, s.length-1);
+          let s = path.match(/\{.+\}/) && path.match(/\{.+\}/)[0];
+          return s.slice(1, s.length - 1);
         }
         return "";
       }
     },
     methods: {
-      ...mapMutations(['addTab','changeShow']),
+      ...mapMutations(['addTab', 'changeShow']),
       saveTab(){
-        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
-        if(this.$store.state.tabData.infoData&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key][1] !== undefined){
-          this.keyValue =this.$store.state.tabData.infoData&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key][1];
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
+          this.keyValue = this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1];
         }
-        let data={};
-        data.key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
-        data.value=[this.copyChildForm,this.keyValue,this.selected,this.count,this.countTo];
+        let data = {};
+        data.key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        data.value = [this.copyChildForm, this.keyValue, this.selected, this.count, this.countTo];
         this.addTab(data);
       },
       initInfo(){
-        this.selectAll=false;
-        this.s=false;
+        this.selectAll = false;
+        this.s = false;
         this.saveTab();
       },
-      oninput(val, key) {
+      onInput(val, key) {
         try {
           this.copyChildForm[key].default = JSON.parse(val);
         } catch (e) {
@@ -126,11 +129,11 @@
       },
       formCollection: function () { //收集表单信息
 //        fileInput
-        let data=deepCopy(this.copyChildForm);
-        for(let key in this.$refs.phoneNum){
-          data[key].required= this.$refs.phoneNum[key].checked;
+        let data = deepCopy(this.copyChildForm);
+        for (let key in this.$refs.phoneNum) {
+          data[key].required = this.$refs.phoneNum[key].checked;
         }
-        for(let key in data) {
+        for (let key in data) {
           let digits = this.linkagePath.indexOf("{");
           let digitsEnd = this.linkagePath.indexOf("}");
           if (digits > 0 && digitsEnd > 0) {//路径中有参数
@@ -162,34 +165,34 @@
         this.selectAll = !this.selectAll;
       }
     },
-    watch:{
+    watch: {
       selected(){
         console.log(this.selected);
-        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         this.changeShow(key);
         this.initInfo();
       },
       count(){
-        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         this.changeShow(key);
         this.initInfo();
       },
       countTo(){
-        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         this.changeShow(key);
         this.initInfo();
       },
       keyValue(){
-        let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
-        if(this.$store.state.tabData.infoData&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key][1] !== undefined){
-          this.$store.state.tabData.infoData[key][1]= this.keyValue ;
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
+          this.$store.state.tabData.infoData[key][1] = this.keyValue;
         }
       }
     },
     created(){
       this.initInfo();
-      let key=this.swaggerCategory[this.countTo].name.toUpperCase()+""+this.copylinkagePath;
-      if(this.$store.state.tabData.infoData&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key]&&this.$store.state.tabData.infoData[key][1] !== undefined){
+      let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+      if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
         this.changeShow(key);
       }
     }

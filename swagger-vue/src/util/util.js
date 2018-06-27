@@ -1,7 +1,7 @@
 /* 对象拷贝 */
 const deepCopy = function (source) {
   let result = "";
-  if(source === undefined || source === null){
+  if (source === undefined || source === null) {
     return undefined;
   }
   if (typeof source === 'object') {
@@ -50,8 +50,8 @@ const basicTypeInit = function (type) {
   if (type === 'array') {
     return []
   }
-  if(type === 'file'){
-    return {type:"file", in: "formData"}
+  if (type === 'file') {
+    return {type: "file", in: "formData"}
   }
 };
 export {
