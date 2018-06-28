@@ -207,7 +207,7 @@
         let respBasis = false;
         let respState;
         if (resp === undefined) {
-          return "加载失败";
+          return '加载失败';
         }
         for (let key in resp) {
           if (parseInt(key) >= 200 && parseInt(key) <= 299) {
@@ -511,7 +511,7 @@
         }
         return deftion;
       },
-      getForm: function (data) {
+      getForm: function (data,param) {/* param为假设存在文件上传时所传输的文件对象 */
         let _this = this;
         let result = [];
         for (let key in data) {
@@ -524,15 +524,16 @@
             result.push(obj);
           }
         }
-        _this.stitchUrl(result);
+        _this.stitchUrl(result,param);/* param为假设存在文件上传时所传输的文件对象 */
       },
-      stitchUrl: function (result) {
+      stitchUrl: function (result,param) {
         let _this = this;
         let url = (_this.swaggerCategory && _this.swaggerCategory[_this.countTo] && _this.swaggerCategory[_this.countTo].pathName) ? _this.swaggerCategory[_this.countTo].pathName : '',
           params = {},
-          headerParams = {},
+          headerParams = {'Content-Type':'application/json;charset=UTF-8'},
           reqdata = "",
           bodyparams = "";
+//
         if (typeof (_this.leftDropDownBoxContent.basePath) !== "undefined" && _this.leftDropDownBoxContent.basePath !== "") {
           if (_this.leftDropDownBoxContent.basePath !== "/") {
             url = _this.leftDropDownBoxContent.basePath + url;
@@ -569,7 +570,13 @@
         if (this.isExistSecurity) {/* headerParams */
           for (let key in this.authorizeObj) {
             headerParams[key] = this.authorizeObj[key];
-            console.log(key, this.authorizeObj[key])
+          }
+        }
+        /*  判断是否为文件类型上传 */
+        for(let key in reqdata){
+          if(param!==undefined&&reqdata[key]&&reqdata[key]['in']&&reqdata[key]['in']==='formData'&&reqdata[key]['type']&&reqdata[key]['type']==='file'){
+            headerParams['Content']='multipart/form-data; charset=utf-8';
+            reqdata=param;
           }
         }
         _this.$store.dispatch('carriedSend', {

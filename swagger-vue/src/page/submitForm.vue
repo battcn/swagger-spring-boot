@@ -54,7 +54,7 @@
   export default {
     name: "submit-form",
     data() {
-      return {keyValue: "", selectAll: false, s: false}
+      return {keyValue: "", selectAll: false, s: false,file:""}
     },
     props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent', 'selected', 'count', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
@@ -133,6 +133,13 @@
         for (let key in this.$refs.phoneNum) {
           data[key].required = this.$refs.phoneNum[key].checked;
         }
+        /* 判断是否有对应的文件上传存在 */
+        let param = undefined;
+        if(this.$refs.fileInput&&this.$refs.fileInput[0]&&this.$refs.fileInput[0].files&&this.$refs.fileInput[0].files.length>0){
+          let file =this.$refs.fileInput[0].files[0];
+          param = new FormData();
+          param.append('file',file);
+        }
         for (let key in data) {
           let digits = this.linkagePath.indexOf("{");
           let digitsEnd = this.linkagePath.indexOf("}");
@@ -142,14 +149,14 @@
                 data[key].default = this.keyValue;
               }
             }
-            this.$emit('getCollection', data);
+            this.$emit('getCollection', data,param);
             return true;
           } else {
-            this.$emit('getCollection', data);
+            this.$emit('getCollection', data,param);
             return true;
           }
         }
-        this.$emit('getCollection', this.copyChildForm);
+        this.$emit('getCollection', this.copyChildForm,param);
         return true;
       },
       PromptPopUpShow: function (hint) {

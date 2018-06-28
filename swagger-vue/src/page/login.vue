@@ -4,8 +4,8 @@
       <p> swagger 在线接口调试</p>
       <div class="right">
         <h3>用户登录 / User login</h3>
-        <input v-model="username" placeholder="请输入用户名" type="text">
-        <input v-model="password" placeholder="请输入密码" type="text">
+        <input v-model="username" placeholder="swagger-username" type="text">
+        <input v-model="password" placeholder="swagger-password" type="text">
         <button>登录</button>
       </div>
     </div>

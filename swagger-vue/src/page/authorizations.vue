@@ -122,7 +122,12 @@
   .authorizations > div > div {
     width: 43%;
     background-color: #fff;
-    margin: 100px auto auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: auto;
+    margin: 0 auto;
   }
 
   .authorizations .header { /* 标题 */
