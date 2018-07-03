@@ -6,16 +6,27 @@
         <h3>用户登录 / User login</h3>
         <input v-model="username" placeholder="swagger-username" type="text">
         <input v-model="password" placeholder="swagger-password" type="text">
-        <button>登录</button>
+        <button @click="loginOperat">登录</button>
       </div>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {mapState,mapMutations} from 'vuex'
   export default {
     name: 'login',
     data() {
       return {username: "", password: ""}
+    },
+    methods:{
+      ...mapMutations(['login']),
+      loginOperat(){/* 登录操作 */
+        let obj = {'swagger-username':this.username,'swagger-password':this.password};
+        let _this=this;
+        this.$store.dispatch('carriedLogin',obj).then(function () {
+          _this.$router.push('/home');
+        });
+      }
     }
   }
 </script>

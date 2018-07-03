@@ -50,11 +50,8 @@ function init() {
   }).catch(function (err) {
     dropDown.state.data = "请求失败:" + err;
   });
-  // .then((a) => {
-
-// }
 }
-init();
+// init();
 
 /* 调试模块 */
 const debugRequest = {
@@ -69,11 +66,11 @@ const debugRequest = {
           debugRequest.state.debugResponse = response;
           console.log("请求发送成功");
           n.resolve()
-        }, function (response) {
-          console.log("请求发送失败");
-          debugRequest.state.debugResponse = response;
-          n.resolve();
-        })
+        }).catch(function (err) {
+        console.log("请求发送失败");
+        debugRequest.state.debugResponse = err;
+        n.resolve();
+      })
     },
     setAuthorization(state, val) {
       debugRequest.state.authorization = val;
@@ -112,14 +109,41 @@ const tabData = {
       tabData.state.show = val;
     }
   }
-}
+};
+/* 账号管理部分 */
+const account={
+  state:{},
+  mutations:{
+    login(state,obj){/*  账号登录验证 */
+      let config={headers:obj};
+      axios.get(SWAGGER_URL + "/swagger-resources",config).then(function(response){
+        init();
+        // Vue.$router.push('list');
+        // Vue.$router.push('/home');
+        obj.resolve();
+      }).catch(function (err) {
+        console.log("账号验证失败"+err);
+      });
+    }
+  },
+  actions:{
+    carriedLogin(content, obj){
+      return new Promise((resolve, reject) => {
+        obj.resolve = resolve;
+        console.log("回调开始");
+        content.commit('login', obj);
+      })
+    }
+  }
+};
 
 export default new Vuex.Store({
   modules: {
     swaggerLeftHead: dropDown,
     leftDropDownBoxContent: leftDropDownBoxContent,
     debugRequest: debugRequest,
-    tabData: tabData
+    tabData: tabData,
+    account:account
   }
 })
 

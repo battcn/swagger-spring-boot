@@ -108,7 +108,8 @@
                 <div>
                   <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor"
                      href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ? '收缩' : '展开'}}</a>
-                  <span
+                  <span v-if="responseCodeSchema(item)" v-show="!responseCodePre[index]">{{item.schema ?(item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
+                  <span v-show="responseCodePre[index]"
                     :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
                 </span>
                 </div>
@@ -194,7 +195,8 @@
         curlMode: "",
         linkageSection: "",
         parameterValue: {},
-        responseCodePre: []
+        responseCodePre: [],
+        responseObjectName:""
       }
     },
     computed: {
@@ -337,8 +339,14 @@
     methods: {
       ...mapActions(["carriedSend"]),
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
-
-        return (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) || (item.schema && item.schema.$ref);
+        if(item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items){
+          return true;
+        }
+        if(item.schema && item.schema.$ref){
+          this.responseObjectName=item.schema.$ref.match("#/definitions/(.*)")[1];
+          return true;
+        }
+        return false;
       },
       responseCodePreToggle: function (index) {/* 响应码部分数据JSON格式化展开收缩切换 */
         if (this.responseCodePre && this.responseCodePre[index] && this.responseCodePre[index]) {

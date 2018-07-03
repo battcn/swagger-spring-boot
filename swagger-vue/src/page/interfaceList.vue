@@ -292,8 +292,7 @@
   .tabSwitch {
     position: relative;
     margin-left: 43%;
-    margin-right: 15px;
-    padding-left: 36px;
+    margin-right: 51px;
     transition: all 0.2s;
     white-space: nowrap;
     overflow-y: hidden;
@@ -367,9 +366,9 @@
 
   /* 历史记录管理 */
   .tabSwitch .management {
-    position: absolute;
+    position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
   }
 
   .tabSwitch .management a {
@@ -383,6 +382,7 @@
     text-align: center;
     border-top: 1px solid #dbdbdb;
     box-shadow: 1px 1px 2px #e9e4e4;
+    margin: 5px 15px auto auto;
   }
 
   .tabSwitch .management ul {
@@ -393,7 +393,7 @@
     background: #30ABF9;
     padding: 10px;
     border-radius: 5px;
-    color: #fff;
+    color: #fff;right:0;
   }
 
   .tabSwitch .management ul li {

@@ -33,9 +33,10 @@
                         v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in!=='formData'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text">{{copyChildForm[key].default}}</textarea>
-            <input type="file"
-                   v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'"
-                   ref="fileInput"/>
+            <div class="parameter-file" v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'">
+              <input type="file" ref="fileInput"/>选择文件
+            </div>
+
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
             <input v-else v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
@@ -324,7 +325,34 @@
     margin-left: 2%;
     margin-right: 2%;
   }
-
+  /* 文件上传 */
+  .content-parameter li .parameter-value .parameter-file{
+    position: relative;
+    background: #D0EEFF;
+    border: 1px solid #99D3F5;
+    border-radius: 4px;
+    overflow: hidden;
+    color: #1E88C7;
+    text-decoration: none;
+    text-indent: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    height: 24px;
+    line-height: 24px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .content-parameter li .parameter-value .parameter-file input{
+    position: absolute;
+    font-size: 100px;
+    opacity: 0;
+  }
+  .content-parameter li .parameter-value .parameter-file:hover{
+    background: #AADFFD;
+    border-color: #78C3F3;
+    color: #004974;
+    text-decoration: none;
+  }
   .content-parameter li .parameter-operating {
     font-size: 14px;
     cursor: pointer;
