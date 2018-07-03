@@ -4,10 +4,13 @@ import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
+import sun.dc.pr.PRError;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -18,16 +21,16 @@ import java.io.IOException;
  * @author <a href="mailto:1837307557@qq.com">Levin</a>
  * @since 2.0.2
  */
+@EnableConfigurationProperties(SwaggerSecurityProperties.class)
 public class SwaggerSecurityFilterPluginsConfiguration implements Filter {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public SwaggerSecurityProperties swaggerSecurityProperties() {
-        return new SwaggerSecurityProperties();
-    }
-
-
     private static Logger logger = LoggerFactory.getLogger(SwaggerSecurityFilterPluginsConfiguration.class);
+
+    private SwaggerSecurityProperties swaggerSecurityProperties;
+
+    public SwaggerSecurityFilterPluginsConfiguration(SwaggerSecurityProperties swaggerSecurityProperties){
+        this.swaggerSecurityProperties = swaggerSecurityProperties;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -41,10 +44,11 @@ public class SwaggerSecurityFilterPluginsConfiguration implements Filter {
         final String password = request.getHeader("swagger-password");
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             serviceUnavailable((HttpServletResponse) servletResponse);
+            return;
         }
-        final SwaggerSecurityProperties properties = swaggerSecurityProperties();
-        if (!(username.equals(properties.getUsername()) && password.equals(properties.getPassword()))) {
+        if (!(username.equals(swaggerSecurityProperties.getUsername()) && password.equals(swaggerSecurityProperties.getPassword()))) {
             serviceUnavailable((HttpServletResponse) servletResponse);
+            return;
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

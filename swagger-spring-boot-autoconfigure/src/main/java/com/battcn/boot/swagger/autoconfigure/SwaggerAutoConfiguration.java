@@ -3,12 +3,14 @@ package com.battcn.boot.swagger.autoconfigure;
 import com.battcn.boot.swagger.configuration.SwaggerBeanValidatorPluginsConfiguration;
 import com.battcn.boot.swagger.configuration.SwaggerSecurityFilterPluginsConfiguration;
 import com.battcn.boot.swagger.properties.SwaggerProperties;
+import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
 import com.battcn.boot.swagger.security.GlobalAccess;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -47,7 +49,7 @@ import static java.util.stream.Collectors.toSet;
 @ConditionalOnProperty(name = "spring.swagger.enabled", havingValue = "true", matchIfMissing = true)
 @Import({Swagger2DocumentationConfiguration.class, SwaggerBeanValidatorPluginsConfiguration.class})
 @EnableAutoConfiguration
-@EnableConfigurationProperties(SwaggerProperties.class)
+@EnableConfigurationProperties({SwaggerProperties.class, SwaggerSecurityProperties.class})
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     private static final String DEFAULT_GROUP_NAME = "default";
@@ -62,10 +64,10 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.security.filter-plugin"}, havingValue = "true")
-    public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration() {
+    public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration(SwaggerSecurityProperties swaggerSecurityProperties) {
         FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration());
-        registration.addUrlPatterns("/v2/api-docs","/swagger-resources");
+        registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration(swaggerSecurityProperties));
+        registration.addUrlPatterns("/v2/api-docs", "/swagger-resources");
         return registration;
     }
 
