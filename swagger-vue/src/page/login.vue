@@ -16,7 +16,7 @@
   export default {
     name: 'login',
     data() {
-      return {username: "", password: ""}
+      return {username: "battcn", password: "battcn"}
     },
     methods:{
       ...mapMutations(['login']),

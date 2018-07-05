@@ -115,11 +115,23 @@ const account={
   state:{},
   mutations:{
     login(state,obj){/*  账号登录验证 */
-      let config={headers:obj};
+      // 'Content-Type':'application/x-www-form-urlencoded',
+      let headData = {
+        'swagger-username':obj['swagger-username'],
+        'swagger-password':obj['swagger-password']
+      };
+      let config={headers:headData};
       axios.get(SWAGGER_URL + "/swagger-resources",config).then(function(response){
-        init();
-        // Vue.$router.push('list');
-        // Vue.$router.push('/home');
+        // init();
+        dropDown.state.data = response.data;
+        if (dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count].location) {
+          /* dropDown.state.data[0]控制当前是第几个接口 */
+          axios.get(SWAGGER_URL + dropDown.state.data[dropDown.state.count].location).then((response) => {
+            leftDropDownBoxContent.state.data = response.data;
+          }).catch(function (err) {
+            leftDropDownBoxContent.state.data = "请求失败:" + err;
+          })
+        }
         obj.resolve();
       }).catch(function (err) {
         console.log("账号验证失败"+err);

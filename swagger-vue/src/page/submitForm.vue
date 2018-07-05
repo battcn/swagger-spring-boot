@@ -345,7 +345,10 @@
   .content-parameter li .parameter-value .parameter-file input{
     position: absolute;
     font-size: 100px;
-    opacity: 0;
+    opacity: 0;top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
   .content-parameter li .parameter-value .parameter-file:hover{
     background: #AADFFD;
