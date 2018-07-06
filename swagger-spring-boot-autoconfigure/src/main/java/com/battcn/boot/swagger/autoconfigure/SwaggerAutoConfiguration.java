@@ -10,7 +10,6 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -64,9 +63,9 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
 
     @Bean
     @ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.security.filter-plugin"}, havingValue = "true")
-    public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration(SwaggerSecurityProperties swaggerSecurityProperties) {
+    public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration() {
         FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration(swaggerSecurityProperties));
+        registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration());
         registration.addUrlPatterns("/v2/api-docs", "/swagger-resources");
         return registration;
     }

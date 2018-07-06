@@ -1,6 +1,5 @@
 package com.battcn.boot.swagger.security;
 
-import com.battcn.boot.swagger.model.PathType;
 import com.battcn.boot.swagger.properties.SwaggerProperties;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiKey;

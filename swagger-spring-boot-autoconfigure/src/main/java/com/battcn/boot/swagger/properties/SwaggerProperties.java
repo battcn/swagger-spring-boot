@@ -1,6 +1,5 @@
 package com.battcn.boot.swagger.properties;
 
-import com.battcn.boot.swagger.model.PathType;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.NoArgsConstructor;
