@@ -1,4 +1,4 @@
-package com.battcn.swagger.properties.enums;
+package com.battcn.boot.swagger.properties.enums;
 
 /**
  * 授权路径
