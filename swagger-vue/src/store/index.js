@@ -24,6 +24,9 @@ const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SW
 const dropDown = {
   state: {data: [], count: 0},
   mutations: {
+    initialization(state,n){/* 初始化数据 */
+      init();
+    },
     switch(state, n) {
       dropDown.state.count = n;
       init();
@@ -51,7 +54,6 @@ function init() {
     dropDown.state.data = "请求失败:" + err;
   });
 }
-// init();
 
 /* 调试模块 */
 const debugRequest = {
@@ -112,26 +114,29 @@ const tabData = {
 };
 /* 账号管理部分 */
 const account={
-  state:{},
+  state:{isSecurity:false},
   mutations:{
+    isVerify(state,resolve){/* 判断是否需要账号验证 */
+      axios.get('http://localhost:8080/v2/swagger-security').then(function (response) {
+        account.state.isSecurity=response.data&&response.data.security?response.data.security:'false';
+        resolve();
+      }).catch(function (err) {
+        console.log('请求失败'+err);
+      });
+    },
     login(state,obj){/*  账号登录验证 */
       // 'Content-Type':'application/x-www-form-urlencoded',
-      let headData = {
-        'swagger-username':obj['swagger-username'],
-        'swagger-password':obj['swagger-password']
+      let params = {
+        'username':obj&&obj['swagger-username'],
+        'password':obj&&obj['swagger-password']
       };
-      let config={headers:headData};
-      axios.get(SWAGGER_URL + "/swagger-resources",config).then(function(response){
-        // init();
-        dropDown.state.data = response.data;
-        if (dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count].location) {
-          /* dropDown.state.data[0]控制当前是第几个接口 */
-          axios.get(SWAGGER_URL + dropDown.state.data[dropDown.state.count].location).then((response) => {
-            leftDropDownBoxContent.state.data = response.data;
-          }).catch(function (err) {
-            leftDropDownBoxContent.state.data = "请求失败:" + err;
-          })
-        }
+      let url=`${SWAGGER_URL}/v2/swagger-login?`;
+      for(let key in params){
+        url+=`${key}=${params[key]}&`;
+      }
+      url=url.slice(0,url.length-1);
+      let config={'params':params};
+      axios.post(url).then(function(response){
         obj.resolve();
       }).catch(function (err) {
         console.log("账号验证失败"+err);
@@ -144,6 +149,11 @@ const account={
         obj.resolve = resolve;
         console.log("回调开始");
         content.commit('login', obj);
+      })
+    },
+    carriedIsVerify(content){
+      return new Promise((resolve,reject)=>{
+        content.commit('isVerify',resolve)
       })
     }
   }

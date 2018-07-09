@@ -338,6 +338,7 @@
     },
     methods: {
       ...mapActions(["carriedSend"]),
+      ...mapMutations(["initialization","send"]),
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
         if(item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items){
           return true;
@@ -635,11 +636,13 @@
         }
         this.resultShow = true;
         /* 显示结果 */
-      },
-      ...mapMutations(['send']),
+      }
     },
     props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
-    components: {FormFold, SubmitForm, JsonView}
+    components: {FormFold, SubmitForm, JsonView},
+    created(){
+      this.initialization();
+    }
   }
 </script>
 <style>

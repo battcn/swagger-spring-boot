@@ -18,15 +18,27 @@
     data() {
       return {username: "battcn", password: "battcn"}
     },
+    computed:{
+      ...mapState({isSecurity:state=>state.account.isSecurity})
+    },
     methods:{
       ...mapMutations(['login']),
       loginOperat(){/* 登录操作 */
         let obj = {'swagger-username':this.username,'swagger-password':this.password};
         let _this=this;
         this.$store.dispatch('carriedLogin',obj).then(function () {
-          _this.$router.push('/home');
+          _this.$router.push('/list');
         });
       }
+    },
+    created(){
+      let _this=this;
+      _this.$store.dispatch('carriedIsVerify').then(function () {
+        let is= _this.isSecurity&&(typeof _this.isSecurity==="string")?JSON.parse(_this.isSecurity):_this.isSecurity;
+        if(!is){
+          _this.$router.push('/list');
+        }
+      });
     }
   }
 </script>
