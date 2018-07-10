@@ -47,7 +47,7 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
-2.0.2
+2.0.2（具体效果看 samples-basic 中的项目示例）
   发布时间：2018年07月10日
   更新内容：
     1.UI添加响应结果
@@ -58,6 +58,7 @@ spring.swagger.enable=true
     6.添加安全验证过滤器（这样一来即使你想线上使用 swagger 一样可以）
     7.登陆UI，保障接口安全
     8.添加请求响应时间
+    9.升级Spring Boot 版本为 2.0.3-RELEASE
 2.0.1
   发布时间：2018年06月19日
   更新内容：
@@ -112,6 +113,10 @@ spring.swagger.enable=true
 ```
 
 # 重写UI #
+
+> 操作风格 - 2.0.2 版本
+
+![接口说明](doc/img/2_4.png)
 
 > 操作风格 - 2.0.1 版本
 
