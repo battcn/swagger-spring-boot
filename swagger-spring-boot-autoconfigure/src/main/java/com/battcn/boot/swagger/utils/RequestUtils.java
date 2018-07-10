@@ -24,7 +24,7 @@ public class RequestUtils {
     private static final Logger logger = LoggerFactory.getLogger(CustomSwagger2Controller.class);
 
     public static void writeForbidden(HttpServletResponse response) throws IOException {
-        final HttpStatus status = HttpStatus.FORBIDDEN;
+        final HttpStatus status = HttpStatus.UNAUTHORIZED;
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         ServletOutputStream outputStream = response.getOutputStream();
