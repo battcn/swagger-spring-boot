@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from 'axios'
+import axios from "axios";
+import router from '@/router'
+
 
 Vue.use(Vuex);
 
@@ -24,7 +26,7 @@ const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SW
 const dropDown = {
   state: {data: [], count: 0},
   mutations: {
-    initialization(state,n){/* 初始化数据 */
+    initialization(state, n){/* 初始化数据 */
       init();
     },
     switch(state, n) {
@@ -37,7 +39,6 @@ const dropDown = {
 const leftDropDownBoxContent = {
   state: {data: []}
 };
-
 /* 初始化:获取单选框数据， */
 function init() {
   axios.get(SWAGGER_URL + "/swagger-resources").then((response) => {
@@ -51,7 +52,9 @@ function init() {
       })
     }
   }).catch(function (err) {
+    console.info("报错啦...." + err);
     dropDown.state.data = "请求失败:" + err;
+    router.push({path: '/login'});
   });
 }
 
@@ -113,37 +116,37 @@ const tabData = {
   }
 };
 /* 账号管理部分 */
-const account={
-  state:{isSecurity:false},
-  mutations:{
-    isVerify(state,resolve){/* 判断是否需要账号验证 */
-      axios.get('http://localhost:8080/v2/swagger-security').then(function (response) {
-        account.state.isSecurity=response.data&&response.data.security?response.data.security:'false';
+const account = {
+  state: {isSecurity: false},
+  mutations: {
+    isVerify(state, resolve){/* 判断是否需要账号验证 */
+      axios.get(SWAGGER_URL + '/v2/swagger-security').then(function (response) {
+        account.state.isSecurity = response.data && response.data.security ? response.data.security : 'false';
         resolve();
       }).catch(function (err) {
-        console.log('请求失败'+err);
+        console.log('请求失败' + err);
       });
     },
-    login(state,obj){/*  账号登录验证 */
+    login(state, obj){/*  账号登录验证 */
       // 'Content-Type':'application/x-www-form-urlencoded',
       let params = {
-        'username':obj&&obj['swagger-username'],
-        'password':obj&&obj['swagger-password']
+        'username': obj && obj['swagger-username'],
+        'password': obj && obj['swagger-password']
       };
-      let url=`${SWAGGER_URL}/v2/swagger-login?`;
-      for(let key in params){
-        url+=`${key}=${params[key]}&`;
+      let url = `${SWAGGER_URL}/v2/swagger-login?`;
+      for (let key in params) {
+        url += `${key}=${params[key]}&`;
       }
-      url=url.slice(0,url.length-1);
-      let config={'params':params};
-      axios.post(url).then(function(response){
+      url = url.slice(0, url.length - 1);
+      let config = {'params': params};
+      axios.post(url).then(function (response) {
         obj.resolve();
       }).catch(function (err) {
-        console.log("账号验证失败"+err);
+        console.log("账号验证失败" + err);
       });
     }
   },
-  actions:{
+  actions: {
     carriedLogin(content, obj){
       return new Promise((resolve, reject) => {
         obj.resolve = resolve;
@@ -152,8 +155,8 @@ const account={
       })
     },
     carriedIsVerify(content){
-      return new Promise((resolve,reject)=>{
-        content.commit('isVerify',resolve)
+      return new Promise((resolve, reject) => {
+        content.commit('isVerify', resolve)
       })
     }
   }
@@ -165,7 +168,7 @@ export default new Vuex.Store({
     leftDropDownBoxContent: leftDropDownBoxContent,
     debugRequest: debugRequest,
     tabData: tabData,
-    account:account
+    account: account
   }
 })
 

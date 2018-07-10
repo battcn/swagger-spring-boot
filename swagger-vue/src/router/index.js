@@ -15,7 +15,7 @@ export default new Router({
       component: login
     },
     {
-      path: '/list',
+      path: '/swagger-ui.html',
       name: 'list',
       component: list
     },
