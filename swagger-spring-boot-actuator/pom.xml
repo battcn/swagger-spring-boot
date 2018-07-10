@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.battcn</groupId>
         <artifactId>swagger-spring-boot</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
+        <version>2.0.2-RELEASE</version>
     </parent>
     <artifactId>swagger-spring-boot-actuator</artifactId>
     <name>swagger-spring-boot-actuator</name>
