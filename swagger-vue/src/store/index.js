@@ -54,7 +54,7 @@ function init() {
   }).catch(function (err) {
     console.info("报错啦...." + err);
     dropDown.state.data = "请求失败:" + err;
-    router.push({path: '/login'});
+    router.push({path: '/swagger-login.html'});
   });
 }
 

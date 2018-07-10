@@ -10,20 +10,19 @@ export default new Router({
   routes: [
 
     {
-      path: '/login',
-      name: 'login',
+      path: '/swagger-login.html',
+      name: 'swagger-login',
       component: login
     },
     {
       path: '/swagger-ui.html',
-      name: 'list',
+      name: 'swagger-ui',
       component: list
     },
     {
       path: '/',
-      name: 'home',
-      redirect: '/login'
-      // component:login
+      name: 'swagger-ui',
+      redirect: '/swagger-login.html'
     }
   ]
 });
