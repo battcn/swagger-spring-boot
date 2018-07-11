@@ -1,11 +1,14 @@
 <template>
   <div class="login">
+    <header>
+       swagger 在线接口调试
+    </header>
     <div class="content">
-      <p> swagger 在线接口调试</p>
+
       <div class="right">
         <h3>用户登录 / User login</h3>
-        <input v-model="username" placeholder="swagger-username" type="text">
-        <input v-model="password" placeholder="swagger-password" type="text">
+        <input v-model="username" placeholder="账号" type="text">
+        <input v-model="password" placeholder="密码" type="text">
         <button @click="loginOperat">登录</button>
       </div>
     </div>
@@ -36,7 +39,8 @@
       _this.$store.dispatch('carriedIsVerify').then(function () {
         let is = _this.isSecurity && (typeof _this.isSecurity === "string") ? JSON.parse(_this.isSecurity) : _this.isSecurity;
         if (!is) {
-          _this.$router.push('/list');
+          console.log("未设置身份验证,跳转至数据页面....");
+          _this.$router.push('/swagger-ui.html');
         }
       });
     }
@@ -44,14 +48,22 @@
 </script>
 <style>
   .login {
-    background: url("./../assets/bg.png") no-repeat;
+    background: url("./../assets/bg.jpg") no-repeat;
     background-size: cover;
-    padding: 60px 50px;
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+  }
+  .login header{
+    background-color: #12722E;
+    height: 45px;
+    padding-left: 15%;
+    text-align: left;
+    line-height: 45px;
+    color: #fff;
+    font-weight: 600;
   }
 
   .login .content {
@@ -67,7 +79,6 @@
   }
 
   .login .content .right {
-    padding: 10px 96px;
     box-sizing: border-box;
   }
 
@@ -75,24 +86,26 @@
     background: #fff;
     float: right;
     border-radius: 5px;
-    padding: 10px 20px 47px;
+    padding: 10px 20px 15px;
     min-width: 390px;
+    box-sizing: border-box;box-shadow: 0 0 10px #ccc;margin-top:8%;
   }
 
   .login .content .right h3 {
-    color: #368AE3;
+    color: #12722E;
   }
 
   .login .content .right input {
-    display: block;
-    font-size: 12px;
+    display: block;    color:  rgba(18,114,46,.8);
+    font-size: 16px;
     border: 1px solid #E9E9E9;
     width: 244px;
-    outline: none;
-    border-radius: 5px;
-    height: 34px;
-    padding-left: 5px;
+    outline: none;background: #F1F2F2;
+    padding: 12px 22px;
     margin: 24px auto;
+  }
+  .login .content .right input::-webkit-input-placeholder{
+    color:  rgba(18,114,46,.6);
   }
 
   .login .content .right button {
@@ -102,8 +115,8 @@
     padding: 5px 24px;
     border: 0;
     border-radius: 5px;
-    background-color: #3F82E7;
-    color: #fff;
+    background-color: #12722E;
+    color: #fff;    letter-spacing: 5px;
   }
 
 </style>

@@ -8,7 +8,6 @@ import list from '@/page/interfaceList';
 export default new Router({
   mode: 'history',
   routes: [
-
     {
       path: '/swagger-login.html',
       name: 'swagger-login',

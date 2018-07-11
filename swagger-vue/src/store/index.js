@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-import router from '@/router'
+// import router from '@/router/index.js'
 
 
 Vue.use(Vuex);
@@ -27,7 +27,7 @@ const dropDown = {
   state: {data: [], count: 0},
   mutations: {
     initialization(state, n){/* 初始化数据 */
-      init();
+      init(n);
     },
     switch(state, n) {
       dropDown.state.count = n;
@@ -40,7 +40,7 @@ const leftDropDownBoxContent = {
   state: {data: []}
 };
 /* 初始化:获取单选框数据， */
-function init() {
+function init(n) {
   axios.get(SWAGGER_URL + "/swagger-resources").then((response) => {
     dropDown.state.data = response.data;
     if (dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count] && dropDown.state.data[dropDown.state.count].location) {
@@ -52,9 +52,11 @@ function init() {
       })
     }
   }).catch(function (err) {
-    console.info("报错啦...." + err);
+    console.info("身份验证失败啦...." + err);
     dropDown.state.data = "请求失败:" + err;
-    router.push({path: '/swagger-login.html'});
+    n();
+   /* console.log(router)
+    router.push({path: '/swagger-login.html'});*/
   });
 }
 

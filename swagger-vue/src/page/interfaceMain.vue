@@ -636,12 +636,17 @@
         }
         this.resultShow = true;
         /* 显示结果 */
+      },
+      failureJump:function () {/* 请求失败时跳转至登录路由 */
+        this.$router.push('/swagger-login.html');
+        console.log("请进行身份验证后使用！")
       }
     },
     props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView},
     created(){
-      this.initialization();
+      let methods=this.failureJump;
+      this.initialization(methods);
     }
   }
 </script>
