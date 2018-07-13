@@ -9,18 +9,18 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/swagger-login.html',
+      path: '(\.*)/swagger-login.html',
       name: 'swagger-login',
       component: login
     },
     {
-      path: '/swagger-ui.html',
+      path: '(\.*)/swagger-ui.html',
       name: 'swagger-ui',
       component: list
     },
     {
       path: '/',
-      name: 'swagger-ui',
+      name: 'swagger',
       redirect: '/swagger-login.html'
     }
   ]

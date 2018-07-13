@@ -31,6 +31,7 @@
         let _this = this;
         this.$store.dispatch('carriedLogin', obj).then(function () {
           _this.$router.push('/swagger-ui.html');
+
         });
       }
     },
@@ -88,7 +89,8 @@
     border-radius: 5px;
     padding: 10px 20px 15px;
     min-width: 390px;
-    box-sizing: border-box;box-shadow: 0 0 10px #ccc;margin-top:8%;
+    box-sizing: border-box;box-shadow: 0 0 10px #ccc;
+    margin-top: 16%;
   }
 
   .login .content .right h3 {
