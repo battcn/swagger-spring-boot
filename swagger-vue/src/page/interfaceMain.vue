@@ -638,7 +638,7 @@
         /* 显示结果 */
       },
       failureJump:function () {/* 请求失败时跳转至登录路由 */
-        this.$router.push('/swagger-login.html');
+        this.$router.push('swagger-login.html');
         console.log("请进行身份验证后使用！")
       }
     },
