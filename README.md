@@ -26,7 +26,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.2-RELEASE</version>
+    <version>2.0.3-RELEASE</version>
 </dependency>
 ```
 
@@ -48,7 +48,7 @@ spring.swagger.enable=true
 # 更新记录 #
 ```
 2.0.3
-  发布时间：暂定
+  发布时间：2018-07-17
   更新内容：
     1.UI美化
     2.路由优化
