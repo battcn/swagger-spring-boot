@@ -122,9 +122,27 @@ spring.swagger.enable=true
 
 > 操作风格 - 2.0.2 版本
 
+``` java
+# 2.0.3 版本新特性（开启后访问 swagger-ui.html 会自动路由到登陆页面，保障接口信息不被暴露）
+spring.swagger.security.filter-plugin=true
+# 配置账号密码
+spring.swagger.security.username=battcn
+spring.swagger.security.password=battcn
+```
+
 ![接口说明](doc/img/2_4.png)
 
 > 操作风格 - 2.0.1 版本
+
+``` java
+# 2.0.1 版本新特性 （支持可选的 Bean 验证插件）
+spring.swagger.validator-plugin=false
+# 定义全局响应返回
+spring.swagger.global-response-messages.POST[0].code=400
+spring.swagger.global-response-messages.POST[0].message=server response 400
+spring.swagger.global-response-messages.POST[1].code=404
+spring.swagger.global-response-messages.POST[1].message=server response 404
+```
 
 ![接口说明](doc/img/2_1.png)
 
