@@ -26,7 +26,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.3-RELEASE</version>
+    <version>2.0.4-RELEASE</version>
 </dependency>
 ```
 
@@ -47,6 +47,11 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
+2.0.4
+  发布时间：2018-07-23
+  更新内容：
+    1.修改未自动注入BUG（在2.0.3中需要写明 ComponentScan）
+2.0.2（具体效果看 samples-basic 中的项目示例）
 2.0.3
   发布时间：2018-07-17
   更新内容：
