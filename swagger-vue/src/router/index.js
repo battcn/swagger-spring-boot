@@ -21,7 +21,7 @@ export default new Router({
     {
       path: '/',
       name: 'swagger',
-      redirect: '/swagger-login.html'
+      redirect: '/swagger-ui.html'
     }
   ]
 });

@@ -55,8 +55,8 @@ function init(n) {
     console.info("身份验证失败啦...." + err);
     dropDown.state.data = "请求失败:" + err;
     n();
-   /* console.log(router)
-    router.push({path: '/swagger-login.html'});*/
+    /* console.log(router)
+     router.push({path: '/swagger-login.html'});*/
   });
 }
 
@@ -66,14 +66,18 @@ const debugRequest = {
   mutations: {
     send(state, n) {
       let enterTime = new Date();
-      axios.request({url: n.url, data: n.data, method: n.type.toUpperCase(), headers: n.headerParams})
-        .then(function (response) {
-          let outTime = new Date();
-          debugRequest.state.requestTime = outTime - enterTime;
-          debugRequest.state.debugResponse = response;
-          console.log("请求发送成功");
-          n.resolve()
-        }).catch(function (err) {
+      axios.request({
+        url: n.url,
+        data: n.data,
+        method: n.type.toUpperCase(),
+        headers: n.headerParams
+      }).then(function (response) {
+        let outTime = new Date();
+        debugRequest.state.requestTime = outTime - enterTime;
+        debugRequest.state.debugResponse = response;
+        console.log("请求发送成功");
+        n.resolve()
+      }).catch(function (err) {
         console.log("请求发送失败");
         debugRequest.state.debugResponse = err;
         n.resolve();

@@ -4,23 +4,25 @@
       <li class="head"><span>{{infoData && infoData.title ? infoData.title : 'swagger-vue-ui'}}</span></li>
       <li>
         <span>简介</span>
-        <span>{{infoData && infoData.description ? infoData.description : '无'}}</span>
+        <span style="color:red">{{infoData && infoData.description ? infoData.description : '无'}}</span>
       </li>
       <li>
         <span>作者</span>
-        <span>{{author && author.name ? author.name : '无'}}</span>
+        <span style="color:red">{{author && author.name ? author.name : '无'}}</span>
       </li>
       <li>
         <span>版本</span>
-        <span>{{infoData && infoData.version ? infoData.version : '无'}}</span>
+        <span style="color:red">{{infoData && infoData.version ? infoData.version : '无'}}</span>
       </li>
       <li>
         <span>host</span>
-        <span>{{hostInfo ? hostInfo : '无'}}</span>
+        <span><a v-bind:href="hostInfo" target="_blank">{{hostInfo}}</a></span>
       </li>
       <li>
         <span>服务url</span>
-        <span>{{infoData && infoData.termsOfService ? infoData.termsOfService : '无'}}</span>
+        <span><a
+          v-bind:href="infoData && infoData.termsOfService ? infoData.termsOfService : ''"
+          target="_blank">{{infoData && infoData.termsOfService ? infoData.termsOfService : ''}}</a></span>
       </li>
     </ul>
   </div>

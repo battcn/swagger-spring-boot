@@ -230,7 +230,7 @@
               let definition = {};
               definition[refType] = this.formatRequest(ref);
 
-              deftion = this.JSONinit(refType);
+              deftion = this.JSONInit(refType);
               this.jsonObject = deftion;
               return definition;
             } else {
@@ -455,7 +455,7 @@
       titleCase5: function (str) {
         return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
       },
-      JSONinit: function (refType) {
+      JSONInit: function (refType) {
         let _this = this;
         let definitionsArray = deepCopy(_this.leftDropDownBoxContent && _this.leftDropDownBoxContent.definitions);
         let deftion = undefined;
@@ -485,7 +485,7 @@
             if ((typeof ref === "string") && regex.test(ref)) {
               let a = ref.match("#/definitions/(.*)");
               let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
-              deftion[key] = this.JSONinit(refType2);
+              deftion[key] = this.JSONInit(refType2);
               continue;
             }
           }
@@ -497,7 +497,7 @@
               let a = ref.match("#/definitions/(.*)");
               let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
               deftion[key] = [];
-              deftion[key].push(this.JSONinit(refType2));
+              deftion[key].push(this.JSONInit(refType2));
               continue;
             }
           }
@@ -589,7 +589,7 @@
           }
         }
         _this.$store.dispatch('carriedSend', {
-          url: "http://" + _this.leftDropDownBoxContent.host + url,
+          url: url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: reqdata
