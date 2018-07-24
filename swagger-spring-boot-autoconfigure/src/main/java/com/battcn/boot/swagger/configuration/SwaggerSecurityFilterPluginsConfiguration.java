@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -24,7 +26,9 @@ public class SwaggerSecurityFilterPluginsConfiguration implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
-        if (!RequestUtils.SWAGGER_IS_LOGIN) {
+        final HttpServletRequest request = (HttpServletRequest) servletRequest;
+        final HttpSession session = request.getSession();
+        if (session == null || session.getAttribute(session.getId()) == null) {
             RequestUtils.writeForbidden(response);
         }
         filterChain.doFilter(servletRequest, servletResponse);

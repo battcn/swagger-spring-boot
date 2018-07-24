@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,14 +44,15 @@ public class CustomSwagger2Controller {
 
     @PostMapping(value = SWAGGER_SECURITY_LOGIN_URL,
             produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<Void> loginSwagger(HttpServletResponse response, String username, String password) throws IOException {
+    public ResponseEntity<Void> loginSwagger(HttpSession session, HttpServletResponse response, String username, String password) throws IOException {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             RequestUtils.writeForbidden(response);
         }
         if (!(username.equals(swaggerSecurityProperties.getUsername()) && password.equals(swaggerSecurityProperties.getPassword()))) {
             RequestUtils.writeForbidden(response);
         }
-        RequestUtils.SWAGGER_IS_LOGIN = true;
+        final String sessionId = session.getId();
+        session.setAttribute(sessionId, sessionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
