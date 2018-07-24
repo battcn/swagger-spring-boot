@@ -26,7 +26,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.4-RELEASE</version>
+    <version>2.0.5-RELEASE</version>
 </dependency>
 ```
 
@@ -47,6 +47,10 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
+2.0.5
+  发布时间：2018-07-24
+  更新内容：
+    1.修复 spring.swagger.host 导致调试面板失效BUG
 2.0.4
   发布时间：2018-07-23
   更新内容：
