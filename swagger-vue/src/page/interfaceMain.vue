@@ -591,7 +591,8 @@
           }
         }
         _this.$store.dispatch('carriedSend', {
-          url: url,
+          //url: "http://localhost:8080" + url,
+          url: "http://" + _this.leftDropDownBoxContent.host + url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: requestData
