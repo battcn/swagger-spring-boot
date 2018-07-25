@@ -15,10 +15,10 @@ function rootPath() {
   const pathName = window.document.location.pathname;
   const pos = curWwwPath.indexOf(pathName);
   //获取主机地址，如： http://localhost:8083
-  const localhostPaht = curWwwPath.substring(0, pos);
+  const localhostPath = curWwwPath.substring(0, pos);
   //获取带"/"的项目名，如：/battcn
   const projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-  return (localhostPaht + projectName);
+  return (localhostPath + projectName);
 }
 
 const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SWAGGER_URL;
@@ -178,10 +178,9 @@ export default new Vuex.Store({
   }
 })
 
-
-
-
-
+export {
+  SWAGGER_URL
+}
 
 
 

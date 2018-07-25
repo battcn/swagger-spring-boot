@@ -180,6 +180,7 @@
   import {deepCopy, basicTypeInit} from './../util/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
+  import {SWAGGER_URL} from '../store/index'
 
   export default {
     name: "app",
@@ -590,9 +591,10 @@
             requestData = param;
           }
         }
+        // console.info("-->>" + rootPath());
         _this.$store.dispatch('carriedSend', {
           //url: "http://localhost:8080" + url,
-          url: "http://" + _this.leftDropDownBoxContent.host + url,
+          url: url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: requestData
@@ -622,7 +624,14 @@
           }
           // url
           if (_this.debugResponse.config !== null && _this.debugResponse.config.url !== undefined) {
-            contentUrl = `'${_this.debugResponse.config.url}'`;
+            //获取当前网址，如： http://localhost:8083/battcn/index.html
+            const curWwwPath = window.document.location.href;
+            //获取主机地址之后的目录，如： battcn/index.html
+            const pathName = window.document.location.pathname;
+            const pos = curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            const localhostPath = curWwwPath.substring(0, pos);
+            contentUrl = `'${localhostPath + process.env.SWAGGER_URL + _this.debugResponse.config.url}'`;
           }
         }
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {

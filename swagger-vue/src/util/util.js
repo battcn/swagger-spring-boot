@@ -35,7 +35,7 @@ const deepCopy = function (source) {
     result = source;
     return result;
   }
-}
+};
 /* 传入参数类型名字，返回该类型初始化的值 */
 const basicTypeInit = function (type) {
   if (type === 'integer' || type === 'number') {
