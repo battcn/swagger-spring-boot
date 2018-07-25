@@ -26,7 +26,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.5-RELEASE</version>
+    <version>2.0.6-RELEASE</version>
 </dependency>
 ```
 
@@ -47,6 +47,11 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
+2.0.6
+  发布时间：2018-07-25
+  更新内容：
+    1.解决请求错误时，异常信息不渲染的BUG
+    2.优化登陆保存策略
 2.0.5
   发布时间：2018-07-24
   更新内容：
