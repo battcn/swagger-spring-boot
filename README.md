@@ -144,6 +144,8 @@ spring.swagger.security.password=battcn
 > 操作风格 - 2.0.1 版本
 
 ``` java
+# 配置
+spring.swagger.api-key.key-name=myToken
 # 2.0.1 版本新特性 （支持可选的 Bean 验证插件）
 spring.swagger.validator-plugin=false
 # 定义全局响应返回
