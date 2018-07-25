@@ -108,9 +108,10 @@
                 <div>
                   <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor"
                      href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ? '收缩' : '展开'}}</a>
-                  <span v-if="responseCodeSchema(item)" v-show="!responseCodePre[index]">{{item.schema ?(item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
+                  <span v-if="responseCodeSchema(item)"
+                        v-show="!responseCodePre[index]">{{item.schema ? (item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
                   <span v-show="responseCodePre[index]"
-                    :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
+                        :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
                 </span>
                 </div>
               </li>
@@ -196,7 +197,7 @@
         linkageSection: "",
         parameterValue: {},
         responseCodePre: [],
-        responseObjectName:""
+        responseObjectName: ""
       }
     },
     computed: {
@@ -226,7 +227,7 @@
             let regex = new RegExp("#/definitions/(.*)$", "ig");
             if (regex.test(ref)) {
               let refType = RegExp.$1;
-              let deftion = undefined;
+              let deftion;
               let definition = {};
               definition[refType] = this.formatRequest(ref);
 
@@ -338,13 +339,13 @@
     },
     methods: {
       ...mapActions(["carriedSend"]),
-      ...mapMutations(["initialization","send"]),
+      ...mapMutations(["initialization", "send"]),
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
-        if(item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items){
+        if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
           return true;
         }
-        if(item.schema && item.schema.$ref){
-          this.responseObjectName=item.schema.$ref.match("#/definitions/(.*)")[1];
+        if (item.schema && item.schema.$ref) {
+          this.responseObjectName = item.schema.$ref.match("#/definitions/(.*)")[1];
           return true;
         }
         return false;
@@ -520,7 +521,7 @@
         }
         return deftion;
       },
-      getForm: function (data,param) {/* param为假设存在文件上传时所传输的文件对象 */
+      getForm: function (data, param) {/* param为假设存在文件上传时所传输的文件对象 */
         let _this = this;
         let result = [];
         for (let key in data) {
@@ -533,15 +534,16 @@
             result.push(obj);
           }
         }
-        _this.stitchUrl(result,param);/* param为假设存在文件上传时所传输的文件对象 */
+        _this.stitchUrl(result, param);
+        /* param为假设存在文件上传时所传输的文件对象 */
       },
-      stitchUrl: function (result,param) {
+      stitchUrl: function (result, param) {
         let _this = this;
         let url = (_this.swaggerCategory && _this.swaggerCategory[_this.countTo] && _this.swaggerCategory[_this.countTo].pathName) ? _this.swaggerCategory[_this.countTo].pathName : '',
           params = {},
-          headerParams = {'Content-Type':'application/json;charset=UTF-8'},
-          reqdata = "",
-          bodyparams = "";
+          headerParams = {'Content-Type': 'application/json;charset=UTF-8'},
+          requestData = "",
+          bodyParams = "";
 //
         if (typeof (_this.leftDropDownBoxContent.basePath) !== "undefined" && _this.leftDropDownBoxContent.basePath !== "") {
           if (_this.leftDropDownBoxContent.basePath !== "/") {
@@ -556,7 +558,7 @@
             url += ((isQuery ? '&' : isQuery = '?') + result[i][0] + '=' + result[i][1]);
           } else {
             if (result[i][2]["in"] === "body") {
-              bodyparams += JSON.stringify(result[i][1]);
+              bodyParams += JSON.stringify(result[i][1]);
             } else {
               if (result[i][2]["in"] === "header") {
                 headerParams[result[i][0]] = result[i][1];
@@ -568,13 +570,13 @@
         }
         for (let j = 0, k = result.length; j < k; j++) {
           if (result && result[j] && result[j][2] && result[j][2]["in"] && result[j][2]["in"] === "body") {
-            reqdata = bodyparams;
+            requestData = bodyParams;
             break;
           } else {
-            reqdata = params;
+            requestData = params;
           }
         }
-        let jsonReqdata = reqdata;
+        let jsonRequestData = requestData;
         /* 判断调试请求中是否有Security字段 */
         if (this.isExistSecurity) {/* headerParams */
           for (let key in this.authorizeObj) {
@@ -582,62 +584,75 @@
           }
         }
         /*  判断是否为文件类型上传 */
-        for(let key in reqdata){
-          if(param!==undefined&&reqdata[key]&&reqdata[key]['in']&&reqdata[key]['in']==='formData'&&reqdata[key]['type']&&reqdata[key]['type']==='file'){
-            headerParams['Content']='multipart/form-data; charset=utf-8';
-            reqdata=param;
+        for (let key in requestData) {
+          if (param !== undefined && requestData[key] && requestData[key]['in'] && requestData[key]['in'] === 'formData' && requestData[key]['type'] && requestData[key]['type'] === 'file') {
+            headerParams['Content'] = 'multipart/form-data; charset=utf-8';
+            requestData = param;
           }
         }
         _this.$store.dispatch('carriedSend', {
           url: url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
-          data: reqdata
+          data: requestData
         }).then(function () {
-          _this.StitchingCurl(headerParams, jsonReqdata)
+          _this.StitchingCurl(headerParams, jsonRequestData)
         })
-
       },
-      StitchingCurl: function (headerParams, reqdata) {
-        console.log("Curl处理")
+      StitchingCurl: function (headerParams, reqData) {
         let _this = this;
-        let headerss = "";
-        let contentUrl = `'${_this.debugResponse && _this.debugResponse.config && _this.debugResponse.config.url}'`;
-        let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}'`;
+        let headers = "";
+        let contentType = `--header 'application/json;charset=UTF-8'`;
+        let contentUrl = "";
+        let curlAccept = "-H \"accept: */*\"";
         for (let key in headerParams) {
-          headerss += `${key}: ${headerParams[key]}`;
+          headers += `${key}: ${headerParams[key]}`;
         }
-        /*  生成curl命令组成部分 */
-        /* 头部数据 */
-        headerss !== "" ? headerss = ` --header '${ headerss}' ` : "";
-        let contentType = ` --header  'Content-Type:   ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}' `
+        /* 生成 CURL 头部数据 */
+        if (headers !== '' && headers !== undefined && headers.length > 0) {
+          headers = `--header '${headers}' `
+        }
+        if (_this.debugResponse !== null) {
+          // response contentType
+          if (_this.debugResponse.headers !== null && _this.debugResponse.headers !== undefined
+            && _this.debugResponse.headers['content-type'] !== null && _this.debugResponse.headers['content-type'] !== undefined) {
+            contentType = `--header 'Content-Type: ${_this.debugResponse.headers['content-type']}'`;
+            curlAccept = `-H 'Accept: ${_this.debugResponse.headers['content-type']}'`;
+          }
+          // url
+          if (_this.debugResponse.config !== null && _this.debugResponse.config.url !== undefined) {
+            contentUrl = `'${_this.debugResponse.config.url}'`;
+          }
+        }
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
-          let curlTable = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()}  --header 'Accept:  ${ _this.debugResponse.headers['content-type'] }' ${headerss} ${contentUrl}`;
-          _this.curlMode = curlTable;
+          _this.curlMode = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${curlAccept} ${headers} ${contentUrl}`;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
-          let curlData = ` -d  '${reqdata ? this.formatterJson(reqdata) : ""}' `;
-          let curlTable = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType}   ${curlAccept}   ${headerss}  ${reqdata === '{}' ? "" : curlData}   ${contentUrl}`;
-          _this.curlMode = curlTable;
+          let curlData = ` -d  '${reqData ? this.formatterJson(reqData) : ""}' `;
+          _this.curlMode = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType} ${curlAccept} ${headers} ${reqData === '{}' ? "" : curlData} ${contentUrl}`;
         }
-        /* 响应内容JSON序列化 */
-        try {
-          let obj = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
-          if (typeof obj === 'object' && obj) {
-            this.isJsonObject = true;
-            this.jsonObjectTo = obj;
+        if (this.debugResponse !== null && this.debugResponse !== undefined) {
+          // 正确响应
+          if (this.debugResponse.status !== null && this.debugResponse.status >= 200 && this.debugResponse.status <= 299) {
+            try {
+              this.isJsonObject = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
+            } catch (e) {
+              this.isJsonObject = false;
+            }
+            this.jsonObjectTo = this.debugResponse.data;
           } else {
-            this.isJsonObject = false;
-            this.jsonObjectTo = String(this.debugResponse.data);
+            try {
+              this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
+            } catch (e) {
+              this.isJsonObject = false;
+            }
+            this.jsonObjectTo = this.debugResponse.response.data;
           }
-        } catch (e) {
-          this.isJsonObject = false;
-          this.jsonObjectTo = String(this.debugResponse.data);
         }
         this.resultShow = true;
         /* 显示结果 */
       },
-      failureJump:function () {/* 请求失败时跳转至登录路由 */
+      failureJump: function () {/* 请求失败时跳转至登录路由 */
         this.$router.push('swagger-login.html');
         console.log("请进行身份验证后使用！")
       }
@@ -645,7 +660,7 @@
     props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView},
     created(){
-      let methods=this.failureJump;
+      let methods = this.failureJump;
       this.initialization(methods);
     }
   }
