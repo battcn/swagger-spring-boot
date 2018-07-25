@@ -594,7 +594,7 @@
         // console.info("-->>" + rootPath());
         _this.$store.dispatch('carriedSend', {
           //url: "http://localhost:8080" + url,
-          url: url,
+          url: process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? process.env.SWAGGER_URL + url : url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: requestData
@@ -631,7 +631,7 @@
             const pos = curWwwPath.indexOf(pathName);
             //获取主机地址，如： http://localhost:8083
             const localhostPath = curWwwPath.substring(0, pos);
-            contentUrl = `'${localhostPath + process.env.SWAGGER_URL + _this.debugResponse.config.url}'`;
+            contentUrl = process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? `'${_this.debugResponse.config.url}'` : `'${localhostPath + process.env.SWAGGER_URL + _this.debugResponse.config.url}'`;
           }
         }
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
