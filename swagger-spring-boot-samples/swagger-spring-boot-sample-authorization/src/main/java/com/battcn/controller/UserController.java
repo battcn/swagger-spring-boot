@@ -31,9 +31,10 @@ public class UserController {
             @ApiImplicitParam(name = "username", value = "用户名"),
             @ApiImplicitParam(name = "password", value = "密码"),
     })
-    public User query(String username, String password, HttpServletRequest request) {
+    public String query(String username, String password, HttpServletRequest request) {
         log.info("Authorization : {}", request.getHeader("Authorization"));
-        return new User(1L, username, password);
+        //return new User(1L, username, password);
+        throw new RuntimeException("111");
     }
 
     @GetMapping("/{id}")

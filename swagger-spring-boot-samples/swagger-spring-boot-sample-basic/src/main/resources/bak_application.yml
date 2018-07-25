@@ -1,0 +1,20 @@
+spring:
+  swagger:
+    enabled: true
+    title: 标题
+    description: 描述信息
+    version: 系统版本号
+    contact:
+      name: 维护者信息
+    base-package: com.swagger
+    #全局参数,比如Token之类的验证信息可以全局话配置
+    global-operation-parameters:
+    -   description: 'Token信息,必填项'
+        modelRef: 'string'
+        name: 'Authorization'
+        parameter-type: 'header'
+        required: true
+    global-response-messages:
+      POST[0]:
+        code: 400
+        message: 出错啦.

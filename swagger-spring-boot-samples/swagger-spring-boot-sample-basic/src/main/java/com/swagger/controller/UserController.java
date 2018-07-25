@@ -33,7 +33,8 @@ public class UserController {
     })
     public User query(String username, String password) {
         log.info("多个参数用  @ApiImplicitParams");
-        return new User(1L, username, password);
+        //return new User(1L, username, password);
+        throw new RuntimeException("服务器异常...");
     }
 
     @GetMapping("/{id}")
