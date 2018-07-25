@@ -108,10 +108,9 @@
                 <div>
                   <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor"
                      href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ? '收缩' : '展开'}}</a>
-                  <span v-if="responseCodeSchema(item)"
-                        v-show="!responseCodePre[index]">{{item.schema ? (item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
+                  <span v-if="responseCodeSchema(item)" v-show="!responseCodePre[index]">{{item.schema ?(item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
                   <span v-show="responseCodePre[index]"
-                        :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
+                    :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
                 </span>
                 </div>
               </li>
@@ -157,11 +156,11 @@
           <div class="debugging-header" v-show="debugging=='header'">
             <ul style="border: 1px solid #ddd;">
               <li class="head"><span>请求头</span><span>value</span></li>
-              <li><span>date</span><span></span></li>
-              <li><span>transfer-encoding</span><span></span></li>
-              <li><span>x-application-context</span><span></span></li>
+              <li><span>Date</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['Date']}}</span></li>
+              <li><span>transfer-encoding</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['transfer-encoding']}}</span></li>
+              <li><span>x-application-context</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['x-application-context']}}</span></li>
               <li>
-                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['map'] && debugResponse.headers['map']['content-type'] && debugResponse.headers['map']['content-type'][0]}}</span>
+                <span>content-type</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['content-type']}}</span>
               </li>
               <li><span>response-code</span><span>{{debugResponse && debugResponse.status}}</span></li>
             </ul>
@@ -180,7 +179,6 @@
   import {deepCopy, basicTypeInit} from './../util/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
-  import {SWAGGER_URL} from '../store/index'
 
   export default {
     name: "app",
@@ -198,7 +196,7 @@
         linkageSection: "",
         parameterValue: {},
         responseCodePre: [],
-        responseObjectName: ""
+        responseObjectName:""
       }
     },
     computed: {
@@ -228,11 +226,11 @@
             let regex = new RegExp("#/definitions/(.*)$", "ig");
             if (regex.test(ref)) {
               let refType = RegExp.$1;
-              let deftion;
+              let deftion = undefined;
               let definition = {};
               definition[refType] = this.formatRequest(ref);
 
-              deftion = this.JSONInit(refType);
+              deftion = this.JSONinit(refType);
               this.jsonObject = deftion;
               return definition;
             } else {
@@ -340,13 +338,13 @@
     },
     methods: {
       ...mapActions(["carriedSend"]),
-      ...mapMutations(["initialization", "send"]),
+      ...mapMutations(["initialization","send"]),
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
-        if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
+        if(item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items){
           return true;
         }
-        if (item.schema && item.schema.$ref) {
-          this.responseObjectName = item.schema.$ref.match("#/definitions/(.*)")[1];
+        if(item.schema && item.schema.$ref){
+          this.responseObjectName=item.schema.$ref.match("#/definitions/(.*)")[1];
           return true;
         }
         return false;
@@ -457,7 +455,7 @@
       titleCase5: function (str) {
         return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
       },
-      JSONInit: function (refType) {
+      JSONinit: function (refType) {
         let _this = this;
         let definitionsArray = deepCopy(_this.leftDropDownBoxContent && _this.leftDropDownBoxContent.definitions);
         let deftion = undefined;
@@ -487,7 +485,7 @@
             if ((typeof ref === "string") && regex.test(ref)) {
               let a = ref.match("#/definitions/(.*)");
               let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
-              deftion[key] = this.JSONInit(refType2);
+              deftion[key] = this.JSONinit(refType2);
               continue;
             }
           }
@@ -499,7 +497,7 @@
               let a = ref.match("#/definitions/(.*)");
               let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
               deftion[key] = [];
-              deftion[key].push(this.JSONInit(refType2));
+              deftion[key].push(this.JSONinit(refType2));
               continue;
             }
           }
@@ -522,7 +520,7 @@
         }
         return deftion;
       },
-      getForm: function (data, param) {/* param为假设存在文件上传时所传输的文件对象 */
+      getForm: function (data,param) {/* param为假设存在文件上传时所传输的文件对象 */
         let _this = this;
         let result = [];
         for (let key in data) {
@@ -535,16 +533,15 @@
             result.push(obj);
           }
         }
-        _this.stitchUrl(result, param);
-        /* param为假设存在文件上传时所传输的文件对象 */
+        _this.stitchUrl(result,param);/* param为假设存在文件上传时所传输的文件对象 */
       },
-      stitchUrl: function (result, param) {
+      stitchUrl: function (result,param) {
         let _this = this;
         let url = (_this.swaggerCategory && _this.swaggerCategory[_this.countTo] && _this.swaggerCategory[_this.countTo].pathName) ? _this.swaggerCategory[_this.countTo].pathName : '',
           params = {},
-          headerParams = {'Content-Type': 'application/json;charset=UTF-8'},
-          requestData = "",
-          bodyParams = "";
+          headerParams = {'Content-Type':'application/json;charset=UTF-8'},
+          reqdata = "",
+          bodyparams = "";
 //
         if (typeof (_this.leftDropDownBoxContent.basePath) !== "undefined" && _this.leftDropDownBoxContent.basePath !== "") {
           if (_this.leftDropDownBoxContent.basePath !== "/") {
@@ -559,7 +556,7 @@
             url += ((isQuery ? '&' : isQuery = '?') + result[i][0] + '=' + result[i][1]);
           } else {
             if (result[i][2]["in"] === "body") {
-              bodyParams += JSON.stringify(result[i][1]);
+              bodyparams += JSON.stringify(result[i][1]);
             } else {
               if (result[i][2]["in"] === "header") {
                 headerParams[result[i][0]] = result[i][1];
@@ -571,13 +568,13 @@
         }
         for (let j = 0, k = result.length; j < k; j++) {
           if (result && result[j] && result[j][2] && result[j][2]["in"] && result[j][2]["in"] === "body") {
-            requestData = bodyParams;
+            reqdata = bodyparams;
             break;
           } else {
-            requestData = params;
+            reqdata = params;
           }
         }
-        let jsonRequestData = requestData;
+        let jsonReqdata = reqdata;
         /* 判断调试请求中是否有Security字段 */
         if (this.isExistSecurity) {/* headerParams */
           for (let key in this.authorizeObj) {
@@ -585,84 +582,63 @@
           }
         }
         /*  判断是否为文件类型上传 */
-        for (let key in requestData) {
-          if (param !== undefined && requestData[key] && requestData[key]['in'] && requestData[key]['in'] === 'formData' && requestData[key]['type'] && requestData[key]['type'] === 'file') {
-            headerParams['Content'] = 'multipart/form-data; charset=utf-8';
-            requestData = param;
+        for(let key in reqdata){
+          if(param!==undefined&&reqdata[key]&&reqdata[key]['in']&&reqdata[key]['in']==='formData'&&reqdata[key]['type']&&reqdata[key]['type']==='file'){
+            headerParams['Content']='multipart/form-data; charset=utf-8';
+            reqdata=param;
           }
         }
-        // console.info("-->>" + rootPath());
+        let urlAssembly = _this.leftDropDownBoxContent.host.indexOf("http")===0?(_this.leftDropDownBoxContent.host + url):("http://" + _this.leftDropDownBoxContent.host + url);
         _this.$store.dispatch('carriedSend', {
-          //url: "http://localhost:8080" + url,
-          url: process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? process.env.SWAGGER_URL + url : url,
+          url: urlAssembly,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
-          data: requestData
+          data: reqdata
         }).then(function () {
-          _this.StitchingCurl(headerParams, jsonRequestData)
+          _this.StitchingCurl(headerParams, jsonReqdata)
         })
+
       },
-      StitchingCurl: function (headerParams, reqData) {
+      StitchingCurl: function (headerParams, reqdata) {
+        console.log("Curl处理")
         let _this = this;
-        let headers = "";
-        let contentType = `--header 'application/json;charset=UTF-8'`;
-        let contentUrl = "";
-        let curlAccept = "-H \"accept: */*\"";
+        let headerss = "";
+        let contentUrl = `'${_this.debugResponse && _this.debugResponse.config && _this.debugResponse.config.url}'`;
+        let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}'`;
         for (let key in headerParams) {
-          headers += `${key}: ${headerParams[key]}`;
+          headerss += `${key}: ${headerParams[key]}`;
         }
-        /* 生成 CURL 头部数据 */
-        if (headers !== '' && headers !== undefined && headers.length > 0) {
-          headers = `--header '${headers}' `
-        }
-        if (_this.debugResponse !== null) {
-          // response contentType
-          if (_this.debugResponse.headers !== null && _this.debugResponse.headers !== undefined
-            && _this.debugResponse.headers['content-type'] !== null && _this.debugResponse.headers['content-type'] !== undefined) {
-            contentType = `--header 'Content-Type: ${_this.debugResponse.headers['content-type']}'`;
-            curlAccept = `-H 'Accept: ${_this.debugResponse.headers['content-type']}'`;
-          }
-          // url
-          if (_this.debugResponse.config !== null && _this.debugResponse.config.url !== undefined) {
-            //获取当前网址，如： http://localhost:8083/battcn/index.html
-            const curWwwPath = window.document.location.href;
-            //获取主机地址之后的目录，如： battcn/index.html
-            const pathName = window.document.location.pathname;
-            const pos = curWwwPath.indexOf(pathName);
-            //获取主机地址，如： http://localhost:8083
-            const localhostPath = curWwwPath.substring(0, pos);
-            contentUrl = process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? `'${_this.debugResponse.config.url}'` : `'${localhostPath + process.env.SWAGGER_URL + _this.debugResponse.config.url}'`;
-          }
-        }
+        /*  生成curl命令组成部分 */
+        /* 头部数据 */
+        headerss !== "" ? headerss = ` --header '${ headerss}' ` : "";
+        let contentType = ` --header  'Content-Type:   ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}' `
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
-          _this.curlMode = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${curlAccept} ${headers} ${contentUrl}`;
+          let curlTable = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()}  --header 'Accept:  ${ _this.debugResponse&&_this.debugResponse.headers&&_this.debugResponse.headers['content-type'] }' ${headerss} ${contentUrl}`;
+          _this.curlMode = curlTable;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
-          let curlData = ` -d  '${reqData ? this.formatterJson(reqData) : ""}' `;
-          _this.curlMode = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType} ${curlAccept} ${headers} ${reqData === '{}' ? "" : curlData} ${contentUrl}`;
+          let curlData = ` -d  '${reqdata ? this.formatterJson(reqdata) : ""}' `;
+          let curlTable = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType}   ${curlAccept}   ${headerss}  ${reqdata === '{}' ? "" : curlData}   ${contentUrl}`;
+          _this.curlMode = curlTable;
         }
-        if (this.debugResponse !== null && this.debugResponse !== undefined) {
-          // 正确响应
-          if (this.debugResponse.status !== null && this.debugResponse.status >= 200 && this.debugResponse.status <= 299) {
-            try {
-              this.isJsonObject = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
-            } catch (e) {
-              this.isJsonObject = false;
-            }
-            this.jsonObjectTo = this.debugResponse.data;
+        /* 响应内容JSON序列化 */
+        try {
+          let obj = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
+          if (typeof obj === 'object' && obj) {
+            this.isJsonObject = true;
+            this.jsonObjectTo = obj;
           } else {
-            try {
-              this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
-            } catch (e) {
-              this.isJsonObject = false;
-            }
-            this.jsonObjectTo = this.debugResponse.response.data;
+            this.isJsonObject = false;
+            this.jsonObjectTo = String(this.debugResponse.data);
           }
+        } catch (e) {
+          this.isJsonObject = false;
+          this.jsonObjectTo = String(this.debugResponse.data);
         }
         this.resultShow = true;
         /* 显示结果 */
       },
-      failureJump: function () {/* 请求失败时跳转至登录路由 */
+      failureJump:function () {/* 请求失败时跳转至登录路由 */
         this.$router.push('swagger-login.html');
         console.log("请进行身份验证后使用！")
       }
@@ -670,7 +646,7 @@
     props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView},
     created(){
-      let methods = this.failureJump;
+      let methods=this.failureJump;
       this.initialization(methods);
     }
   }

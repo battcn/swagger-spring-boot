@@ -68,7 +68,7 @@
   }
 
   .jsonView {
-    text-align: left;
+    text-align: left;    margin-top: 6px;
   }
 
   .test-bottom-border {

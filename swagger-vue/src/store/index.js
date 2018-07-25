@@ -66,6 +66,7 @@ const debugRequest = {
   mutations: {
     send(state, n) {
       let enterTime = new Date();
+      console.log("请求数据...");
       axios.request({
         url: n.url,
         data: n.data,
