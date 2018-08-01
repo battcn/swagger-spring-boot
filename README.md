@@ -1,5 +1,11 @@
 # 简介 #
 
+> 什么是 swagger?
+
+**`Swagger` 是一款自动生成在线文档 + 接口调试的工具。在 WEB 开发中不可否认的是我们需要给客户端提供 API 接口，这个时候需要借助 postman、rap 等工具
+进行调试，以便于接口能正常交付给客户端人员，用过其它工具的应该知道一个 POST 请求一堆参数是非常枯燥且烦人的事情，而 swagger 就是让你摆脱这种束缚感....**
+
+
 > 源码地址
 
 - GitHub：[https://github.com/battcn/swagger-spring-boot](https://github.com/battcn/swagger-spring-boot "https://github.com/battcn/swagger-spring-boot")
