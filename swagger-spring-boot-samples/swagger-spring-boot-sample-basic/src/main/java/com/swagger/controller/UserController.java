@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping
     @ApiOperation(value = "条件查询（DONE）")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", dataType = DataType.STRING, paramType = ParamType.QUERY),
+            @ApiImplicitParam(name = "username", value = "用户名", dataType = DataType.STRING, paramType = ParamType.QUERY,defaultValue = "username111"),
             @ApiImplicitParam(name = "password", value = "密码", dataType = DataType.STRING, paramType = ParamType.QUERY),
     })
     public User query(String username, String password) {

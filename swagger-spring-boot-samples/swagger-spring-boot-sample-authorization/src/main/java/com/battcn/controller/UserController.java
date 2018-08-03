@@ -28,8 +28,8 @@ public class UserController {
     @GetMapping
     @ApiOperation(value = "条件查询（DONE）")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名"),
-            @ApiImplicitParam(name = "password", value = "密码"),
+            @ApiImplicitParam(name = "username", value = "用户名", example = "battcn", defaultValue = "default_user"),
+            @ApiImplicitParam(name = "password", value = "密码", example = "battcn", defaultValue = "default_pass"),
     })
     public String query(String username, String password, HttpServletRequest request) {
         log.info("Authorization : {}", request.getHeader("Authorization"));
