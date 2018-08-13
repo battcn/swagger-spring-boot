@@ -66,49 +66,49 @@
                   </tbody>
                 </table>-->
             </div>
-           <!-- <div class="request-table" v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
-              <table>
-                <tbody>
-                <tr>
-                  <th style="">参数名称</th>
-                  <th style="">说明</th>
-                  <th style="">类型</th>
-                  <th style="">条件</th>
-                  <th style="">in</th>
-                  <th style="">是否必须</th>
-                </tr>
-                &lt;!&ndash;<tr>
-                  <td style="">参数名称</td>
-                  <td style="">说明</td>
-                  <td style="">类型</td>
-                  <td style="">条件</td>
-                  <td style="">in</td>
-                  <td style="">是否必须</td>
-                </tr>&ndash;&gt;
-               &lt;!&ndash; <tr>
-                  <tr>
-                  <td colspan="6"><table  style="width: 100%;">
-                    <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>2</td>
-                      <td>3</td>
-                      <td>4</td>
-                      <td>5</td>
-                      <td>6</td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  </td>
-                </tr>
-                </tr>&ndash;&gt;
-                <div v-for="(item,key) in InterfaceRequest">
-                  <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
-                             :item="item"></form-fold>
-                </div>
-                </tbody>
-              </table>
-            </div>-->
+            <!-- <div class="request-table" v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
+               <table>
+                 <tbody>
+                 <tr>
+                   <th style="">参数名称</th>
+                   <th style="">说明</th>
+                   <th style="">类型</th>
+                   <th style="">条件</th>
+                   <th style="">in</th>
+                   <th style="">是否必须</th>
+                 </tr>
+                 &lt;!&ndash;<tr>
+                   <td style="">参数名称</td>
+                   <td style="">说明</td>
+                   <td style="">类型</td>
+                   <td style="">条件</td>
+                   <td style="">in</td>
+                   <td style="">是否必须</td>
+                 </tr>&ndash;&gt;
+                &lt;!&ndash; <tr>
+                   <tr>
+                   <td colspan="6"><table  style="width: 100%;">
+                     <tbody>
+                     <tr>
+                       <td>1</td>
+                       <td>2</td>
+                       <td>3</td>
+                       <td>4</td>
+                       <td>5</td>
+                       <td>6</td>
+                     </tr>
+                     </tbody>
+                   </table>
+                   </td>
+                 </tr>
+                 </tr>&ndash;&gt;
+                 <div v-for="(item,key) in InterfaceRequest">
+                   <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                              :item="item"></form-fold>
+                 </div>
+                 </tbody>
+               </table>
+             </div>-->
             <span v-else>暂无</span>
           </div>
         </li>
@@ -151,9 +151,10 @@
                 <div>
                   <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor"
                      href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ? '收缩' : '展开'}}</a>
-                  <span v-if="responseCodeSchema(item)" v-show="!responseCodePre[index]">{{item.schema ?(item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
+                  <span v-if="responseCodeSchema(item)"
+                        v-show="!responseCodePre[index]">{{item.schema ? (item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
                   <span v-show="responseCodePre[index]"
-                    :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
+                        :class="{format: responseCodeSchema(item)&&responseCodePre[index]}">{{item.schema ? (item.schema.$ref ? jsonObject : (item.schema.type && item.schema.type === "array" && item.schema.items) ? jsonObject : "无") : "无"}}
                 </span>
                 </div>
               </li>
@@ -199,11 +200,17 @@
           <div class="debugging-header" v-show="debugging=='header'">
             <ul style="border: 1px solid #ddd;">
               <li class="head"><span>请求头</span><span>value</span></li>
-              <li><span>Date</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['Date']}}</span></li>
-              <li><span>transfer-encoding</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['transfer-encoding']}}</span></li>
-              <li><span>x-application-context</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['x-application-context']}}</span></li>
               <li>
-                <span>content-type</span><span>{{debugResponse && debugResponse.headers  && debugResponse.headers['content-type']}}</span>
+                <span>Date</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['Date']}}</span>
+              </li>
+              <li>
+                <span>transfer-encoding</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['transfer-encoding']}}</span>
+              </li>
+              <li>
+                <span>x-application-context</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['x-application-context']}}</span>
+              </li>
+              <li>
+                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['content-type']}}</span>
               </li>
               <li><span>response-code</span><span>{{debugResponse && debugResponse.status}}</span></li>
             </ul>
@@ -239,7 +246,7 @@
         linkageSection: "",
         parameterValue: {},
         responseCodePre: [],
-        responseObjectName:""
+        responseObjectName: ""
       }
     },
     computed: {
@@ -376,7 +383,7 @@
       }
     },
     watch: {
-      count:function () {
+      count: function () {
         this.switchA = 0;
         this.resultShow = false;
       },
@@ -387,13 +394,13 @@
     },
     methods: {
       ...mapActions(["carriedSend"]),
-      ...mapMutations(["initialization","send"]),
+      ...mapMutations(["initialization", "send"]),
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
-        if(item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items){
+        if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
           return true;
         }
-        if(item.schema && item.schema.$ref){
-          this.responseObjectName=item.schema.$ref.match("#/definitions/(.*)")[1];
+        if (item.schema && item.schema.$ref) {
+          this.responseObjectName = item.schema.$ref.match("#/definitions/(.*)")[1];
           return true;
         }
         return false;
@@ -569,7 +576,7 @@
         }
         return deftion;
       },
-      getForm: function (data,param) {/* param为假设存在文件上传时所传输的文件对象 */
+      getForm: function (data, param) {/* param为假设存在文件上传时所传输的文件对象 */
         let _this = this;
         let result = [];
         for (let key in data) {
@@ -581,13 +588,14 @@
             result.push(obj);
           }
         }
-        _this.stitchUrl(result,param);/* param为假设存在文件上传时所传输的文件对象 */
+        _this.stitchUrl(result, param);
+        /* param为假设存在文件上传时所传输的文件对象 */
       },
-      stitchUrl: function (result,param) {
+      stitchUrl: function (result, param) {
         let _this = this;
         let url = (_this.swaggerCategory && _this.swaggerCategory[_this.countTo] && _this.swaggerCategory[_this.countTo].pathName) ? _this.swaggerCategory[_this.countTo].pathName : '',
           params = {},
-          headerParams = {'Content-Type':'application/json;charset=UTF-8'},
+          headerParams = {'Content-Type': 'application/json;charset=UTF-8'},
           reqdata = "",
           bodyparams = "";
 //
@@ -630,15 +638,14 @@
           }
         }
         /*  判断是否为文件类型上传 */
-        for(let key in reqdata){
-          if(param!==undefined&&reqdata[key]&&reqdata[key]['in']&&reqdata[key]['in']==='formData'&&reqdata[key]['type']&&reqdata[key]['type']==='file'){
-            headerParams['Content']='multipart/form-data; charset=utf-8';
-            reqdata=param;
+        for (let key in reqdata) {
+          if (param !== undefined && reqdata[key] && reqdata[key]['in'] && reqdata[key]['in'] === 'formData' && reqdata[key]['type'] && reqdata[key]['type'] === 'file') {
+            headerParams['Content'] = 'multipart/form-data; charset=utf-8';
+            reqdata = param;
           }
         }
-        let urlAssembly = _this.leftDropDownBoxContent.host.indexOf("http")===0?(_this.leftDropDownBoxContent.host + url):("http://" + _this.leftDropDownBoxContent.host + url);
         _this.$store.dispatch('carriedSend', {
-          url: urlAssembly,
+          url: process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? process.env.SWAGGER_URL + url : url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: reqdata
@@ -648,45 +655,66 @@
 
       },
       StitchingCurl: function (headerParams, reqdata) {
-        console.log("Curl处理")
         let _this = this;
-        let headerss = "";
-        let contentUrl = `'${_this.debugResponse && _this.debugResponse.config && _this.debugResponse.config.url}'`;
-        let curlAccept = ` --header   'Accept: ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}'`;
+        let headers = "";
+        let contentType = `--header 'application/json;charset=UTF-8'`;
+        let contentUrl = "";
+        let curlAccept = "-H \"accept: */*\"";
         for (let key in headerParams) {
-          headerss += `${key}: ${headerParams[key]}`;
+          headers += `${key}: ${headerParams[key]}`;
         }
-        /*  生成curl命令组成部分 */
-        /* 头部数据 */
-        headerss !== "" ? headerss = ` --header '${ headerss}' ` : "";
-        let contentType = ` --header  'Content-Type:   ${ _this.debugResponse.headers && _this.debugResponse.headers['content-type']}' `
+        /* 生成 CURL 头部数据 */
+        if (headers !== '' && headers !== undefined && headers.length > 0) {
+          headers = `--header '${headers}' `
+        }
+        if (_this.debugResponse !== null) {
+          // response contentType
+          if (_this.debugResponse.headers !== null && _this.debugResponse.headers !== undefined
+            && _this.debugResponse.headers['content-type'] !== null && _this.debugResponse.headers['content-type'] !== undefined) {
+            contentType = `--header 'Content-Type: ${_this.debugResponse.headers['content-type']}'`;
+            curlAccept = `-H 'Accept: ${_this.debugResponse.headers['content-type']}'`;
+          }
+          // url
+          if (_this.debugResponse.config !== null && _this.debugResponse.config.url !== undefined) {
+            //获取当前网址，如： http://localhost:8083/battcn/index.html
+            const curWwwPath = window.document.location.href;
+            //获取主机地址之后的目录，如： battcn/index.html
+            const pathName = window.document.location.pathname;
+            const pos = curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            const localhostPath = curWwwPath.substring(0, pos);
+            contentUrl = process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? `'${_this.debugResponse.config.url}'` : `'${localhostPath + process.env.SWAGGER_URL + _this.debugResponse.config.url}'`;
+          }
+        }
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
-          let curlTable = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()}  --header 'Accept:  ${ _this.debugResponse&&_this.debugResponse.headers&&_this.debugResponse.headers['content-type'] }' ${headerss} ${contentUrl}`;
-          _this.curlMode = curlTable;
+          _this.curlMode = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${curlAccept} ${headers} ${contentUrl}`;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
-          let curlData = ` -d  '${reqdata ? this.formatterJson(reqdata) : ""}' `;
-          let curlTable = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType}   ${curlAccept}   ${headerss}  ${reqdata === '{}' ? "" : curlData}   ${contentUrl}`;
-          _this.curlMode = curlTable;
+          let curlData = ` -d  '${reqData ? this.formatterJson(reqData) : ""}' `;
+          _this.curlMode = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType} ${curlAccept} ${headers} ${reqData === '{}' ? "" : curlData} ${contentUrl}`;
         }
-        /* 响应内容JSON序列化 */
-        try {
-          let obj = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
-          if (typeof obj === 'object' && obj) {
-            this.isJsonObject = true;
-            this.jsonObjectTo = obj;
+        if (this.debugResponse !== null && this.debugResponse !== undefined) {
+          // 正确响应
+          if (this.debugResponse.status !== null && this.debugResponse.status >= 200 && this.debugResponse.status <= 299) {
+            try {
+              this.isJsonObject = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
+            } catch (e) {
+              this.isJsonObject = false;
+            }
+            this.jsonObjectTo = this.debugResponse.data;
           } else {
-            this.isJsonObject = false;
-            this.jsonObjectTo = String(this.debugResponse.data);
+            try {
+              this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
+            } catch (e) {
+              this.isJsonObject = false;
+            }
+            this.jsonObjectTo = this.debugResponse.response.data;
           }
-        } catch (e) {
-          this.isJsonObject = false;
-          this.jsonObjectTo = String(this.debugResponse.data);
         }
         this.resultShow = true;
         /* 显示结果 */
       },
-      failureJump:function () {/* 请求失败时跳转至登录路由 */
+      failureJump: function () {/* 请求失败时跳转至登录路由 */
         this.$router.push('swagger-login.html');
         console.log("请进行身份验证后使用！")
       }
@@ -694,7 +722,7 @@
     props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView},
     created(){
-      let methods=this.failureJump;
+      let methods = this.failureJump;
       this.initialization(methods);
     }
   }
@@ -972,36 +1000,54 @@
     border: 1px solid #ddd;
     border-bottom: 0;
   }
+
   /* td部分 */
-  .content-list > li > div .request-table table{
-    min-height: 18px;width: 100%;border:1px solid #ddd;border-collapse: collapse
+  .content-list > li > div .request-table table {
+    min-height: 18px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-collapse: collapse
   }
-  .content-list > li > div .request-table table tbody{
+
+  .content-list > li > div .request-table table tbody {
 
   }
-  .content-list > li > div .request-table table tbody tr{}
-  .content-list > li > div .request-table table tbody tr th{
-    text-align: center;border:1px solid #ddd;padding: 8px 4px;font-size: 16px;
+
+  .content-list > li > div .request-table table tbody tr {
+  }
+
+  .content-list > li > div .request-table table tbody tr th {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 8px 4px;
+    font-size: 16px;
     font-weight: 700;
     background-color: #F8F8F8;
   }
+
   .content-list > li > div .request-table table tbody tr th:nth-child(1),
   .content-list > li > div .request-table table tbody tr th:nth-child(6),
   .content-list > li > div .request-table table tbody tr td:nth-child(1),
-  .content-list > li > div .request-table table tbody tr td:nth-child(6){
-    width:15%;
+  .content-list > li > div .request-table table tbody tr td:nth-child(6) {
+    width: 15%;
   }
+
   .content-list > li > div .request-table table tbody tr th:nth-child(3),
   .content-list > li > div .request-table table tbody tr th:nth-child(4),
   .content-list > li > div .request-table table tbody tr td:nth-child(3),
-  .content-list > li > div .request-table table tbody tr td:nth-child(4) {width:10%;}
-  .content-list > li > div .request-table table tbody tr th:nth-child(5),
-  .content-list > li > div .request-table table tbody tr td:nth-child(5) {width:5%;}
-
-  .content-list > li > div .request-table table tbody tr td{
-    border:1px solid #ddd;padding: 8px 4px;
+  .content-list > li > div .request-table table tbody tr td:nth-child(4) {
+    width: 10%;
   }
 
+  .content-list > li > div .request-table table tbody tr th:nth-child(5),
+  .content-list > li > div .request-table table tbody tr td:nth-child(5) {
+    width: 5%;
+  }
+
+  .content-list > li > div .request-table table tbody tr td {
+    border: 1px solid #ddd;
+    padding: 8px 4px;
+  }
 
   .content-list > li > span:nth-child(1) {
     font-weight: 700;
