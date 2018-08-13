@@ -66,7 +66,8 @@ const debugRequest = {
   mutations: {
     send(state, n) {
       let enterTime = new Date();
-      console.log("请求数据...");
+      console.log("请求数据...",n.url);
+      /*n.url=n.url.replace("/swagger-ui.html",""); 代码调试用 */
       axios.request({
         url: n.url,
         data: n.data,

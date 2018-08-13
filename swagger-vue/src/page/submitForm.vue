@@ -30,7 +30,7 @@
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
               <textarea rows="10" v-on:input="onInput($event.target.value,key)"
-                        v-if="copyChildForm[key].default!=''&&(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in!=='formData'"
+                        v-if="childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text">{{copyChildForm[key].default}}</textarea>
             <div class="parameter-file" v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'">
@@ -40,9 +40,8 @@
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
             <input v-else v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
-
           </div>
-          <span v-if="copyChildForm[key].default==''||(typeof copyChildForm[key].default)!='object'"
+          <span v-if="childForm[key].default==''||(typeof childForm[key].default)!='object'"
                 class="parameter-operating" @click="deleteInterfaceRequest(key,item)">删除</span>
         </li>
       </ul>
@@ -65,15 +64,17 @@
         if (this.$store.state.tabData.infoData[key] !== undefined) {
           return this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][0]
         }
-        let copyChildForm = deepCopy(this.childForm);
-        let copyChildFormDefault = copyChildForm[0] && copyChildForm[0].default;
+        let copyChildForms = deepCopy(this.childForm);
+        let copyChildFormDefault = copyChildForms[0] && copyChildForms[0].default;
         for (let key in copyChildFormDefault) {/*   替换undefined的字段对象(暂代) */
           if (copyChildFormDefault[key] === undefined) {
             copyChildFormDefault[key] = {};
           }
         }
-        copyChildForm[0].default = copyChildFormDefault;
-        return copyChildForm;
+        if(copyChildForms&&copyChildForms[0]&&copyChildForms[0].default){
+          copyChildForms[0].default = copyChildFormDefault;
+        }
+        return copyChildForms;
       },
       copyLinkPath(){
         return (this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathName) ? this.swaggerCategory[this.countTo].pathName : "";

@@ -5,6 +5,19 @@
       <span class="table-td-md">{{item.type ? item.type : "无"}}</span>
       <span class="table-td-md">{{item.description ? item.description : "无"}}</span>
     </li>
+  <!--  <tr v-if="isResponse" :class="{fontColor:properties}" @click="toggleChildren">
+      <td :class="{fontRight:depth>0}">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
+      <td>{{item.type ? item.type : "无"}}</td>
+      <td>{{item.description ? item.description : "无"}}</td>
+    </tr>
+    <tr :class="{fontColor:properties}" @click="toggleChildren" v-else>
+      <td :class="{fontRight:depth>0}">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
+      <td>{{item.description ? item.description : "无"}}</td>
+      <td>{{item.type}}</td>
+      <td>无</td>
+      <td>{{item.in ? item.in : ""}}</td>
+      <td>{{(typeof item.required == 'boolean') ? item.required : ""}}</td>
+    </tr>-->
     <li :class="{fontColor:properties}" @click="toggleChildren" class="table-tr" v-else>
       <span :class="{fontRight:depth>0}" class="table-td">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
       <span class="table-td">{{item.description ? item.description : "无"}}</span>

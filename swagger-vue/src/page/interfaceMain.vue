@@ -66,6 +66,49 @@
                   </tbody>
                 </table>-->
             </div>
+           <!-- <div class="request-table" v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
+              <table>
+                <tbody>
+                <tr>
+                  <th style="">参数名称</th>
+                  <th style="">说明</th>
+                  <th style="">类型</th>
+                  <th style="">条件</th>
+                  <th style="">in</th>
+                  <th style="">是否必须</th>
+                </tr>
+                &lt;!&ndash;<tr>
+                  <td style="">参数名称</td>
+                  <td style="">说明</td>
+                  <td style="">类型</td>
+                  <td style="">条件</td>
+                  <td style="">in</td>
+                  <td style="">是否必须</td>
+                </tr>&ndash;&gt;
+               &lt;!&ndash; <tr>
+                  <tr>
+                  <td colspan="6"><table  style="width: 100%;">
+                    <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>2</td>
+                      <td>3</td>
+                      <td>4</td>
+                      <td>5</td>
+                      <td>6</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  </td>
+                </tr>
+                </tr>&ndash;&gt;
+                <div v-for="(item,key) in InterfaceRequest">
+                  <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                             :item="item"></form-fold>
+                </div>
+                </tbody>
+              </table>
+            </div>-->
             <span v-else>暂无</span>
           </div>
         </li>
@@ -270,6 +313,7 @@
       },
       InterfaceRequest: function () {/* 请求参数 */
         if (!this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.parameters) {
+          this.childForm = [];
           return false;
         }
         /* 请求参数的遍历 */
@@ -277,6 +321,7 @@
         let parameters = deepCopy(this.swaggerCategory[this.countTo].pathInfo.parameters);
         let definitions = deepCopy(this.leftDropDownBoxContent.definitions);
         if (parameters === undefined) {
+          this.childForm = [];
           return result;
         }
         for (let i in parameters) {
@@ -331,6 +376,10 @@
       }
     },
     watch: {
+      count:function () {
+        this.switchA = 0;
+        this.resultShow = false;
+      },
       countTo: function () {
         this.switchA = 0;
         this.resultShow = false;
@@ -528,7 +577,6 @@
             let obj = [];
             obj.push(data[key].name);
             obj.push(data[key].default);
-
             obj.push(_this.swaggerCategory[_this.countTo].pathInfo.parameters[key]);
             result.push(obj);
           }
@@ -924,6 +972,36 @@
     border: 1px solid #ddd;
     border-bottom: 0;
   }
+  /* td部分 */
+  .content-list > li > div .request-table table{
+    min-height: 18px;width: 100%;border:1px solid #ddd;border-collapse: collapse
+  }
+  .content-list > li > div .request-table table tbody{
+
+  }
+  .content-list > li > div .request-table table tbody tr{}
+  .content-list > li > div .request-table table tbody tr th{
+    text-align: center;border:1px solid #ddd;padding: 8px 4px;font-size: 16px;
+    font-weight: 700;
+    background-color: #F8F8F8;
+  }
+  .content-list > li > div .request-table table tbody tr th:nth-child(1),
+  .content-list > li > div .request-table table tbody tr th:nth-child(6),
+  .content-list > li > div .request-table table tbody tr td:nth-child(1),
+  .content-list > li > div .request-table table tbody tr td:nth-child(6){
+    width:15%;
+  }
+  .content-list > li > div .request-table table tbody tr th:nth-child(3),
+  .content-list > li > div .request-table table tbody tr th:nth-child(4),
+  .content-list > li > div .request-table table tbody tr td:nth-child(3),
+  .content-list > li > div .request-table table tbody tr td:nth-child(4) {width:10%;}
+  .content-list > li > div .request-table table tbody tr th:nth-child(5),
+  .content-list > li > div .request-table table tbody tr td:nth-child(5) {width:5%;}
+
+  .content-list > li > div .request-table table tbody tr td{
+    border:1px solid #ddd;padding: 8px 4px;
+  }
+
 
   .content-list > li > span:nth-child(1) {
     font-weight: 700;
