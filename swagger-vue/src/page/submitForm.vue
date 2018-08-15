@@ -12,7 +12,7 @@
       </div>
       <button type="button" @click="formCollection">发送</button>
     </div>
-    <div class="content-parameter">
+    <div v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters" class="content-parameter">
       <ul>
         <li class="parameter-head">
           <input v-model="selectAll" style="margin-top:10px;" type="checkbox"
@@ -21,9 +21,7 @@
           <span style="border-right: 7px solid transparent;">参数值</span>
           <span>操作</span>
         </li>
-        <li
-          v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters"
-          v-for="(item,key) in copyChildForm">
+        <li v-for="(item,key) in copyChildForm">
           <input style="margin-top:10px;" class="parameter-checkbox" type="checkbox"
                  :disabled="childForm[key].required||linkageSection==item.name" ref="phoneNum"
                  :checked="item.required||selectAll||linkageSection==item.name"/>
@@ -132,6 +130,19 @@
       formCollection: function () { //收集表单信息
 //        fileInput
         let data = deepCopy(this.copyChildForm);
+      for(let i=0,n=data.length;i<n;i++) {
+        console.log(data[i]['default'],data[i]['default']==="",data[i]['name'] === this.linkageSection,data[i]['required'] === true)
+          if (data[i]&&data[i]['required']&&data[i]['default']===""&& data[i]['required'] === true) {
+            this.PromptPopUpShow(data[i].name + "为必选字段");
+            return false;
+          }
+          /* 路径参数判断 */
+          if(data[i]['name']&&data[i]['name'] === this.linkageSection&&this.keyValue===""){
+            this.PromptPopUpShow(data[i].name + "为必选字段");
+            return false;
+          }
+
+      }
         for (let key in this.$refs.phoneNum) {
           data[key].required = this.$refs.phoneNum[key].checked;
         }

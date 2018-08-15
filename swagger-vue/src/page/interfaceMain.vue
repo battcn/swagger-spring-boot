@@ -47,7 +47,7 @@
                              :item="item"></form-fold>
                 </div>
               </ul>
-              <!--  <table style="table-layout: fixed;    width: 100%;">
+                <!--<table style="table-layout: fixed;    width: 100%;">
                   <thead>
                   <tr>
                     <th style="width: 20%;">参数名称</th>
@@ -59,10 +59,10 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <div  v-for="(item,key) in InterfaceRequest">
+                  <tr  v-for="(item,key) in InterfaceRequest">
                     <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
                                :item="item"></form-fold>
-                  </div>
+                  </tr>
                   </tbody>
                 </table>-->
             </div>
@@ -654,7 +654,7 @@
         })
 
       },
-      StitchingCurl: function (headerParams, reqdata) {
+      StitchingCurl: function (headerParams, reqData) {
         let _this = this;
         let headers = "";
         let contentType = `--header 'application/json;charset=UTF-8'`;
@@ -696,12 +696,16 @@
         if (this.debugResponse !== null && this.debugResponse !== undefined) {
           // 正确响应
           if (this.debugResponse.status !== null && this.debugResponse.status >= 200 && this.debugResponse.status <= 299) {
+            this.isJsonObject = false;
             try {
-              this.isJsonObject = (typeof this.debugResponse.data === 'object' ? this.debugResponse.data : JSON.parse(this.debugResponse.data));
+              this.jsonObjectTo = (typeof this.debugResponse.data === 'object') ? this.debugResponse.data : JSON.parse(this.debugResponse.data);
             } catch (e) {
               this.isJsonObject = false;
             }
-            this.jsonObjectTo = this.debugResponse.data;
+            this.jsonObjectTo= this.debugResponse.data;
+            if(typeof this.jsonObjectTo==='object'){
+              this.isJsonObject = true;
+            }
           } else {
             try {
               this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));

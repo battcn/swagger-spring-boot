@@ -1,33 +1,60 @@
 <template xmlns="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <div class="tree-menu" :class="{menuBorder:isResponse}">
-    <li v-if="isResponse" :class="{fontColor:properties}" @click="toggleChildren" class="table-tr">
-      <span :class="{fontRight:depth>0}" class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
-      <span class="table-td-md">{{item.type ? item.type : "无"}}</span>
-      <span class="table-td-md">{{item.description ? item.description : "无"}}</span>
-    </li>
-  <!--  <tr v-if="isResponse" :class="{fontColor:properties}" @click="toggleChildren">
-      <td :class="{fontRight:depth>0}">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
-      <td>{{item.type ? item.type : "无"}}</td>
-      <td>{{item.description ? item.description : "无"}}</td>
-    </tr>
-    <tr :class="{fontColor:properties}" @click="toggleChildren" v-else>
-      <td :class="{fontRight:depth>0}">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
-      <td>{{item.description ? item.description : "无"}}</td>
-      <td>{{item.type}}</td>
-      <td>无</td>
-      <td>{{item.in ? item.in : ""}}</td>
-      <td>{{(typeof item.required == 'boolean') ? item.required : ""}}</td>
-    </tr>-->
-    <li :class="{fontColor:properties}" @click="toggleChildren" class="table-tr" v-else>
-      <span :class="{fontRight:depth>0}" class="table-td">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
-      <span class="table-td">{{item.description ? item.description : "无"}}</span>
-      <span class="table-td">{{item.type}}</span>
-      <span class="table-td">无</span>
-      <span class="table-td">{{item.in ? item.in : ""}}</span>
-      <span class="table-td">{{(typeof item.required == 'boolean') ? item.required : ""}}</span>
-    </li>
-    <transition-group name="slide-fade" tag="div">
-      <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren" v-for="(item,key) in childProperties"
+
+  <div  class="tree-menu" :class="{menuBorder:isResponse}">
+     <li v-if="isResponse" :class="{fontColor:properties}" @click="toggleChildren" class="table-tr">
+       <span :class="{fontRight:depth>0}" class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
+       <span class="table-td-md">{{item.type ? item.type : "无"}}</span>
+       <span class="table-td-md">{{item.description ? item.description : "无"}}</span>
+
+     </li>
+    <!--<table v-if="isResponse" :class="{'fontColor':properties}" @click="toggleChildren">
+      <tbody>
+      <tr>
+        <td :class="{fontRight:depth>0}">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
+        <td>{{item.type ? item.type : "无"}}</td>
+        <td>{{item.description ? item.description : "无"}}</td>
+      </tr>
+      <tr>
+        <transition-group colspan="6" name="slide-fade" tag="div">
+        <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
+                   v-for="(item,key) in childProperties"
+                   :item="item" :keyTo="key" :properties="item.properties">
+        </form-fold>
+        </transition-group>
+      </tr>
+      </tbody>
+    </table>
+    <table :class="{fontColor:properties}" @click="toggleChildren" v-else>
+      <tbody>
+      <tr>
+        <td :class="{fontRight:depth>0}">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</td>
+        <td>{{item.description ? item.description : "无"}}</td>
+        <td>{{item.type}}</td>
+        <td>无</td>
+        <td>{{item.in ? item.in : ""}}</td>
+        <td>{{(typeof item.required == 'boolean') ? item.required : ""}}</td>
+      </tr>
+      <tr>
+        &lt;!&ndash;<transition-group colspan="6" name="slide-fade" tag="td">&ndash;&gt;
+        <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
+                   v-for="(item,key) in childProperties"
+                   :item="item" :keyTo="key" :properties="item.properties">
+        </form-fold>
+        &lt;!&ndash;</transition-group>&ndash;&gt;
+      </tr>
+      </tbody>
+    </table>-->
+     <li :class="{fontColor:properties}" @click="toggleChildren" class="table-tr" v-else>
+       <span :class="{fontRight:depth>0}" class="table-td">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
+       <span class="table-td">{{item.description ? item.description : "无"}}</span>
+       <span class="table-td">{{item.type}}</span>
+       <span class="table-td">无</span>
+       <span class="table-td">{{item.in ? item.in : ""}}</span>
+       <span class="table-td">{{(typeof item.required == 'boolean') ? item.required : ""}}</span>
+     </li>
+    <transition-group colspan="6" name="slide-fade" tag="div">
+      <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
+                 v-for="(item,key) in childProperties"
                  :item="item" :keyTo="key" :properties="item.properties">
       </form-fold>
     </transition-group>
@@ -41,10 +68,10 @@
       return {showChildren: false}
     },
     computed: {
-      isResponse(){
+      isResponse() {
         return this.name === 'response';
       },
-      childProperties(){
+      childProperties() {
         if (this.properties && ((this.properties["length"]) || (typeof this.properties) === "array")) {
           return this.properties[0] && this.properties[0].properties;
         }
@@ -52,7 +79,7 @@
       },
       indent() {
         return {textAlign: `right`}
-      }
+      },
     },
     methods: {
       toggleChildren() {
@@ -62,12 +89,22 @@
   }
 </script>
 <style>
+  .hides {
+    display: none;
+  }
+
   .slide-fade-enter-active, .slide-fade-leave-active {
     transition: all .5s;
   }
 
   .slide-fade-enter, .slide-fade-leave-to {
     opacity: 0;
+  }
+
+  .copyTr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
   }
 
   .menuBorder {
