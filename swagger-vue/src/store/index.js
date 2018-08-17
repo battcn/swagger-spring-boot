@@ -141,6 +141,7 @@ const account = {
         'username': obj && obj['swagger-username'],
         'password': obj && obj['swagger-password']
       };
+      console.info(SWAGGER_URL)
       let url = `${SWAGGER_URL}/v2/swagger-login?`;
       for (let key in params) {
         url += `${key}=${params[key]}&`;
