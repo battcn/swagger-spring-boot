@@ -33,7 +33,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.6-RELEASE</version>
+    <version>2.0.7-RELEASE</version>
 </dependency>
 ```
 
@@ -54,6 +54,11 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
+2.0.7
+  发布时间：2018-08-17
+  更新内容：
+    1.解决无请求参数无法调试，js报错
+    2.解决编辑 json 会导致 json 加一个双引号传输
 2.0.6
   发布时间：2018-07-25
   更新内容：
