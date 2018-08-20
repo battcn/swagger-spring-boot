@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "lodash": "^4.17.10",
     "ssri": "^5.2.2",
     "vue": "^2.5.2",
     "vue-layer": "^0.8.5",

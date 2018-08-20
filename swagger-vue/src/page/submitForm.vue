@@ -118,6 +118,7 @@
       initInfo(){
         this.selectAll = false;
         this.s = false;
+        this.keyValue="";
         this.saveTab();
       },
       onInput(val, key) {
