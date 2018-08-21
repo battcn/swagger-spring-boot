@@ -60,7 +60,7 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     }
 
     @Bean
-    @ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.security.filter-plugin"}, havingValue = "true")
+    @ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.security.filter-plugin","spring.swagger.security.filterPlugin"}, havingValue = "true")
     public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration() {
         FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> registration = new FilterRegistrationBean<>();
         registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration());
