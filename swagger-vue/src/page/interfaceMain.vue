@@ -243,7 +243,6 @@
         resultShow: false,
         debugging: 'content',
         curlMode: "",
-        linkageSection: "",
         parameterValue: {},
         responseCodePre: [],
         responseObjectName: ""
@@ -384,17 +383,32 @@
     },
     watch: {
       count: function () {
-        this.switchA = 0;
-        this.resultShow = false;
+        this.iniData();
       },
       countTo: function () {
-        this.switchA = 0;
-        this.resultShow = false;
+        /*this.switchA = 0;
+        this.resultShow = false;*/
+        this.iniData();
       }
     },
     methods: {
       ...mapActions(["carriedSend"]),
       ...mapMutations(["initialization", "send"]),
+      iniData:function () {
+        this.switchA = 0;
+        this.resultShow = false;
+
+        this.childForm={};
+        this.indentation=1;
+        this.isJsonObject=false;
+        this.jsonObject= "";
+        this.jsonObjectTo= "";
+        this.debugging= 'content';
+          this.curlMode= "";
+         this.parameterValue={};
+        this.responseCodePre= [];
+         this.responseObjectName= "";
+      },
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
         if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
           return true;

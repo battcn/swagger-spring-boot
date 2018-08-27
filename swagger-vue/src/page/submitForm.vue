@@ -59,6 +59,7 @@
       ...mapState(['infoData']),
       copyChildForm(){ /* 数据字段  */
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        console.log(key,this.$store.state.tabData.infoData[key],this.$store.state.tabData.infoData[key] !== undefined)
         if (this.$store.state.tabData.infoData[key] !== undefined) {
           return this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][0]
         }
@@ -107,6 +108,7 @@
       ...mapMutations(['addTab', 'changeShow']),
       saveTab(){
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        console.log(key);
         if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
           this.keyValue = this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1];
         }
@@ -119,6 +121,7 @@
         this.selectAll = false;
         this.s = false;
         this.keyValue="";
+         this.file="";
         this.saveTab();
       },
       onInput(val, key) {
@@ -132,7 +135,6 @@
 //        fileInput
         let data = deepCopy(this.copyChildForm);
       for(let i=0,n=data.length;i<n;i++) {
-        console.log(data[i]['default'],data[i]['default']==="",data[i]['name'] === this.linkageSection,data[i]['required'] === true)
           if (data[i]&&data[i]['required']&&data[i]['default']===""&& data[i]['required'] === true) {
             this.PromptPopUpShow(data[i].name + "为必选字段");
             return false;

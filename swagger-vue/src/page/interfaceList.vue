@@ -59,7 +59,6 @@
     name: 'app',
     data() {
       return {
-        indentation: 1,
         selected: 0,
         count: 0,
         countTo: -1,
