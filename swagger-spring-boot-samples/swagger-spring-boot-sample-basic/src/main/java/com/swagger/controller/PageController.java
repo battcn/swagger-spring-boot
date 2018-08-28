@@ -1,7 +1,9 @@
 package com.swagger.controller;
 
 import com.swagger.entity.Page;
+import com.swagger.entity.User;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,6 +22,12 @@ public class PageController {
     public Page testPage(@RequestBody Page page) {
 
         return page;
+    }
+
+    @PostMapping("/users")
+    @ApiOperation(value = "测试双POST（DONE）")
+    public User post(@RequestBody User user) {
+        return user;
     }
 
     @GetMapping("/1")
