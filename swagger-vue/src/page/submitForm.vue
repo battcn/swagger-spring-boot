@@ -27,14 +27,13 @@
                  :checked="item.required||selectAll||linkageSection==item.name"/>
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
-              <textarea rows="10" v-on:input="onInput($event.target.value,key)"
+              <textarea rows="10" v-model="copyChildForm[key].default"
                         v-if="childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
-                        type="text">{{copyChildForm[key].default}}</textarea>
+                        type="text" ></textarea>
             <div class="parameter-file" v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'">
               <input type="file" ref="fileInput"/>选择文件
             </div>
-
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
             <input v-else v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
@@ -47,7 +46,7 @@
   </div>
 </template>
 <script>
-  import {deepCopy, basicTypeInit} from './../util/util'
+  import {deepCopy, basicTypeInit,formatterJson} from './../util/util'
   import {mapState, mapMutations} from 'vuex'
   export default {
     name: "submit-form",
@@ -59,20 +58,18 @@
       ...mapState(['infoData']),
       copyChildForm(){ /* 数据字段  */
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        console.log(key,this.$store.state.tabData.infoData[key],this.$store.state.tabData.infoData[key] !== undefined)
         if (this.$store.state.tabData.infoData[key] !== undefined) {
           return this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][0]
         }
         let copyChildForms = deepCopy(this.childForm);
-        let copyChildFormDefault = copyChildForms[0] && copyChildForms[0].default;
-        for (let key in copyChildFormDefault) {/*   替换undefined的字段对象(暂代) */
-          if (copyChildFormDefault[key] === undefined) {
-            copyChildFormDefault[key] = {};
+        for (let key in copyChildForms) {/*   替换undefined的字段对象(暂代) */
+          if (copyChildForms[key]['default'] === undefined) {
+            copyChildForms[key]['default'] = {};
           }
-        }
-        if(copyChildForms&&copyChildForms[0]&&copyChildForms[0].default){
-          copyChildForms[0].default = copyChildFormDefault;
-        }
+          if(typeof copyChildForms[key]['default'] === "object"){
+            copyChildForms[key]['default']=formatterJson(JSON.stringify(copyChildForms[key]['default']));
+          }
+        };
         return copyChildForms;
       },
       copyLinkPath(){
@@ -108,7 +105,6 @@
       ...mapMutations(['addTab', 'changeShow']),
       saveTab(){
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        console.log(key);
         if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
           this.keyValue = this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1];
         }
@@ -135,6 +131,9 @@
 //        fileInput
         let data = deepCopy(this.copyChildForm);
       for(let i=0,n=data.length;i<n;i++) {
+        if(this.childForm[i].default!=''&&(typeof this.childForm[i].default)=='object'&&this.childForm[i].default.in!=='formData'){
+           data[i]['default']=JSON.parse(data[i]['default']);
+        }
           if (data[i]&&data[i]['required']&&data[i]['default']===""&& data[i]['required'] === true) {
             this.PromptPopUpShow(data[i].name + "为必选字段");
             return false;
@@ -144,7 +143,6 @@
             this.PromptPopUpShow(data[i].name + "为必选字段");
             return false;
           }
-
       }
         for (let key in this.$refs.phoneNum) {
           data[key].required = this.$refs.phoneNum[key].checked;
@@ -156,23 +154,7 @@
           param = new FormData();
           param.append('file',file);
         }
-        for (let key in data) {
-          let digits = this.linkagePath.indexOf("{");
-          let digitsEnd = this.linkagePath.indexOf("}");
-          if (digits > 0 && digitsEnd > 0) {//路径中有参数
-            for (let i in data) {
-              if (data[key].name === this.linkageSection) {
-                data[key].default = this.keyValue;
-              }
-            }
-            this.$emit('getCollection', data,param);
-            return true;
-          } else {
-            this.$emit('getCollection', data,param);
-            return true;
-          }
-        }
-        this.$emit('getCollection', this.copyChildForm,param);
+        this.$emit('getCollection', data,param);
         return true;
       },
       PromptPopUpShow: function (hint) {

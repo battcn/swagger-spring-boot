@@ -226,7 +226,7 @@
 <script type="text/ecmascript-6">
   import {mapState, mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
-  import {deepCopy, basicTypeInit} from './../util/util'
+  import {deepCopy, basicTypeInit,formatterJson} from './../util/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
 
@@ -460,30 +460,7 @@
         }
         return obj;
       },
-      formatterJson: function (text_value) {
-        let res = "";
-        for (let i = 0, j = 0, k = 0, ii, ele; i < text_value.length; i++) {//k:缩进，j:""个数
-          ele = text_value.charAt(i);
-          if (j % 2 === 0 && ele === "}") {
-            k--;
-            for (ii = 0; ii < k; ii++) ele = "    " + ele;
-            ele = "\n" + ele;
-          }
-          else if (j % 2 === 0 && ele === "{") {
-            ele += "\n";
-            k++;
-            //debugger;
-            for (ii = 0; ii < k; ii++) ele += "    ";
-          }
-          else if (j % 2 === 0 && ele === ",") {
-            ele += "\n";
-            for (ii = 0; ii < k; ii++) ele += "    ";
-          }
-          else if (ele === "\"") j++;
-          res += ele;
-        }
-        return res;
-      },
+
       formatRequest: function (itemsRef) {/* 传入#/definitions/User，进行格式化 */
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
@@ -704,7 +681,7 @@
           _this.curlMode = `curl -X ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${curlAccept} ${headers} ${contentUrl}`;
         } else {
           /* d data 非头部附带数据,只用于非get类型请求 */
-          let curlData = ` -d  '${reqData ? this.formatterJson(reqData) : ""}' `;
+          let curlData = ` -d  '${reqData ? formatterJson(reqData) : ""}' `;
           _this.curlMode = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType} ${curlAccept} ${headers} ${reqData === '{}' ? "" : curlData} ${contentUrl}`;
         }
         if (this.debugResponse !== null && this.debugResponse !== undefined) {
