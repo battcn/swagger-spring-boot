@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * swagger
  *
@@ -57,6 +59,21 @@ public class UserController {
     @PostMapping
     @ApiOperation(value = "添加用户（DONE）")
     public User post(@RequestBody User user) {
+        log.info("如果是 POST PUT 这种带 @RequestBody 的可以不用写 @ApiImplicitParam");
+        return user;
+    }
+
+    @PostMapping("/multipar")
+    @ApiOperation(value = "添加用户（DONE）")
+    public List<User> multipar(@RequestBody List<User> user) {
+        log.info("如果是 POST PUT 这种带 @RequestBody 的可以不用写 @ApiImplicitParam");
+
+        return user;
+    }
+
+    @PostMapping("/array")
+    @ApiOperation(value = "添加用户（DONE）")
+    public User[] array(@RequestBody User[] user) {
         log.info("如果是 POST PUT 这种带 @RequestBody 的可以不用写 @ApiImplicitParam");
         return user;
     }
