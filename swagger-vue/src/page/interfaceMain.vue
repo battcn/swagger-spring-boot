@@ -43,82 +43,25 @@
                   <span class="table-td">是否必须</span>
                 </li>
                 <div v-for="(item,key) in InterfaceRequest">
-                  <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
+                  <form-fold :depth="0"
+                             :properties="item.properties&&item.properties.properties||(item.properties&&item.properties[0]&&item.properties[0].properties)"
+                             :keyTo="key"
                              :item="item"></form-fold>
                 </div>
               </ul>
-                <!--<table style="table-layout: fixed;    width: 100%;">
-                  <thead>
-                  <tr>
-                    <th style="width: 20%;">参数名称</th>
-                    <th>说明</th>
-                    <th style="width: 10%;">类型</th>
-                    <th style="width: 20%;">条件</th>
-                    <th style="width: 5%;">in</th>
-                    <th style="width: 10%;">是否必须</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr  v-for="(item,key) in InterfaceRequest">
-                    <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
-                               :item="item"></form-fold>
-                  </tr>
-                  </tbody>
-                </table>-->
             </div>
-            <!-- <div class="request-table" v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters">
-               <table>
-                 <tbody>
-                 <tr>
-                   <th style="">参数名称</th>
-                   <th style="">说明</th>
-                   <th style="">类型</th>
-                   <th style="">条件</th>
-                   <th style="">in</th>
-                   <th style="">是否必须</th>
-                 </tr>
-                 &lt;!&ndash;<tr>
-                   <td style="">参数名称</td>
-                   <td style="">说明</td>
-                   <td style="">类型</td>
-                   <td style="">条件</td>
-                   <td style="">in</td>
-                   <td style="">是否必须</td>
-                 </tr>&ndash;&gt;
-                &lt;!&ndash; <tr>
-                   <tr>
-                   <td colspan="6"><table  style="width: 100%;">
-                     <tbody>
-                     <tr>
-                       <td>1</td>
-                       <td>2</td>
-                       <td>3</td>
-                       <td>4</td>
-                       <td>5</td>
-                       <td>6</td>
-                     </tr>
-                     </tbody>
-                   </table>
-                   </td>
-                 </tr>
-                 </tr>&ndash;&gt;
-                 <div v-for="(item,key) in InterfaceRequest">
-                   <form-fold :depth="0" :properties="item.properties&&item.properties.properties" :keyTo="key"
-                              :item="item"></form-fold>
-                 </div>
-                 </tbody>
-               </table>
-             </div>-->
             <span v-else>暂无</span>
           </div>
         </li>
         <li><span>响应Model</span>
-          <div v-if="typeof jsonObject=='array'||typeof jsonObject=='object' ">
-            {
+          <div v-if="typeof jsonObject=='object'">
+            <span v-if="jsonObject['length']">[</span>
+            <span v-else>{</span>
             <ul v-for="(item,key) in jsonObject">
               <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
             </ul>
-            }
+            <span v-if="jsonObject['length']">]</span>
+            <span v-else>}</span>
           </div>
           <div v-else>无</div>
         </li>
@@ -131,7 +74,6 @@
                 <form-fold :name="'response'" :depth="0" :properties="item.properties" :keyTo="key"
                            :item="item"></form-fold>
               </div>
-              <!--</li>-->
             </ul>
           </div>
         </li>
@@ -150,7 +92,8 @@
                 </div>
                 <div>
                   <a v-if="responseCodeSchema(item)" @click="responseCodePreToggle(index)" class="fontColor"
-                     href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ? '收缩' : '展开'}}</a>
+                     href="javascript:">{{responseCodePre && responseCodePre[index] && responseCodePre[index] == true ?
+                    '收缩' : '展开'}}</a>
                   <span v-if="responseCodeSchema(item)"
                         v-show="!responseCodePre[index]">{{item.schema ? (item.schema.$ref ? responseObjectName : (item.schema.type && item.schema.type === "array" && item.schema.items) ? item.schema.items : "无") : "无"}}</span>
                   <span v-show="responseCodePre[index]"
@@ -180,7 +123,7 @@
         <span style="cursor:pointer;" @click="debugging='header'"
               :class="[debugging=='header'?'active':'']">Header</span>
         <span style="cursor:pointer;" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
-        <b>Time:<a href="javascript:"> {{requestTime}}  ms</a></b>
+        <b>Time:<a href="javascript:"> {{requestTime}} ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <div v-if="isJsonObject">
@@ -226,7 +169,7 @@
 <script type="text/ecmascript-6">
   import {mapState, mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
-  import {deepCopy, basicTypeInit,formatterJson} from './../util/util'
+  import {deepCopy, basicTypeInit, formatterJson} from './../util/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
 
@@ -261,11 +204,11 @@
           return '加载失败';
         }
         for (let key in resp) {
-          if (parseInt(key) >= 200 && parseInt(key) <= 299) {
-            respBasis = true;
-            respState = key;
-            break;
-          }
+            if (resp.hasOwnProperty(key)&&parseInt(key) >= 200 && parseInt(key) <= 299) {
+              respBasis = true;
+              respState = key;
+              break;
+            }
         }
         if (respBasis) {
           let ok = resp[respState];
@@ -277,10 +220,22 @@
               let refType = RegExp.$1;
               let deftion = undefined;
               let definition = {};
-              definition[refType] = this.formatRequest(ref);
-
+              let Response = {};
+              Response[refType] = this.formatRequest(ref);
               deftion = this.JSONinit(refType);
-              this.jsonObject = deftion;
+              if (schema["type"] && schema["type"] === "array") {
+                let arrs={};
+                arrs['properties'] = Response;
+                arrs['type']="array";
+                definition['Array'] = arrs;
+                this.jsonObject = [];
+                let jsonObj= {};
+                jsonObj[refType]=deftion;
+                this.jsonObject.push(jsonObj)
+              } else {
+                definition = Response;
+                this.jsonObject = deftion;
+              }
               return definition;
             } else {
               //未发现ref属性
@@ -306,10 +261,10 @@
           return "加载失败";
         }
         for (let key in resp) {
-          if (parseInt(key) >= 200 && parseInt(key) <= 299) {
-            respBasis = true;
-            respState = key;
-            break;
+            if (resp.hasOwnProperty(key)&&parseInt(key) >= 200 && parseInt(key) <= 299) {
+              respBasis = true;
+              respState = key;
+              break;
           }
         }
         if (respBasis) {
@@ -331,52 +286,85 @@
           return result;
         }
         for (let i in parameters) {
-          if ((parameters[i].schema && parameters[i].schema.$ref) || parameters[i].$ref) {
+          if(parameters.hasOwnProperty(i)) {
             result[i] = parameters[i];
-            result[i]['properties'] = this.formatRequest((parameters[i].schema && parameters[i].schema.$ref) || parameters[i].$ref);
-          } else {
-            result[i] = parameters[i];
+            if (parameters[i].schema && parameters[i].schema.$ref) {
+              result[i]['properties'] = this.formatRequest(parameters[i].schema.$ref);
+            }
+            if (parameters[i].$ref) {
+              result[i]['properties'] = this.formatRequest(parameters[i].$ref);
+            }
+            if (parameters[i].schema && parameters[i].schema.type && parameters[i].schema.type === 'array' && parameters[i].schema.items && parameters[i].schema.items.$ref) {
+              let arr = [];
+              arr.push(this.formatRequest(parameters[i].schema.items.$ref));
+              result[i]['properties'] = arr;
+            }
           }
         }
         let resultCopy = deepCopy(result);
         for (let key in resultCopy) {
           /* 如果该字段没有type属性且存在子字段，子字段内有类型type属性 */
-          if ((!resultCopy[key].type && resultCopy[key].properties && resultCopy[key].properties.type === "object") || resultCopy[key].type === 'array' && resultCopy[key].properties) {
-            /* 包含子字段 */
-            if (resultCopy[key].type === 'array' && resultCopy[key].properties) {
-              this.parameterValue[key] = [];
-              this.parameterValue[key].push(this.iniObject(resultCopy[key].properties.properties))
+          /* 判断是否为list数组类型 */
+          if(resultCopy.hasOwnProperty(key)) {
+            if ((!resultCopy[key].type && resultCopy[key].properties && resultCopy[key].properties.type === "object")
+              || (resultCopy[key].properties && Array.isArray(resultCopy[key].properties))) {
+              /* 包含子字段 */
+              if (resultCopy[key].properties && Array.isArray(resultCopy[key].properties)) {
+                this.parameterValue[key] = [];
+                this.parameterValue[key].push(this.iniObject(resultCopy[key].properties && resultCopy[key].properties[0] && resultCopy[key].properties[0].properties))
+              } else {
+                this.parameterValue[key] = {};
+                this.parameterValue[key] = this.iniObject(resultCopy[key].properties.properties);
+              }
             } else {
-              this.parameterValue[key] = {};
-              this.parameterValue[key] = this.iniObject(resultCopy[key].properties.properties);
+              /* 不包含子字段 */
+              this.parameterValue[key] = basicTypeInit(resultCopy[key].type);
             }
-          } else {
-            /* 不包含子字段 */
-            this.parameterValue[key] = basicTypeInit(resultCopy[key].type);
           }
         }
+
         //提取数据传递给子数据
         this.childForm = [];
         for (let key in result) {
-          let array = {};
-          this.childForm[key] = {};
-          array['name'] = result && result[key] && result[key]['name'];
-          array['default'] = this.parameterValue[key];
-          array['required'] = result && result[key] && result[key]['required'];
-          this.childForm[key] = deepCopy(array);
+          if(result.hasOwnProperty(key)) {
+            let array = {};
+            this.childForm[key] = {};
+            array['name'] = result && result[key] && result[key]['name'];
+            array['default'] = this.parameterValue[key];
+            array['required'] = result && result[key] && result[key]['required'];
+            this.childForm[key] = deepCopy(array);
+          }
+        }
+          for(let i in parameters){/* 对于list数据类型进行加层包装，使表格展现更加直观 */
+          if (parameters.hasOwnProperty(i)&&parameters[i].schema && parameters[i].schema.type && parameters[i].schema.type === 'array' && parameters[i].schema.items && parameters[i].schema.items.$ref) {
+            let formatData = this.formatRequest(parameters[i].schema.items.$ref);
+            let title = formatData.title;
+            let objData = {};
+            objData[title]=formatData;
+            result[i]['properties']=objData;
+            let arrsTo = [];
+            arrsTo.push(result[i]);
+            result[i] = {
+              'properties':arrsTo,
+              'name':"Array",
+              'type':"array",
+              'title':"Array",
+              'description':"Array"
+            };
+          }
         }
         return result;
       },
       debugResponse() {/* 从请求中获取到的响应参数 */
         return this.$store.state.debugRequest.debugResponse;
       },
-      requestTime(){
+      requestTime() {
         return this.$store.state.debugRequest.requestTime;
       },
-      authorizeObj(){
+      authorizeObj() {
         return this.$store.state.debugRequest.authorizeObj;
       },
-      isExistSecurity(){
+      isExistSecurity() {
         let is = this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.security;
         return !!is;
       }
@@ -394,20 +382,20 @@
     methods: {
       ...mapActions(["carriedSend"]),
       ...mapMutations(["initialization", "send"]),
-      iniData:function () {
+      iniData: function () {
         this.switchA = 0;
         this.resultShow = false;
 
-        this.childForm={};
-        this.indentation=1;
-        this.isJsonObject=false;
-        this.jsonObject= "";
-        this.jsonObjectTo= "";
-        this.debugging= 'content';
-          this.curlMode= "";
-         this.parameterValue={};
-        this.responseCodePre= [];
-         this.responseObjectName= "";
+        this.childForm = {};
+        this.indentation = 1;
+        this.isJsonObject = false;
+        this.jsonObject = "";
+        this.jsonObjectTo = "";
+        this.debugging = 'content';
+        this.curlMode = "";
+        this.parameterValue = {};
+        this.responseCodePre = [];
+        this.responseObjectName = "";
       },
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
         if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
@@ -436,7 +424,7 @@
       },
       tickRequired: function (item, event) {
         for (let key in this.InterfaceRequest) {
-          if (!this.InterfaceRequest[key].required) {
+          if (this.InterfaceRequest.hasOwnProperty(key)&&!this.InterfaceRequest[key].required) {
             return false;
           }
         }
@@ -445,17 +433,19 @@
       iniObject: function (properties) {/* 传入对象，对其进行类型初始化 */
         let obj = {};
         for (let key in properties) {
-          if ((properties[key].type && properties[key].properties && properties[key].type === "object") || (properties[key].type === 'array' && properties[key].properties)) {
-            /* 包含子字段 */
-            if (properties[key].type === 'array' && properties[key].properties) {
-              obj[key] = {};
-              obj[key] = (Object.values(this.iniObject(properties[key].properties)))
+          if(properties.hasOwnProperty(key)) {
+            if ((properties[key].type && properties[key].properties && properties[key].type === "object") || (properties[key].type === 'array' && properties[key].properties)) {
+              /* 包含子字段 */
+              if (properties[key].type === 'array' && properties[key].properties) {
+                obj[key] = {};
+                obj[key] = (Object.values(this.iniObject(properties[key].properties)))
+              } else {
+                obj[key] = this.iniObject(properties[key].properties)
+              }
             } else {
-              obj[key] = this.iniObject(properties[key].properties)
+              /* 不包含子字段 */
+              obj[key] = basicTypeInit(properties[key].type)
             }
-          } else {
-            /* 不包含子字段 */
-            obj[key] = basicTypeInit(properties[key].type)
           }
         }
         return obj;
@@ -472,30 +462,32 @@
           return result;
         }
         for (let key in definitions) {
-          if (key.toLowerCase() === objName.toLowerCase()) {
-            result = deepCopy(definitions[key]);
-            let properties = definitions[key].properties;
-            if (properties === undefined || properties === null || (typeof properties) === "string") {
-              return result;
-            }
-            for (let k in properties) {
-              if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
-                let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
-                if (properties[k].type === 'array') {
-                  result.properties[k].properties = [];
-                  let adds = this.formatRequest(Ref);
-                  adds.name === undefined || adds.name === null ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
-                  result.properties[k].properties.push(adds);
-                  continue;
+            if (definitions.hasOwnProperty(key)&&key.toLowerCase() === objName.toLowerCase()) {
+              result = deepCopy(definitions[key]);
+              let properties = definitions[key].properties;
+              if (properties === undefined || properties === null || (typeof properties) === "string") {
+                return result;
+              }
+              for (let k in properties) {
+                if(properties.hasOwnProperty(k)) {
+                  if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
+                    let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
+                    if (properties[k].type === 'array') {
+                      result.properties[k].properties = [];
+                      let adds = this.formatRequest(Ref);
+                      adds.name === undefined || adds.name === null ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
+                      result.properties[k].properties.push(adds);
+                      continue;
+                    }
+                    //  result.properties[k].properties={};
+                    // result.properties[k].properties[Ref.match("#/definitions/(.*)")[1].toLowerCase()]=this.formatRequest(Ref);
+                    result.properties[k] = this.formatRequest(Ref);
+                  } else {
+                    result.properties[k] = properties[k];
+                  }
                 }
-                //  result.properties[k].properties={};
-                // result.properties[k].properties[Ref.match("#/definitions/(.*)")[1].toLowerCase()]=this.formatRequest(Ref);
-                result.properties[k] = this.formatRequest(Ref);
-              } else {
-                result.properties[k] = properties[k];
               }
             }
-          }
         }
         return result;
       },
@@ -510,59 +502,61 @@
           return deftion;
         }
         for (let i in definitionsArray) {
-          if (i === refType) {
+          if (definitionsArray.hasOwnProperty(i)&&i === refType) {
             deftion = definitionsArray[i].properties;
             break
           }
         }
         if (deftion === null || deftion === undefined) {
-          let obj = new Object();
+          let obj = {};
           obj[refType] = deftion;
           return obj;
         }
         for (let key in deftion) {
-          if (deftion[key].$ref && deftion[key].type === "array") {
-            deftion[key] = {};
-            continue;
-          }
-          if (deftion[key].$ref) {
-            let schema = deftion[key];
-            let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
-            let regex = new RegExp("#/definitions/(.*)$", "ig");
-            if ((typeof ref === "string") && regex.test(ref)) {
-              let a = ref.match("#/definitions/(.*)");
-              let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
-              deftion[key] = this.JSONinit(refType2);
+          if (deftion.hasOwnProperty(key)) {
+            if (deftion[key].$ref && deftion[key].type === "array") {
+              deftion[key] = {};
               continue;
             }
-          }
-          if (deftion[key].type === "array" && deftion[key].items) {
-            let schema = deftion[key];
-            let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
-            let regex = new RegExp("#/definitions/(.*)$", "ig");
-            if ((typeof ref === "string") && regex.test(ref)) {
-              let a = ref.match("#/definitions/(.*)");
-              let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
+            if (deftion[key].$ref) {
+              let schema = deftion[key];
+              let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
+              let regex = new RegExp("#/definitions/(.*)$", "ig");
+              if ((typeof ref === "string") && regex.test(ref)) {
+                let a = ref.match("#/definitions/(.*)");
+                let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
+                deftion[key] = this.JSONinit(refType2);
+                continue;
+              }
+            }
+            if (deftion[key].type === "array" && deftion[key].items) {
+              let schema = deftion[key];
+              let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
+              let regex = new RegExp("#/definitions/(.*)$", "ig");
+              if ((typeof ref === "string") && regex.test(ref)) {
+                let a = ref.match("#/definitions/(.*)");
+                let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
+                deftion[key] = [];
+                deftion[key].push(this.JSONinit(refType2));
+                continue;
+              }
+            }
+            if (deftion[key].type === "array") {
               deftion[key] = [];
-              deftion[key].push(this.JSONinit(refType2));
               continue;
             }
-          }
-          if (deftion[key].type === "array") {
-            deftion[key] = [];
-            continue;
-          }
-          if (deftion[key].type === "boolean") {
-            deftion[key] = true;
-            continue;
-          }
-          if (deftion[key].type === "integer") {
-            deftion[key] = 0;
-            continue;
-          }
-          if (deftion[key].type === "string") {
-            deftion[key] = "";
-            continue;
+            if (deftion[key].type === "boolean") {
+              deftion[key] = true;
+              continue;
+            }
+            if (deftion[key].type === "integer") {
+              deftion[key] = 0;
+              continue;
+            }
+            if (deftion[key].type === "string") {
+              deftion[key] = "";
+              continue;
+            }
           }
         }
         return deftion;
@@ -571,7 +565,7 @@
         let _this = this;
         let result = [];
         for (let key in data) {
-          if (data[key].required) {
+          if (data.hasOwnProperty(key)&&data[key].required) {
             let obj = [];
             obj.push(data[key].name);
             obj.push(data[key].default);
@@ -625,12 +619,14 @@
         /* 判断调试请求中是否有Security字段 */
         if (this.isExistSecurity) {/* headerParams */
           for (let key in this.authorizeObj) {
-            headerParams[key] = this.authorizeObj[key];
+            if(this.authorizeObj.hasOwnProperty(key)) {
+              headerParams[key] = this.authorizeObj[key];
+            }
           }
         }
         /*  判断是否为文件类型上传 */
         for (let key in reqdata) {
-          if (param !== undefined && reqdata[key] && reqdata[key]['in'] && reqdata[key]['in'] === 'formData' && reqdata[key]['type'] && reqdata[key]['type'] === 'file') {
+          if (reqdata.hasOwnProperty(key)&&param !== undefined && reqdata[key] && reqdata[key]['in'] && reqdata[key]['in'] === 'formData' && reqdata[key]['type'] && reqdata[key]['type'] === 'file') {
             headerParams['Content'] = 'multipart/form-data; charset=utf-8';
             reqdata = param;
           }
@@ -693,8 +689,8 @@
             } catch (e) {
               this.isJsonObject = false;
             }
-            this.jsonObjectTo= this.debugResponse.data;
-            if(typeof this.jsonObjectTo==='object'){
+            this.jsonObjectTo = this.debugResponse.data;
+            if (typeof this.jsonObjectTo === 'object') {
               this.isJsonObject = true;
             }
           } else {
@@ -716,7 +712,7 @@
     },
     props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
     components: {FormFold, SubmitForm, JsonView},
-    created(){
+    created() {
       let methods = this.failureJump;
       this.initialization(methods);
     }
