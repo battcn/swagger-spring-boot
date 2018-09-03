@@ -11,6 +11,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -60,11 +61,14 @@ public class SwaggerAutoConfiguration implements BeanFactoryAware {
     }
 
     @Bean
-    @ConditionalOnProperty(name = {"spring.swagger.enabled", "spring.swagger.security.filter-plugin","spring.swagger.security.filterPlugin"}, havingValue = "true")
+    @ConditionalOnProperty(name = {"spring.swagger.enabled"}, havingValue = "true")
+    @ConditionalOnExpression(
+            " ${spring.swagger.security.filter-plugin:true} " +
+                    "&& ${spring.swagger.security.filterPlugin:true}")
     public FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> someFilterRegistration() {
         FilterRegistrationBean<SwaggerSecurityFilterPluginsConfiguration> registration = new FilterRegistrationBean<>();
         registration.setFilter(new SwaggerSecurityFilterPluginsConfiguration());
-        registration.addUrlPatterns("/v2/api-docs", "/swagger-resources");
+        registration.addUrlPatterns("/v2/api-docs", "/swagger-resources", "/swagger-ui.html");
         return registration;
     }
 
