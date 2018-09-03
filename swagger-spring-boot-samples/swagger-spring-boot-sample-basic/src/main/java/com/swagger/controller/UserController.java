@@ -78,6 +78,22 @@ public class UserController {
         return user;
     }
 
+    @PostMapping("/multipar2")
+    @ApiOperation(value = "添加用户（DONE）")
+    public List<User> multipar2(@RequestBody List<User> user) {
+        log.info("如果是 POST PUT 这种带 @RequestBody 的可以不用写 @ApiImplicitParam");
+
+        return user;
+    }
+
+    @PostMapping("/array2")
+    @ApiOperation(value = "添加用户（DONE）")
+    public User[] array2(@RequestBody User[] user) {
+        log.info("如果是 POST PUT 这种带 @RequestBody 的可以不用写 @ApiImplicitParam");
+        return user;
+    }
+
+
     @PutMapping("/{id}")
     @ApiOperation(value = "修改用户（DONE）")
     public void put(@PathVariable Long id, @RequestBody User user) {
