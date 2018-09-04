@@ -2,6 +2,7 @@ package com.battcn.boot.swagger.web;
 
 import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
 import com.battcn.boot.swagger.utils.RequestUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import java.util.Map;
  * @author Levin
  * @since 2018/7/6 0006
  */
+@ConditionalOnProperty(name = "spring.swagger.enabled", havingValue = "true", matchIfMissing = true)
 @RestController
 @ApiIgnore
 public class CustomSwagger2Controller {
