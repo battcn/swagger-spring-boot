@@ -1,6 +1,6 @@
-package com.battcn.boot.swagger.utils;
+package org.battcn.boot.swagger.utils;
 
-import com.battcn.boot.swagger.web.CustomSwagger2Controller;
+import org.battcn.boot.swagger.web.CustomSwagger2Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.battcn.boot.swagger.actuate.endpoint;
+package org.battcn.boot.swagger.actuate.endpoint;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.battcn.boot.swagger.actuate.endpoint.SwaggerEndpoint.SWAGGER_ENDPOINT_ID;
+import static org.battcn.boot.swagger.actuate.endpoint.SwaggerEndpoint.SWAGGER_ENDPOINT_ID;
 
 /**
  * @author <a href="mailto:1837307557@qq.com">Levin</a>

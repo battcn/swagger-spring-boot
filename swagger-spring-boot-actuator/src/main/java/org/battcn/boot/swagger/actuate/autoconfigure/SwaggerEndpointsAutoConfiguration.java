@@ -1,6 +1,6 @@
-package com.battcn.boot.swagger.actuate.autoconfigure;
+package org.battcn.boot.swagger.actuate.autoconfigure;
 
-import com.battcn.boot.swagger.actuate.endpoint.SwaggerEndpoint;
+import org.battcn.boot.swagger.actuate.endpoint.SwaggerEndpoint;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

@@ -1,6 +1,6 @@
-package com.battcn.boot.swagger.security;
+package org.battcn.boot.swagger.security;
 
-import com.battcn.boot.swagger.properties.SwaggerProperties;
+import org.battcn.boot.swagger.properties.SwaggerProperties;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;

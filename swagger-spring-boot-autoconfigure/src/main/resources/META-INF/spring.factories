@@ -1,4 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.battcn.boot.swagger.autoconfigure.SwaggerAutoConfiguration,\
-  com.battcn.boot.swagger.configuration.CustomSwagger2DocumentationConfiguration
+  org.battcn.boot.swagger.autoconfigure.SwaggerAutoConfiguration,\
+  org.battcn.boot.swagger.configuration.CustomSwagger2DocumentationConfiguration

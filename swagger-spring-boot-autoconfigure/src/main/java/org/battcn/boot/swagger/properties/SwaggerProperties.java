@@ -1,4 +1,4 @@
-package com.battcn.boot.swagger.properties;
+package org.battcn.boot.swagger.properties;
 
 import com.google.common.collect.Maps;
 import lombok.Data;

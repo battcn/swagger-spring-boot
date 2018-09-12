@@ -1,4 +1,4 @@
-package com.battcn.boot.swagger.configuration;
+package org.battcn.boot.swagger.configuration;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.battcn.boot.swagger.model;
+package org.battcn.boot.swagger.model;
 
 
 /**

@@ -1,7 +1,7 @@
-package com.battcn.boot.swagger.web;
+package org.battcn.boot.swagger.web;
 
-import com.battcn.boot.swagger.properties.SwaggerSecurityProperties;
-import com.battcn.boot.swagger.utils.RequestUtils;
+import org.battcn.boot.swagger.properties.SwaggerSecurityProperties;
+import org.battcn.boot.swagger.utils.RequestUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
