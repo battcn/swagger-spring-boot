@@ -1,4 +1,4 @@
-package com.battcn;
+package org.battcn;
 
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.beans.factory.annotation.Autowired;

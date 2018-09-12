@@ -1,4 +1,4 @@
-package com.battcn.entity;
+package org.battcn.entity;
 
 /**
  * @author Levin

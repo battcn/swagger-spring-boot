@@ -1,6 +1,6 @@
-package com.battcn.controller;
+package org.battcn.controller;
 
-import com.battcn.entity.User;
+import org.battcn.entity.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

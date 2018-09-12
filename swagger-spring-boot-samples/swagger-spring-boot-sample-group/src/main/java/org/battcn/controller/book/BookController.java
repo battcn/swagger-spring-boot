@@ -1,8 +1,8 @@
-package com.battcn.controller.book;
+package org.battcn.controller.book;
 
-import com.battcn.boot.swagger.model.DataType;
-import com.battcn.boot.swagger.model.ParamType;
-import com.battcn.entity.Book;
+import org.battcn.boot.swagger.model.DataType;
+import org.battcn.boot.swagger.model.ParamType;
+import org.battcn.entity.Book;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

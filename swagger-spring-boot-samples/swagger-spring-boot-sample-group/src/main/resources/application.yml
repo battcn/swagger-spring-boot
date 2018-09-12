@@ -1,9 +1,9 @@
 spring:
   swagger:
     enabled: true
-    base-package: com.battcn
+    base-package: org.battcn
     groups:
       [用户]:
-        base-package: com.battcn.controller.user
+        base-package: org.battcn.controller.user
       [书籍]:
-        base-package: com.battcn.controller.book
+        base-package: org.battcn.controller.book

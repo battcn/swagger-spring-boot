@@ -1,4 +1,4 @@
-package com.battcn.entity;
+package org.battcn.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
