@@ -4,7 +4,7 @@
       <li class="jsonViewLi" @click="toggleStatus">
         <span class="font-basic">
           <span style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
-          {{keyTo}}
+          {{'"'+keyTo+'"'}}
         </span>
         <span class="quantity">
            {{ obj ? (obj["length"] ? "[" + obj.length + "]" : (typeof obj == "object" ? "{" + subQuantity(obj) + "}" : "null")) : "null"}}
@@ -18,10 +18,10 @@
         <span class="font-basic">
           <span style="visibility: hidden">
             {{showStatus ? '&#9662;' : '&#9656;'}}
-          </span>{{keyTo}}
+          </span>{{'"'+keyTo+'"'}}
         </span>:
         <span :style="{color:(typeof obj)=='number'?'#ee422e':'green'}">
-          {{obj === "" ? '""' : obj}}
+          {{obj === "" ? '""' : (typeof obj==="string"?('"'+obj+'"'):obj)}}
         </span>
       </li>
     </div>

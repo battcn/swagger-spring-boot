@@ -203,7 +203,7 @@
         if (resp === undefined) {
           return '加载失败';
         }
-        for (let key in resp) {
+        for (let key in resp) {/* 通过判断响应码判定请求是否成功 */
             if (resp.hasOwnProperty(key)&&parseInt(key) >= 200 && parseInt(key) <= 299) {
               respBasis = true;
               respState = key;
@@ -385,7 +385,6 @@
       iniData: function () {
         this.switchA = 0;
         this.resultShow = false;
-
         this.childForm = {};
         this.indentation = 1;
         this.isJsonObject = false;
@@ -494,7 +493,7 @@
       titleCase5: function (str) {
         return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
       },
-      JSONinit: function (refType) {
+      JSONinit: function (refType) {/*  */
         let _this = this;
         let definitionsArray = deepCopy(_this.leftDropDownBoxContent && _this.leftDropDownBoxContent.definitions);
         let deftion = undefined;
@@ -549,7 +548,7 @@
               deftion[key] = true;
               continue;
             }
-            if (deftion[key].type === "integer") {
+            if (deftion[key].type === "integer"|| deftion[key].type === "number") {
               deftion[key] = 0;
               continue;
             }
