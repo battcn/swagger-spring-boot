@@ -52,9 +52,12 @@ public class CustomSwagger2Controller {
         if (!(username.equals(swaggerSecurityProperties.getUsername()) && password.equals(swaggerSecurityProperties.getPassword()))) {
             RequestUtils.writeForbidden(response);
         }
-        final String sessionId = session.getId();
-        session.setAttribute(sessionId, sessionId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (swaggerSecurityProperties.getUsername().equals(username) && password.equals(swaggerSecurityProperties.getPassword())) {
+            final String sessionId = session.getId();
+            session.setAttribute(sessionId, sessionId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
 
