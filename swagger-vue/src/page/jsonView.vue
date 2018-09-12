@@ -7,7 +7,7 @@
           {{'"'+keyTo+'"'}}
         </span>
         <span class="quantity">
-           {{ obj ? (obj["length"] ? "[" + obj.length + "]" : (typeof obj == "object" ? "{" + subQuantity(obj) + "}" : "null")) : "null"}}
+           {{ obj ? (obj["length"] ? "[" + obj.length + "]" : (typeof obj == "object" ? "{" + subQuantity(obj) + "}" : "null")) : "null"}},
          </span>
       </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"

@@ -55,6 +55,7 @@
         </li>
         <li><span>响应Model</span>
           <div v-if="typeof jsonObject=='object'">
+            <a href="javascript:" class="fontColor copyJson" :data-clipboard-text="jsonValue">复制JSON</a>
             <span v-if="jsonObject['length']">[</span>
             <span v-else>{</span>
             <ul v-for="(item,key) in jsonObject">
@@ -126,6 +127,7 @@
         <b>Time:<a href="javascript:"> {{requestTime}} ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
+            <a href="javascript:" class="fontColor copyJson" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
             <div v-if="isJsonObject">
               {
               <ul>
@@ -167,16 +169,19 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import Clipboard from 'clipboard'
   import {mapState, mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
   import {deepCopy, basicTypeInit, formatterJson} from './../util/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
-
+  new Clipboard('.copyJson');
   export default {
     name: "app",
     data() {
       return {
+        jsonValue:"",/* 复制的表单响应JSON数据 */
+        jsonObjectToValue:"",/* 复制的实际响应JSON数据 */
         isJsonObject: false,
         childForm: {},
         indentation: 1,
@@ -236,6 +241,7 @@
                 definition = Response;
                 this.jsonObject = deftion;
               }
+              this.jsonValue=JSON.stringify(this.jsonObject);
               return definition;
             } else {
               //未发现ref属性
@@ -243,13 +249,15 @@
                 this.jsonObject = schema["type"];
                 return schema["type"];
               }
+              this.jsonValue=JSON.stringify(this.jsonObject);
               return "无";
             }
           } else {
+            this.jsonValue=JSON.stringify(this.jsonObject);
             return "无";
           }
-
         } else {
+          this.jsonValue=JSON.stringify(this.jsonObject);
           return "没有指定响应成功信息";
         }
       },
@@ -449,7 +457,6 @@
         }
         return obj;
       },
-
       formatRequest: function (itemsRef) {/* 传入#/definitions/User，进行格式化 */
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
@@ -692,6 +699,7 @@
             if (typeof this.jsonObjectTo === 'object') {
               this.isJsonObject = true;
             }
+            this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
           } else {
             try {
               this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
@@ -699,6 +707,7 @@
               this.isJsonObject = false;
             }
             this.jsonObjectTo = this.debugResponse.response.data;
+            this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
           }
         }
         this.resultShow = true;
@@ -718,7 +727,9 @@
   }
 </script>
 <style>
-
+  .copyJson{
+    float: right;text-decoration: none;    font-size: 12px;
+  }
 
   /* 响应参数说明部分 */
   .ResponseParameter .head {
@@ -882,6 +893,7 @@
     border-top: 1px solid #EBEBEB;
     padding-top: 15px;
   }
+
 
   .result-content > div {
     border: 1px solid #ddd;
