@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,6 +22,9 @@ public class User implements Serializable {
     @ApiModelProperty("密码")
     private String password;
     private List<Message> messages;
+
+    @ApiModelProperty("测试属性")
+    private BigDecimal price;
     private Address address;
 
     // TODO  省略get set
@@ -78,6 +82,14 @@ public class User implements Serializable {
         this.id = id;
         this.username = username;
         this.password = password;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     @Override
