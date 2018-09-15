@@ -25,7 +25,7 @@ public class PageController {
     }
 
     @PostMapping("/users")
-    @ApiOperation(value = "测试双POST（DONE）")
+    @ApiOperation(value = "测试双POST（DONE）",notes = "测试一下notes属性")
     public User post(@RequestBody User user) {
         return user;
     }

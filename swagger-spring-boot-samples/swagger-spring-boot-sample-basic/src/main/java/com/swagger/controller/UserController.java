@@ -28,7 +28,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping
-    @ApiOperation(value = "条件查询（DONE）")
+    @ApiOperation(value = "条件查询（DONE）",notes = "测试一下notes属性")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", dataType = DataType.STRING, paramType = ParamType.QUERY,defaultValue = "username111"),
             @ApiImplicitParam(name = "password", value = "密码", dataType = DataType.STRING, paramType = ParamType.QUERY),
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "主键查询（DONE）")
+    @ApiOperation(value = "主键查询（DONE）",notes = "测试一下notes属性")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户编号", dataType = DataType.LONG, paramType = ParamType.PATH),
     })
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "删除用户（DONE）")
+    @ApiOperation(value = "删除用户（DONE）",notes = "测试一下notes属性111")
     @ApiImplicitParam(name = "id", value = "用户编号", dataType = DataType.LONG, paramType = ParamType.PATH)
     public void delete(@PathVariable Long id) {
         log.info("单个参数用 ApiImplicitParam");
