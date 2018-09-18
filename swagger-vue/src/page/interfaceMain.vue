@@ -19,9 +19,12 @@
         <li><span>请求方式</span>
           <div><span>{{swaggerCategory[countTo] ? swaggerCategory[countTo].name : ""}}</span></div>
         </li>
+        <li><span>接口说明</span>
+          <div><span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.description ? swaggerCategory[countTo].pathInfo.description : ""}}</span></div>
+        </li>
         <li><span>consumes</span>
           <div>
-            <span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.consumes ? swaggerCategory[countTo].pathInfo.consumes[0] : ""}}</span>
+            <span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.consumes&& swaggerCategory[countTo].pathInfo.consumes['length'] ? swaggerCategory[countTo].pathInfo.consumes[0] : ""}}</span>
           </div>
         </li>
         <li><span>produces</span>
@@ -128,7 +131,7 @@
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <a href="javascript:" class="fontColor copyJson" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
-            <div v-if="isJsonObject">
+            <!--<div v-if="isJsonObject">
               {
               <ul>
                 <li v-for="(item,key) in jsonObjectTo">
@@ -136,8 +139,8 @@
                 </li>
               </ul>
               }
-            </div>
-            <li v-else>{{jsonObjectTo}}</li>
+            </div>-->
+            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" ><span v-html="formatJsonObjectTo"></span></li>
           </div>
           <div v-show="debugging=='cookies'">
             <span>暂无</span>
@@ -180,6 +183,7 @@
     name: "app",
     data() {
       return {
+        formatJsonObjectTo:"",/* 格式化后的响应JSON数据 */
         jsonValue:"",/* 复制的表单响应JSON数据 */
         jsonObjectToValue:"",/* 复制的实际响应JSON数据 */
         isJsonObject: false,
@@ -700,6 +704,8 @@
               this.isJsonObject = true;
             }
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
+            console.log(JSON.stringify(this.jsonObjectTo))
+            this.formatJsonObjectTo=formatterJson(JSON.stringify(this.jsonObjectTo))
           } else {
             try {
               this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
@@ -708,6 +714,7 @@
             }
             this.jsonObjectTo = this.debugResponse.response.data;
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
+            this.formatJsonObjectTo=formatterJson(JSON.stringify(this.jsonObjectTo))
           }
         }
         this.resultShow = true;
