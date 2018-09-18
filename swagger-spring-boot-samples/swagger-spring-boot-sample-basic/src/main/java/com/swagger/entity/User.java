@@ -17,9 +17,9 @@ public class User implements Serializable {
     private static final long serialVersionUID = 8655851615465363473L;
 
     private Long id;
-    @ApiModelProperty("用户名")
+    @ApiModelProperty(value = "用户名", required = false)
     private String username;
-    @ApiModelProperty("密码")
+    @ApiModelProperty(value = "密码", required = true)
     private String password;
     private List<Message> messages;
 
