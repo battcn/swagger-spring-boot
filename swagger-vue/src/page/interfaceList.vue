@@ -43,7 +43,7 @@
       </ul>
     </div>
     <introduction v-show="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
-    <interfaceMain v-show="countTo!==-1" v-on:PromptPopUpShow="PromptPopUpShow"
+    <interfaceMain v-show="countTo!==-1"
                    v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
                    v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
                    v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
@@ -122,10 +122,6 @@
       },
       changeCountTo: function (index) {
         this.countTo = index;
-      },
-      PromptPopUpShow: function (hint) {
-        this.$layer.msg(hint, {time: 2})
-        /*  提示框插件 */
       },
       ...mapMutations(['switch', 'deleteTab', 'emptyTab']),
     },

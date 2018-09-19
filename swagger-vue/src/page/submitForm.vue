@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-  import {deepCopy, basicTypeInit,formatterJson} from './../util/util'
+  import {deepCopy, basicTypeInit,formatterJson,PromptPopUpShow} from './../util/util'
   import {mapState, mapMutations} from 'vuex'
   export default {
     name: "submit-form",
@@ -135,12 +135,12 @@
            data[i]['default']=JSON.parse(data[i]['default']);
         }
           if (data[i]&&data[i]['required']&&data[i]['default']===""&& data[i]['required'] === true) {
-            this.PromptPopUpShow(data[i].name + "为必选字段");
+            PromptPopUpShow.call(this,data[i].name + "为必选字段");
             return false;
           }
           /* 路径参数判断 */
           if(data[i]['name']&&data[i]['name'] === this.linkageSection&&this.keyValue===""){
-            this.PromptPopUpShow(data[i].name + "为必选字段");
+            PromptPopUpShow.call(this,data[i].name + "为必选字段");
             return false;
           }
       }
@@ -157,12 +157,9 @@
         this.$emit('getCollection', data,param);
         return true;
       },
-      PromptPopUpShow: function (hint) {
-        this.$layer.msg(hint, {time: 2})
-      },
       deleteInterfaceRequest: function (key, item) {
         if (item.required) {
-          this.PromptPopUpShow(item.name + "为必选字段");
+          PromptPopUpShow.call(this,item.name + "为必选字段");
           return false;
         }
         this.copyChildForm.splice(key, 1);

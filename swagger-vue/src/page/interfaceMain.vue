@@ -112,8 +112,8 @@
     </div>
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
-      <submit-form v-on:deleteCopyChildForm="deleteChildForm" v-on:getCollection="getForm" :childForm.sync="childForm"
-                   :bg="bg" v-on:shijian="fatherValue"
+      <submit-form  v-on:getCollection="getForm" :childForm.sync="childForm"
+                   :bg="bg"
                    :parameterValue="parameterValue" :leftDropDownBoxContent="leftDropDownBoxContent"
                    v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
                    :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo"
@@ -140,7 +140,7 @@
               </ul>
               }
             </div>-->
-            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" ><span v-html="formatJsonObjectTo"></span></li>
+            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" ><pre style="font-family: inherit;" v-html="formatJsonObjectTo"></pre></li>
           </div>
           <div v-show="debugging=='cookies'">
             <span>暂无</span>
@@ -175,7 +175,7 @@
   import Clipboard from 'clipboard'
   import {mapState, mapMutations, mapActions} from 'vuex'
   import FormFold from './formFold.vue'
-  import {deepCopy, basicTypeInit, formatterJson} from './../util/util'
+  import {deepCopy, basicTypeInit, formatterJson,syntaxHighlight} from './../util/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
   new Clipboard('.copyJson');
@@ -394,6 +394,7 @@
     methods: {
       ...mapActions(["carriedSend"]),
       ...mapMutations(["initialization", "send"]),
+
       iniData: function () {
         this.switchA = 0;
         this.resultShow = false;
@@ -424,22 +425,6 @@
         } else {
           this.$set(this.responseCodePre, index, true)
         }
-      },
-      deleteChildForm: function (key) {
-        this.$delete(this.childForm, key);
-      },
-      fatherValue: function (myValue) {
-        this.$set(this.parameterValue, 0, myValue);
-        this.resultShow = !this.resultShow;
-        this.resultShow = !this.resultShow;
-      },
-      tickRequired: function (item, event) {
-        for (let key in this.InterfaceRequest) {
-          if (this.InterfaceRequest.hasOwnProperty(key)&&!this.InterfaceRequest[key].required) {
-            return false;
-          }
-        }
-        return true;
       },
       iniObject: function (properties) {/* 传入对象，对其进行类型初始化 */
         let obj = {};
@@ -500,9 +485,6 @@
             }
         }
         return result;
-      },
-      titleCase5: function (str) {
-        return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
       },
       JSONinit: function (refType) {/*  */
         let _this = this;
@@ -705,7 +687,7 @@
             }
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
             console.log(JSON.stringify(this.jsonObjectTo))
-            this.formatJsonObjectTo=formatterJson(JSON.stringify(this.jsonObjectTo))
+            this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           } else {
             try {
               this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
@@ -714,7 +696,7 @@
             }
             this.jsonObjectTo = this.debugResponse.response.data;
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
-            this.formatJsonObjectTo=formatterJson(JSON.stringify(this.jsonObjectTo))
+            this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           }
         }
         this.resultShow = true;

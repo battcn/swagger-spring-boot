@@ -1,4 +1,31 @@
 /* 对象拷贝 */
+const  syntaxHighlight=function (json) {
+  json = json.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
+  return json.replace( /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function ( match ) {
+    console.log(match)
+    var cls = 'number';
+    if ( /^"/.test( match ) )
+    {
+      if ( /:$/.test( match ) )
+      {
+        cls = 'key';
+      } else
+      {
+        cls = 'string';
+      }
+    } else if ( /true|false/.test( match ) )
+    {
+      cls = 'boolean';
+    } else if ( /null/.test( match ) )
+    {
+      cls = 'null';
+    }
+    return '<span class="' + cls + '">' + match + '</span>';
+  } );
+}
+const PromptPopUpShow=function (hint) {/* 修改成功提示 */
+  this.$layer.msg(hint, {time: 2});
+}
 const deepCopy = function (source) {
   let result = "";
   if (source === undefined || source === null) {
@@ -79,5 +106,5 @@ const formatterJson=function (text_value) {/*JSON数据格式化(将其以 上�
   return res;
 };
 export {
-  deepCopy, basicTypeInit,formatterJson
+  deepCopy, basicTypeInit,formatterJson,PromptPopUpShow,syntaxHighlight
 }

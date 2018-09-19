@@ -24,7 +24,7 @@
 </template>
 <script>
   import {mapState, mapMutations} from 'vuex'
-
+  import {PromptPopUpShow}   from './../util/util'
   export default {
     name: 'authorizations',
     data() {
@@ -53,7 +53,7 @@
           sessionStorage.setItem("authorize", JSON.stringify(arr));
         }
         this.setAuObj(this.authorizeInfo.name);
-        this.PromptPopUpShow("修改 X-Authorization 成功");
+        PromptPopUpShow.call(this,"修改 X-Authorization 成功");
         this.closeAuthorize();
       },
       setAuObj: function (name) {/* 保存对象 */
@@ -62,9 +62,6 @@
         let obj = {};
         obj[key] = value;
         this.setAuthorizeObj(obj)
-      },
-      PromptPopUpShow: function (hint) {/* 修改成功提示 */
-        this.$layer.msg(hint, {time: 2})
       },
       closeAuthorize: function () {
         this.authorizeShow = false;
