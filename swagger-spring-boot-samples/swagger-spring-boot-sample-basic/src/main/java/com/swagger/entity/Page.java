@@ -1,6 +1,7 @@
 package com.swagger.entity;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author Levin
@@ -9,7 +10,9 @@ import io.swagger.annotations.ApiModel;
 @ApiModel
 public class Page {
 
+    @ApiModelProperty(required = true)
     private Integer page;
+    @ApiModelProperty(required = false)
     private Integer pageSize;
 
     public Integer getPage() {
