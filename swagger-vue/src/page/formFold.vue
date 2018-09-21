@@ -1,5 +1,4 @@
 <template xmlns="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-
   <div  class="tree-menu" :class="{menuBorder:isResponse}">
      <li v-if="isResponse" :class="{fontColor:properties}" @click="toggleChildren" class="table-tr">
        <span :class="{fontRight:depth>0}" class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
@@ -12,11 +11,11 @@
        <span class="table-td">{{item.type}}</span>
        <span class="table-td">无</span>
        <span class="table-td">{{item.in ? item.in : ""}}</span>
-       <span class="table-td">{{(typeof item.required == 'boolean') ? item.required : false}}</span>
+       <span class="table-td">{{isRequired}}</span>
      </li>
     <transition-group colspan="6" name="slide-fade" tag="div">
       <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
-                 v-for="(item,key) in childProperties"
+                 v-for="(item,key) in childProperties" :requireds="requireds"
                  :item="item" :keyTo="key" :properties="item.properties">
       </form-fold>
     </transition-group>
@@ -24,12 +23,21 @@
 </template>
 <script>
   export default {
-    props: ['name', 'item', 'properties', 'keyTo', 'depth'],
+    props: ['name', 'item', 'properties', 'keyTo', 'depth','requireds'],
     name: 'form-fold',
     data() {
       return {showChildren: false}
     },
     computed: {
+      isRequired(){
+        if(this.item.required&&typeof this.item.required === 'boolean'&&this.item.required||(typeof this.item.required === 'object'&&this.item.required['length']>0)){
+          return true;
+        }
+        if(this.requireds&&typeof this.requireds === 'object'&&this.requireds['length']>0&&(this.requireds.includes(this.item.name)||this.requireds.includes(this.keyTo))){
+          return true;
+        }
+        return false;
+      },
       isResponse() {
         return this.name === 'response';
       },

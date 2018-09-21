@@ -49,7 +49,7 @@
                   <form-fold :depth="0"
                              :properties="item.properties&&item.properties.properties||(item.properties&&item.properties[0]&&item.properties[0].properties)"
                              :keyTo="key"
-                             :item="item"></form-fold>
+                             :item="item" :requireds="requireds"></form-fold>
                 </div>
               </ul>
             </div>
@@ -205,6 +205,41 @@
        * @return {string}
        */
       ...mapState(['authorization']),
+      requireds:function () {/* 提取必需请求参数数组 */
+        let RequiredAr = [];
+        let obj=undefined;
+        for(let key in this.InterfaceRequest) {
+          if (this.InterfaceRequest.hasOwnProperty(key)) {
+            if (this.InterfaceRequest[key].properties && ((this.InterfaceRequest[key].properties["length"]) || (typeof this.InterfaceRequest[key].properties) === "array")) {
+              obj = this.InterfaceRequest[key].properties[0] && this.InterfaceRequest[key].properties[0].properties;
+              for (let i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                  if ( typeof  obj[i].required === "object" && obj[i].required['length'] > 0) {
+                    RequiredAr = RequiredAr.concat(obj[i].required);
+                  }
+                  if (typeof  obj[i].required === "string") {
+                    RequiredAr.push(obj[i].required);
+                  }
+                }
+              }
+            } else {
+              obj = this.InterfaceRequest[key].properties;
+              for (let i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                  if (i === 'required' && typeof  obj[i] === "object" && obj[i]['length'] > 0) {
+                    RequiredAr = RequiredAr.concat(obj[i]);
+                  }
+                  if (i === 'required' && typeof  obj[i] === "string") {
+                    RequiredAr.push(obj[i]);
+                  }
+                }
+              }
+            }
+
+          }
+        }
+        return RequiredAr;
+      },
       InterfaceResponse: function () {/* 响应参数 */
         let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
         let respBasis = false;
@@ -361,7 +396,8 @@
               'name':"Array",
               'type':"array",
               'title':"Array",
-              'description':"Array"
+              'description':"Array",
+              'required':true
             };
           }
         }
