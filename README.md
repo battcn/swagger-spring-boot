@@ -30,11 +30,10 @@
 - 在`pom.xml`中引入依赖：
 
 ``` xml
-自 2.0.8 开始及后续所有包的groupId 调整为 org.battcn 而不再是 com.battcn
 <dependency>
-    <groupId>org.battcn</groupId>
+    <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.8-RELEASE</version>
+    <version>2.0.9-RELEASE</version>
 </dependency>
 ```
 
@@ -55,7 +54,7 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
-2.0.8
+2.0.9
   发布时间：2018-09-22
   更新内容：
     1.调试面板JSON渲染美化
