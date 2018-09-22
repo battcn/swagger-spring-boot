@@ -33,7 +33,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.7-RELEASE</version>
+    <version>2.0.8-RELEASE</version>
 </dependency>
 ```
 
@@ -54,6 +54,12 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
+2.0.8
+  发布时间：2018-09-22
+  更新内容：
+    1.调试面板JSON渲染美化
+    2.修复授权模式下任意密码可以登陆问题
+    3.修复ApiModelProperty#required 不生效问题
 2.0.7
   发布时间：2018-08-17
   更新内容：
