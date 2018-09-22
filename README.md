@@ -33,7 +33,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.0.9-RELEASE</version>
+    <version>2.1.0-RELEASE</version>
 </dependency>
 ```
 
@@ -54,7 +54,7 @@ spring.swagger.enable=true
 
 # 更新记录 #
 ```
-2.0.9
+2.1.0
   发布时间：2018-09-22
   更新内容：
     1.调试面板JSON渲染美化
