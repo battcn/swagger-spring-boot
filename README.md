@@ -30,8 +30,9 @@
 - 在`pom.xml`中引入依赖：
 
 ``` xml
+自 2.0.8 开始及后续所有包的groupId 调整为 org.battcn 而不再是 com.battcn
 <dependency>
-    <groupId>com.battcn</groupId>
+    <groupId>org.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
     <version>2.0.8-RELEASE</version>
 </dependency>
