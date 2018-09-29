@@ -42,13 +42,13 @@
 ``` yaml
 spring:
   swagger:
-    enable: true
+    enabled: true
 ```
 
 - 在`application.properties`中添加
 
 ``` properties 
-spring.swagger.enable=true
+spring.swagger.enabled=true
 ```
 
 
