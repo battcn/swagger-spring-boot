@@ -36,9 +36,9 @@
             </div>
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
-            <input v-else v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
+            <input v-else  v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
           </div>
-          <span v-if="childForm[key].default==''||(typeof childForm[key].default)!='object'"
+          <span  v-if="childForm[key].default==''||(typeof childForm[key].default)!='object'"
                 class="parameter-operating" @click="deleteInterfaceRequest(key,item)">删除</span>
         </li>
       </ul>
@@ -46,20 +46,25 @@
   </div>
 </template>
 <script>
-  import {deepCopy, basicTypeInit,formatterJson,PromptPopUpShow} from './../util/util'
-  import {mapState, mapMutations} from 'vuex'
+  import {deepCopy, basicTypeInit,formatterJson,PromptPopUpShow} from './../common/js/util'
+  import {mapGetters, mapMutations} from 'vuex'
+  import {bg} from './../api/config'
   export default {
     name: "submit-form",
     data() {
-      return {keyValue: "", selectAll: false, s: false,file:""}
+      return {bg:bg,keyValue: "", selectAll: false, s: false,file:""}
     },
-    props: ['childForm', 'bg', 'swaggerCategory', 'leftDropDownBoxContent', 'selected', 'count', 'countTo', 'InterfaceRequest', 'parameterValue'],
+    props: ['childForm',  'swaggerCategory','selected', 'count', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
-      ...mapState(['infoData']),
+      ...mapGetters({
+        leftDropDownBoxContent:'dropDownBoxContent',
+        infoData:'tabData_infoData'
+      }),
       copyChildForm(){ /* 数据字段  */
+        let _this=this;
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        if (this.$store.state.tabData.infoData[key] !== undefined) {
-          return this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][0]
+        if (this.infoData[key] !== undefined) {
+          return this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][0]
         }
         let copyChildForms = deepCopy(this.childForm);
         for (let key in copyChildForms) {/*   替换undefined的字段对象(暂代) */
@@ -69,7 +74,7 @@
           if(typeof copyChildForms[key]['default'] === "object"){
             copyChildForms[key]['default']=formatterJson(JSON.stringify(copyChildForms[key]['default']));
           }
-        };
+        }
         return copyChildForms;
       },
       copyLinkPath(){
@@ -102,16 +107,16 @@
       }
     },
     methods: {
-      ...mapMutations(['addTab', 'changeShow']),
+      ...mapMutations(['UPDATE_TABDATA_INFODATAITEM','SELETE_TABDATA_INFODATAITEM','INSERT_TABDATA_ADDTAB', 'UPDATE_TABDATA_UPDATETABSHOW','UPDATE_TABDATA_INFODATA']),
       saveTab(){
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
-          this.keyValue = this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1];
+        if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
+          this.keyValue = this.infoData && this.infoData[key] && this.infoData[key][1];
         }
         let data = {};
-        data.key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        data.key = key;
         data.value = [this.copyChildForm, this.keyValue, this.selected, this.count, this.countTo];
-        this.addTab(data);
+        this.INSERT_TABDATA_ADDTAB(data);
       },
       initInfo(){
         this.selectAll = false;
@@ -120,15 +125,7 @@
          this.file="";
         this.saveTab();
       },
-      onInput(val, key) {
-        try {
-          this.copyChildForm[key].default = JSON.parse(val);
-        } catch (e) {
-          this.copyChildForm[key].default = val;
-        }
-      },
       formCollection: function () { //收集表单信息
-//        fileInput
         let data = deepCopy(this.copyChildForm);
       for(let i=0,n=data.length;i<n;i++) {
         if(this.childForm[i].default!=''&&(typeof this.childForm[i].default)=='object'&&this.childForm[i].default.in!=='formData'){
@@ -169,34 +166,31 @@
     },
     watch: {
       selected(){
-        console.log(this.selected);
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        this.changeShow(key);
         this.initInfo();
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
       count(){
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        this.changeShow(key);
         this.initInfo();
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
       countTo(){
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        this.changeShow(key);
         this.initInfo();
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
+        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
       keyValue(){
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
-          this.$store.state.tabData.infoData[key][1] = this.keyValue;
+        if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
+          let inf = deepCopy(this.infoData[key]);
+          inf[1]=this.keyValue;
+          this.UPDATE_TABDATA_INFODATA(key,inf);
         }
       }
     },
     created(){
       this.initInfo();
-      let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-      if (this.$store.state.tabData.infoData && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key] && this.$store.state.tabData.infoData[key][1] !== undefined) {
-        this.changeShow(key);
-      }
     }
   }
 </script>

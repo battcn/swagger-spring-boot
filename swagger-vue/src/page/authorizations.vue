@@ -23,31 +23,26 @@
   </div>
 </template>
 <script>
-  import {mapState, mapMutations} from 'vuex'
-  import {PromptPopUpShow}   from './../util/util'
+  import {mapGetters, mapMutations} from 'vuex'
+  import {PromptPopUpShow}   from './../common/js/util'
   export default {
     name: 'authorizations',
     data() {
       return {authorizeShow: false, authorizeVal: ""}
     },
     computed: {
-      authorizeValStore() {
-        return this.$store.state.debugRequest.authorization;
-      },
-      leftDropContent(){
-        return this.$store.state.leftDropDownBoxContent && this.$store.state.leftDropDownBoxContent.data;
-      },
+      ...mapGetters(['debugRequest_authorization','dropDownBoxContent']),
       authorizeInfo() {
-        return this.leftDropContent && this.leftDropContent.securityDefinitions && this.leftDropContent.securityDefinitions['X-Authorization'];
+        return this.dropDownBoxContent && this.dropDownBoxContent.securityDefinitions && this.dropDownBoxContent.securityDefinitions['X-Authorization'];
       }
     },
     methods: {
-      ...mapMutations(['setAuthorization', 'setAuthorizeObj']),
+      ...mapMutations(['SET_DEBUGREQUEST_SECRETKEY', 'SET_DEBUGREQUEST_SECRETKEYS']),
       setAuthorizeShow: function () {
         this.authorizeShow = !this.authorizeShow;
       },
       setAuthorizeVal: function () {
-        this.setAuthorization(this.authorizeVal);
+        this.SET_DEBUGREQUEST_SECRETKEY(this.authorizeVal);
         if (window.sessionStorage) {
           let arr = [this.authorizeInfo && this.authorizeInfo.name, this.authorizeVal];
           sessionStorage.setItem("authorize", JSON.stringify(arr));
@@ -61,7 +56,7 @@
         let value = this.authorizeVal;
         let obj = {};
         obj[key] = value;
-        this.setAuthorizeObj(obj)
+        this.SET_DEBUGREQUEST_SECRETKEYS(obj)
       },
       closeAuthorize: function () {
         this.authorizeShow = false;
@@ -69,7 +64,7 @@
     },
     watch: {
       authorizeShow() {
-        this.authorizeVal = this.authorizeValStore;
+        this.authorizeVal = this.debugRequest_authorization;
       }
     },
     created(){
@@ -78,7 +73,7 @@
         let val = sessionStorage.getItem("authorize");
         if (val) {
           _this.authorizeVal = JSON.parse(val)[1];
-          _this.setAuthorization(_this.authorizeVal);
+          _this.SET_DEBUGREQUEST_SECRETKEY(_this.authorizeVal);
           _this.setAuObj(JSON.parse(val)[0]);
         }
       }

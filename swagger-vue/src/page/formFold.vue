@@ -13,7 +13,7 @@
        <span class="table-td">{{item.in ? item.in : ""}}</span>
        <span class="table-td">{{isRequired}}</span>
      </li>
-    <transition-group colspan="6" name="slide-fade" tag="div">
+    <transition-group  name="slide-fade" tag="ul">
       <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
                  v-for="(item,key) in childProperties" :requireds="requireds"
                  :item="item" :keyTo="key" :properties="item.properties">
@@ -87,6 +87,7 @@
     border-bottom: 1px solid #ddd;
     overflow: hidden;
     word-wrap: break-word;
+    padding-bottom: 8px;
   }
 
   .table-head {
@@ -96,7 +97,7 @@
   }
 
   .table-head .table-td {
-    padding: 8px 4px;
+    padding: 8px 4px 999px;
     text-align: center;
   }
 
@@ -105,8 +106,12 @@
     width: 15%;
     float: left;
     padding: 8px 4px;
-    min-height: 18px;
+    /*min-height: 18px;
+    text-align: left;*/
+    min-height: 18.4px;
     text-align: left;
+    padding-bottom: 999px;
+    margin-bottom: -999px;
   }
 
   .table-td:nth-child(2) {

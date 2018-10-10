@@ -16,19 +16,19 @@
       </li>
       <li>
         <span>host</span>
-        <span><a v-bind:href="hostInfo" target="_blank">{{hostInfo}}</a></span>
+        <span><a :href="hostInfo" target="_blank">{{hostInfo}}</a></span>
       </li>
       <li>
         <span>服务url</span>
         <span><a
-          v-bind:href="infoData && infoData.termsOfService ? infoData.termsOfService : ''"
+          :href="infoData && infoData.termsOfService ? infoData.termsOfService : ''"
           target="_blank">{{infoData && infoData.termsOfService ? infoData.termsOfService : ''}}</a></span>
       </li>
     </ul>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {deepCopy} from  './../util/util'
+  import {deepCopy} from  './../common/js/util'
   export default {
     name: 'introduction',
     data(){

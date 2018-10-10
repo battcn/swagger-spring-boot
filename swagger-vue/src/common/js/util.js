@@ -84,12 +84,12 @@ const formatterJson=function (text_value) {/*JSON数据格式化(将其以 上�
   let res = "";
   for (let i = 0, j = 0, k = 0, ii, ele; i < text_value.length; i++) {//k:缩进，j:""个数
     ele = text_value.charAt(i);
-    if (j % 2 === 0 && ele === "}") {
+    if (j % 2 === 0 && (ele === "}"||ele === "]")) {
       k--;
       for (ii = 0; ii < k; ii++) ele = "    " + ele;
       ele = "\n" + ele;
     }
-    else if (j % 2 === 0 && ele === "{") {
+    else if (j % 2 === 0 && (ele === "{"||ele === "[")) {
       ele += "\n";
       k++;
       //debugger;

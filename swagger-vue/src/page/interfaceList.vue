@@ -45,13 +45,15 @@
     <introduction v-show="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
     <interfaceMain v-show="countTo!==-1"
                    v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
-                   v-bind:bg="bg" v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
+                    v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
                    v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
     <authorizations></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
+  import {ERR_OK,bg} from './../api/config'
+  import {getDropDown,getBoxContent} from './../api/getData'
   import introduction from './introduction.vue'
   import interfaceMain from './interfaceMain.vue'
   import authorizations from  './authorizations.vue'
@@ -59,13 +61,13 @@
     name: 'app',
     data() {
       return {
+        bg:bg,
         selected: 0,
         count: 0,
         countTo: -1,
         control: false,
         hint: "",
         quantity: {},
-        bg: {"GET": '#D1EAFF', "POST": '#D1FED3', "PATCH": '#FFE2D2', "DELETE": '#FFD1D1', "PUT": "#F0E0CA"},
         managementShow: false
       }
     },
@@ -74,13 +76,41 @@
         this.count = 0;
         this.countTo = 0;
         /* 初始化 */
-        this.$store.commit('switch', newSelected)
+        this.UPDATE_DROPDOWN_DROPDOWNCOUNT(newSelected)
+        this._getDropDown()
       }
     },
     methods: {
+      _getDropDown:function () {
+        let _this=this;
+        getDropDown().then((res)=>{
+          console.log(res)
+          _this.UPDATE_DROPDOWN_DROPDOWNDATA(res.data)
+          console.log(res.data[_this.dropDown_count])
+          if(res.data&&res.data[_this.dropDown_count||0]&&res.data[_this.dropDown_count||0]['location']){
+            _this._getBoxContent(res.data[_this.dropDown_count].location)
+          }
+        }).catch((err)=>{
+          console.info("身份验证失败啦...." + err);
+          _this.UPDATE_DROPDOWN_DROPDOWNDATA('请求失败'+err)
+          _this.failureJump();
+        })
+      },
+      _getBoxContent:function (url) {
+        let _this=this;
+        getBoxContent(url).then((res)=>{
+          _this.UPDATE_BOXCONTENT_BOXCONTENT(res.data)
+        }).catch((err)=>{
+          _this.UPDATE_BOXCONTENT_BOXCONTENT('请求失败'+err);
+        })
+      },
+      failureJump: function () {/* 请求失败时跳转至登录路由 */
+        this.$router.push('swagger-login.html');
+        console.log("请进行身份验证后使用！")
+      },
       closeTab: function () {/* 删除当前 */
         if (this.showKey && this.tabData && this.tabData[this.showKey]) {
-          this.deleteTab(this.showKey);
+          this.DELETE_TABDATA_DELETETAB(this.showKey);
           this.managementShow = false;
           this.countTo = -1;
         }
@@ -89,7 +119,7 @@
         if (this.showKey && this.tabData) {
           for (let key in this.tabData) {
             if (key !== this.showKey) {
-              this.deleteTab(key);
+              this.DELETE_TABDATA_DELETETAB(key);
             }
           }
           this.managementShow = false;
@@ -97,7 +127,7 @@
       },
       closeAllTab: function () {
         if (this.tabData !== {}) {
-          this.emptyTab();
+          this.CLEAR_TABDATA_CLEARTAB();
         }
         this.countTo = -1;
         this.managementShow = false;
@@ -107,13 +137,13 @@
         let target = a.target || a.srcElement;
         if (this.selected === value[2] && this.count === value[3] && this.countTo === value[4]) {
           if (target && target.nodeName && target.nodeName.toLowerCase() === 'a') {
-            this.deleteTab(key);
+            this.DELETE_TABDATA_DELETETAB(key);
             this.countTo = -1;
           }
           return false;
         }
         if (target && target.nodeName && target.nodeName.toLowerCase() === 'a') {
-          this.deleteTab(key)
+          this.DELETE_TABDATA_DELETETAB(key)
         } else {
           this.selected = value[2];
           this.count = value[3];
@@ -123,20 +153,17 @@
       changeCountTo: function (index) {
         this.countTo = index;
       },
-      ...mapMutations(['switch', 'deleteTab', 'emptyTab']),
+      ...mapMutations(['UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB','UPDATE_DROPDOWN_DROPDOWNDATA','UPDATE_BOXCONTENT_BOXCONTENT']),
     },
     components: {interfaceMain, introduction, authorizations},
     computed: {
-      ...mapState({
-        tabData: state => state.tabData.infoData,
-        showKey: state => state.tabData.show
+      ...mapGetters({
+        tabData:'tabData_infoData',
+        showKey:'tabData_show',
+        swaggerLeftHead:'dropDown_Data',
+        leftDropDownBoxContent:'dropDownBoxContent',
+        dropDown_count:'dropDown_count'
       }),
-      swaggerLeftHead() {
-        return this.$store.state.swaggerLeftHead.data;
-      },
-      leftDropDownBoxContent() {
-        return this.$store.state.leftDropDownBoxContent.data;
-      },
       swaggerCategory() {
         let current = [];
         this.quantity = {};
@@ -156,8 +183,9 @@
       }
     },
     created(){
-      let leftDropContent = this.$store.state.leftDropDownBoxContent && this.$store.state.leftDropDownBoxContent.data;
-      let defi = leftDropContent && leftDropContent.securityDefinitions && leftDropContent.securityDefinitions['X-Authorization'];
+      this._getDropDown()
+//      let leftDropContent = this.$store.state.leftDropDownBoxContent && this.$store.state.leftDropDownBoxContent.data;
+//      let defi = leftDropContent && leftDropContent.securityDefinitions && leftDropContent.securityDefinitions['X-Authorization'];
     }
   }
 </script>

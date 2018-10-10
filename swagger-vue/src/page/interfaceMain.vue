@@ -62,7 +62,7 @@
             <span v-if="jsonObject['length']">[</span>
             <span v-else>{</span>
             <ul v-for="(item,key) in jsonObject">
-              <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
+              <json-view v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></json-view>
             </ul>
             <span v-if="jsonObject['length']">]</span>
             <span v-else>}</span>
@@ -113,8 +113,7 @@
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
       <submit-form  v-on:getCollection="getForm" :childForm.sync="childForm"
-                   :bg="bg"
-                   :parameterValue="parameterValue" :leftDropDownBoxContent="leftDropDownBoxContent"
+                   :parameterValue="parameterValue"
                    v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
                    :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo"
                    :InterfaceRequest="InterfaceRequest">
@@ -127,20 +126,14 @@
         <span style="cursor:pointer;" @click="debugging='header'"
               :class="[debugging=='header'?'active':'']">Header</span>
         <span style="cursor:pointer;" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
-        <b>Time:<a href="javascript:"> {{requestTime}} ms</a></b>
+        <b>Time:<a href="javascript:"> {{debugRequest_requestTime}} ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
-            <a href="javascript:" class="fontColor copyJson" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
-            <!--<div v-if="isJsonObject">
-              {
-              <ul>
-                <li v-for="(item,key) in jsonObjectTo">
-                  <Json-View v-bind:obj="item" :keyTo="key" v-bind:indentation="indentation"></Json-View>
-                </li>
-              </ul>
-              }
-            </div>-->
-            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" ><pre style="font-family: inherit;" v-html="formatJsonObjectTo"></pre></li>
+            <a v-if="debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['content-type']!=='image/jpeg'"  href="javascript:" class="fontColor copyJson" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
+            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" >
+              <pre v-if="debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['content-type']!=='image/jpeg'" style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
+              <p v-else>{{codeImgUrl}}</p>
+            </li>
           </div>
           <div v-show="debugging=='cookies'">
             <span>暂无</span>
@@ -149,18 +142,18 @@
             <ul style="border: 1px solid #ddd;">
               <li class="head"><span>请求头</span><span>value</span></li>
               <li>
-                <span>Date</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['Date']}}</span>
+                <span>Date</span><span>{{debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['Date']}}</span>
               </li>
               <li>
-                <span>transfer-encoding</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['transfer-encoding']}}</span>
+                <span>transfer-encoding</span><span>{{debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['transfer-encoding']}}</span>
               </li>
               <li>
-                <span>x-application-context</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['x-application-context']}}</span>
+                <span>x-application-context</span><span>{{debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['x-application-context']}}</span>
               </li>
               <li>
-                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['content-type']}}</span>
+                <span>content-type</span><span>{{debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['content-type']}}</span>
               </li>
-              <li><span>response-code</span><span>{{debugResponse && debugResponse.status}}</span></li>
+              <li><span>response-code</span><span>{{debugRequest_debugResponse && debugRequest_debugResponse.status}}</span></li>
             </ul>
           </div>
           <div class="debugging-curl" v-show="debugging=='curl'">
@@ -173,12 +166,16 @@
 </template>
 <script type="text/ecmascript-6">
   import Clipboard from 'clipboard'
-  import {mapState, mapMutations, mapActions} from 'vuex'
+  import {mapGetters,mapState, mapMutations} from 'vuex'
+  import {getDebugRequest} from './../api/debugRequest'
+  import {SWAGGER_URL,ERR_OK} from './../api/config'
   import FormFold from './formFold.vue'
-  import {deepCopy, basicTypeInit, formatterJson,syntaxHighlight} from './../util/util'
+  import {deepCopy, basicTypeInit, formatterJson,syntaxHighlight} from './../common/js/util'
   import SubmitForm from './submitForm.vue'
   import JsonView from './jsonView.vue'
   new Clipboard('.copyJson');
+  let Base64 = require('js-base64').Base64;
+
   export default {
     name: "app",
     data() {
@@ -197,14 +194,15 @@
         curlMode: "",
         parameterValue: {},
         responseCodePre: [],
-        responseObjectName: ""
+        responseObjectName: "",
+        codeImgUrl:""
       }
     },
     computed: {
       /**
        * @return {string}
        */
-      ...mapState(['authorization']),
+      ...mapGetters(['dropDownBoxContent','debugRequest_debugResponse','debugRequest_requestTime','debugRequest_authorizeObj']),
       requireds:function () {/* 提取必需请求参数数组 */
         let RequiredAr = [];
         let obj=undefined;
@@ -248,7 +246,7 @@
           return '加载失败';
         }
         for (let key in resp) {/* 通过判断响应码判定请求是否成功 */
-            if (resp.hasOwnProperty(key)&&parseInt(key) >= 200 && parseInt(key) <= 299) {
+            if (resp.hasOwnProperty(key)&&parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
               respBasis = true;
               respState = key;
               break;
@@ -308,7 +306,7 @@
           return "加载失败";
         }
         for (let key in resp) {
-            if (resp.hasOwnProperty(key)&&parseInt(key) >= 200 && parseInt(key) <= 299) {
+            if (resp.hasOwnProperty(key)&&parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
               respBasis = true;
               respState = key;
               break;
@@ -327,7 +325,7 @@
         /* 请求参数的遍历 */
         let result = {};
         let parameters = deepCopy(this.swaggerCategory[this.countTo].pathInfo.parameters);
-        let definitions = deepCopy(this.leftDropDownBoxContent.definitions);
+        let definitions = deepCopy(this.dropDownBoxContent.definitions);
         if (parameters === undefined) {
           this.childForm = [];
           return result;
@@ -377,7 +375,7 @@
             let array = {};
             this.childForm[key] = {};
             array['name'] = result && result[key] && result[key]['name'];
-            array['default'] = this.parameterValue[key];
+            array['default'] = result[key]['default']||this.parameterValue[key];
             array['required'] = result && result[key] && result[key]['required'];
             this.childForm[key] = deepCopy(array);
           }
@@ -403,15 +401,6 @@
         }
         return result;
       },
-      debugResponse() {/* 从请求中获取到的响应参数 */
-        return this.$store.state.debugRequest.debugResponse;
-      },
-      requestTime() {
-        return this.$store.state.debugRequest.requestTime;
-      },
-      authorizeObj() {
-        return this.$store.state.debugRequest.authorizeObj;
-      },
       isExistSecurity() {
         let is = this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.security;
         return !!is;
@@ -422,14 +411,11 @@
         this.iniData();
       },
       countTo: function () {
-        /*this.switchA = 0;
-        this.resultShow = false;*/
         this.iniData();
       }
     },
     methods: {
-      ...mapActions(["carriedSend"]),
-      ...mapMutations(["initialization", "send"]),
+      ...mapMutations(["SET_DEBUGREQUEST_REQUESTTIME","SET_DEBUGREQUEST_RESPONSE"]),
 
       iniData: function () {
         this.switchA = 0;
@@ -488,7 +474,7 @@
           return result;
         }
         let objName = itemsRef.match("#/definitions/(.*)") && itemsRef.match("#/definitions/(.*)")[1];
-        let definitions = deepCopy(this.leftDropDownBoxContent.definitions);
+        let definitions = deepCopy(this.dropDownBoxContent.definitions);
         if (objName === null || objName === undefined || definitions === undefined) {
           return result;
         }
@@ -524,7 +510,7 @@
       },
       JSONinit: function (refType) {/*  */
         let _this = this;
-        let definitionsArray = deepCopy(_this.leftDropDownBoxContent && _this.leftDropDownBoxContent.definitions);
+        let definitionsArray = deepCopy(_this.dropDownBoxContent && _this.dropDownBoxContent.definitions);
         let deftion = undefined;
         if (definitionsArray === undefined) {
           return deftion;
@@ -611,10 +597,10 @@
           headerParams = {'Content-Type': 'application/json;charset=UTF-8'},
           reqdata = "",
           bodyparams = "";
-//
-        if (typeof (_this.leftDropDownBoxContent.basePath) !== "undefined" && _this.leftDropDownBoxContent.basePath !== "") {
-          if (_this.leftDropDownBoxContent.basePath !== "/") {
-            url = _this.leftDropDownBoxContent.basePath + url;
+
+        if (typeof (_this.dropDownBoxContent.basePath) !== "undefined" && _this.dropDownBoxContent.basePath !== "") {
+          if (_this.dropDownBoxContent.basePath !== "/") {
+            url = _this.dropDownBoxContent.basePath + url;
           }
         }
         let isQuery = false;
@@ -646,9 +632,9 @@
         let jsonReqdata = reqdata;
         /* 判断调试请求中是否有Security字段 */
         if (this.isExistSecurity) {/* headerParams */
-          for (let key in this.authorizeObj) {
-            if(this.authorizeObj.hasOwnProperty(key)) {
-              headerParams[key] = this.authorizeObj[key];
+          for (let key in this.debugRequest_authorizeObj) {
+            if(this.debugRequest_authorizeObj.hasOwnProperty(key)) {
+              headerParams[key] = this.debugRequest_authorizeObj[key];
             }
           }
         }
@@ -659,46 +645,56 @@
             reqdata = param;
           }
         }
-        _this.$store.dispatch('carriedSend', {
-          url: process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? process.env.SWAGGER_URL + url : url,
+        let requestData={
+          url:url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
-          data: reqdata
-        }).then(function () {
+          data: reqdata,
+        }
+        let enterTime = new Date();
+        getDebugRequest(requestData).then((res)=>{
+          let outTime = new Date();
+          _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime)
+          _this.SET_DEBUGREQUEST_RESPONSE(res)
+          if(_this.debugRequest_debugResponse && _this.debugRequest_debugResponse.headers && _this.debugRequest_debugResponse.headers['content-type'].indexOf('image')===0){
+            _this.codeImgUrl="[object Blob]";
+          }
+          console.log("请求发送成功");
           _this.StitchingCurl(headerParams, jsonReqdata)
+        }).catch(function (err) {
+          console.log("请求发送失败" + err);
         })
 
       },
       StitchingCurl: function (headerParams, reqData) {
         let _this = this;
+        let response=_this.debugRequest_debugResponse
+        let response_header=response.headers
+        let response_config=response.config
         let headers = "";
         let contentType = `--header 'application/json;charset=UTF-8'`;
         let contentUrl = "";
         let curlAccept = "-H \"accept: */*\"";
         for (let key in headerParams) {
-          headers += `${key}: ${headerParams[key]}`;
+          if(headerParams[key]!==""){
+            headers += `${key}: ${headerParams[key]},`;
+          }
         }
         /* 生成 CURL 头部数据 */
         if (headers !== '' && headers !== undefined && headers.length > 0) {
+          headers=headers.substring(0,headers.length-1);
           headers = `--header '${headers}' `
         }
-        if (_this.debugResponse !== null) {
+        if (response !== null) {
           // response contentType
-          if (_this.debugResponse.headers !== null && _this.debugResponse.headers !== undefined
-            && _this.debugResponse.headers['content-type'] !== null && _this.debugResponse.headers['content-type'] !== undefined) {
-            contentType = `--header 'Content-Type: ${_this.debugResponse.headers['content-type']}'`;
-            curlAccept = `-H 'Accept: ${_this.debugResponse.headers['content-type']}'`;
+          if (response_header !== null && response_header !== undefined
+            && response_header['content-type'] !== null && response_header['content-type'] !== undefined) {
+            contentType = `--header 'Content-Type: ${response_header['content-type']}'`;
+            curlAccept = `-H 'Accept: ${response_header['content-type']}'`;
           }
           // url
-          if (_this.debugResponse.config !== null && _this.debugResponse.config.url !== undefined) {
-            //获取当前网址，如： http://localhost:8083/battcn/index.html
-            const curWwwPath = window.document.location.href;
-            //获取主机地址之后的目录，如： battcn/index.html
-            const pathName = window.document.location.pathname;
-            const pos = curWwwPath.indexOf(pathName);
-            //获取主机地址，如： http://localhost:8083
-            const localhostPath = curWwwPath.substring(0, pos);
-            contentUrl = process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? `'${_this.debugResponse.config.url}'` : `'${localhostPath + process.env.SWAGGER_URL + _this.debugResponse.config.url}'`;
+          if (response_config !== null && response_config.url !== undefined) {
+            contentUrl = process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? `'${response_config.url}'` : `'${SWAGGER_URL + response_config.url}'`;
           }
         }
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
@@ -708,29 +704,28 @@
           let curlData = ` -d  '${reqData ? formatterJson(reqData) : ""}' `;
           _this.curlMode = `curl -X  ${_this.swaggerCategory[this.countTo].name.toUpperCase()} ${contentType} ${curlAccept} ${headers} ${reqData === '{}' ? "" : curlData} ${contentUrl}`;
         }
-        if (this.debugResponse !== null && this.debugResponse !== undefined) {
+        if (response !== null && response !== undefined) {
           // 正确响应
-          if (this.debugResponse.status !== null && this.debugResponse.status >= 200 && this.debugResponse.status <= 299) {
+          if (response.status !== null && response.status >= ERR_OK.min && response.status <= ERR_OK.max) {
             this.isJsonObject = false;
             try {
-              this.jsonObjectTo = (typeof this.debugResponse.data === 'object') ? this.debugResponse.data : JSON.parse(this.debugResponse.data);
+              this.jsonObjectTo = (typeof response.data === 'object') ? response.data : JSON.parse(response.data);
             } catch (e) {
               this.isJsonObject = false;
             }
-            this.jsonObjectTo = this.debugResponse.data;
+            this.jsonObjectTo = response.data;
             if (typeof this.jsonObjectTo === 'object') {
               this.isJsonObject = true;
             }
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
-            console.log(JSON.stringify(this.jsonObjectTo))
             this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           } else {
             try {
-              this.isJsonObject = (typeof this.debugResponse.response.data === 'object' ? this.debugResponse.response.data : JSON.parse(this.debugResponse.response.data));
+              this.isJsonObject = (typeof response.response.data === 'object' ? response.response.data : JSON.parse(response.response.data));
             } catch (e) {
               this.isJsonObject = false;
             }
-            this.jsonObjectTo = this.debugResponse.response.data;
+            this.jsonObjectTo = response.response.data;
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
             this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           }
@@ -738,17 +733,10 @@
         this.resultShow = true;
         /* 显示结果 */
       },
-      failureJump: function () {/* 请求失败时跳转至登录路由 */
-        this.$router.push('swagger-login.html');
-        console.log("请进行身份验证后使用！")
-      }
+
     },
-    props: ['swaggerCategory', 'selected', 'count', 'countTo', 'bg', 'leftDropDownBoxContent'],
+    props: ['swaggerCategory', 'selected', 'count', 'countTo'],
     components: {FormFold, SubmitForm, JsonView},
-    created() {
-      let methods = this.failureJump;
-      this.initialization(methods);
-    }
   }
 </script>
 <style>

@@ -1,5 +1,5 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <div class="jsonView" v-bind:style="{marginLeft:indentation*5+'px'}">
+  <div class="jsonView" :class="{'line':isSet}" v-bind:style="{marginLeft:indentation*5+'px'}">
     <div v-if="isSet">
       <li class="jsonViewLi" @click="toggleStatus">
         <span class="font-basic">
@@ -50,6 +50,14 @@
   }
 </script>
 <style>
+  .line:before{
+    position: absolute;
+    border-left: 1px dotted #ccc;
+    height: 100%;
+    content: "";
+    margin-top: 20px;
+    left: 7px;
+  }
   .quantity {
     color: grey;
     font-size: 10pt;
@@ -67,8 +75,8 @@
     display: inline-block;
   }
 
-  .jsonView {
-    text-align: left;    margin-top: 6px;
+  .jsonView {overflow: hidden;
+    text-align: left;    margin-top: 6px;position: relative;
   }
 
   .test-bottom-border {

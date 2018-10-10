@@ -15,30 +15,31 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState, mapMutations} from 'vuex'
+  import {mapGetters} from 'vuex'
+  import {login} from './../api/accounts'
   export default {
     name: 'login',
     data() {
-      return {username: "请填写用户名", password: "请填写密码"}
+      return {username: "", password: ""}
     },
     computed: {
-      ...mapState({isSecurity: state => state.account.isSecurity})
+      ...mapGetters(['account_isSecurity']),
     },
     methods: {
-      ...mapMutations(['login']),
       loginOperat(){/* 登录操作 */
         let obj = {'swagger-username': this.username, 'swagger-password': this.password};
         let _this = this;
-        this.$store.dispatch('carriedLogin', obj).then(function () {
+        login(obj).then((res)=>{
           _this.$router.push('swagger-ui.html');
-
+        }).catch(function (err) {
+          console.log("账号验证失败" + err);
         });
       }
     },
     created(){
       let _this = this;
       _this.$store.dispatch('carriedIsVerify').then(function () {
-        let is = _this.isSecurity && (typeof _this.isSecurity === "string") ? JSON.parse(_this.isSecurity) : _this.isSecurity;
+        let is = _this.account_isSecurity && (typeof _this.account_isSecurity === "string") ? JSON.parse(_this.account_isSecurity) : _this.account_isSecurity;
         if (!is) {
           console.log("未设置身份验证,跳转至数据页面....");
           _this.$router.push('swagger-ui.html');
@@ -49,7 +50,7 @@
 </script>
 <style>
   .login {
-    background: url("../assets/bg.jpg") no-repeat;
+    background: url("../common/image/bg.jpg") no-repeat;
     background-size: cover;
     position: fixed;
     top: 0;

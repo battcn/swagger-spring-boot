@@ -2,7 +2,7 @@
   <div class="status-code">
     <ul class="code-list">
       <li class="list-head"><span style="padding-right: 6px;">状态码</span><span>说明</span><span>schema</span></li>
-      <li><span>200</span><span>http响应成功</span><span></span></li>
+      <li><span>{{ERR_OK.min}} ~ {{Err_OK.max}}</span><span>http响应成功</span><span></span></li>
       <li><span>400</span><span>Bad Request 请求出现语法错误,一般是请求参数不对</span><span></span></li>
       <li><span>404</span><span>Not Found 无法找到指定位置的资源</span><span></span></li>
       <li><span>401</span><span>Unauthorized 访问被拒绝</span><span></span></li>
@@ -11,6 +11,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {ERR_OK} from './../api/config'
   export default {
     name: "app"
   }
