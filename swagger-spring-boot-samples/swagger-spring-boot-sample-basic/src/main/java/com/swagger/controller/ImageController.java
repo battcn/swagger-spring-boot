@@ -3,12 +3,14 @@ package com.swagger.controller;
 import com.swagger.utils.NewVerifyCodeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -22,7 +24,7 @@ public class ImageController {
 
 
     @GetMapping
-    @ApiOperation(value = "验证码（NONE）")
+    @ApiOperation(value = "验证码（NONE）",produces = MediaType.IMAGE_JPEG_VALUE)
     public void genCaptcha(HttpServletResponse response) throws IOException {
         response.setContentType("image/jpeg");
         response.setHeader("Pragma", "No-cache");
