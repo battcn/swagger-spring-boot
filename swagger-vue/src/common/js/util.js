@@ -1,5 +1,6 @@
 /* 对象拷贝 */
 const  syntaxHighlight=function (json) {
+  if(json===undefined){return undefined;}
   json = json.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
   return json.replace( /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function ( match ) {
     var cls = 'number';
@@ -81,6 +82,7 @@ const basicTypeInit = function (type) {
   }
 };
 const formatterJson=function (text_value) {/*JSON数据格式化(将其以 上下展开形式 返回) */
+  if(text_value===undefined){return undefined;}
   let res = "";
   for (let i = 0, j = 0, k = 0, ii, ele; i < text_value.length; i++) {//k:缩进，j:""个数
     ele = text_value.charAt(i);

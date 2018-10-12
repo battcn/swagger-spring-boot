@@ -3,12 +3,12 @@
     <div class="swagger-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
       <ul class="nav-list">
         <select class="form-control" v-model.lazy="selected">
-          <option v-for="(item,index) in swaggerLeftHead" :value="index">
+          <option v-for="(item,index) in dropDown_Data" :value="index">
             <!--{{item.serviceInstances && item.serviceInstances[0] && item.serviceInstances[0].serviceId}}-->
             {{item.url || item.location}}
           </option>
         </select>
-        <li v-for="(item,index) in leftDropDownBoxContent.tags" @click="count=index"
+        <li v-for="(item,index) in dropDownBoxContent.tags" @click="count=index"
             v-bind:class="[count==index ? 'active' : '']">
           <span class="navList-name">{{item.name}}</span>
           <span class="navList-description">{{item.description}}</span>
@@ -38,13 +38,12 @@
         </transition>
       </div>
       <ul>
-        <li v-for="(value,key) in tabData" @click="controlTab(key,value)" :class="{active:showKey==key}">
+        <li v-for="(value,key) in tabData_infoData" @click="controlTab(key,value)" :class="{active:tabData_show==key}">
           <span>{{key}}</span><a href="javascript:">X</a></li>
       </ul>
     </div>
-    <introduction v-show="countTo==-1" :leftDropDownBoxContent="leftDropDownBoxContent"></introduction>
+    <introduction v-show="countTo==-1"></introduction>
     <interfaceMain v-show="countTo!==-1"
-                   v-bind:leftDropDownBoxContent="leftDropDownBoxContent"
                     v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
                    v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
     <authorizations></authorizations>
@@ -78,15 +77,32 @@
         /* 初始化 */
         this.UPDATE_DROPDOWN_DROPDOWNCOUNT(newSelected)
         this._getDropDown()
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.swaggerCategory[this.countTo].pathName;
+        this.UPDATE_TABDATA_UPDATETABSHOW(key);
+      },
+      count:function () {
+        if(this.swaggerCategory&&this.swaggerCategory[this.countTo]===undefined){
+          this.countTo= -1;
+          this.UPDATE_TABDATA_UPDATETABSHOW("");
+          return ;
+        }
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" +this.swaggerCategory[this.countTo].pathName;
+        this.UPDATE_TABDATA_UPDATETABSHOW(key);
+      },
+      countTo(){
+        if(this.countTo===-1){
+          this.UPDATE_TABDATA_UPDATETABSHOW("");
+          return ;
+        }
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" +this.swaggerCategory[this.countTo].pathName;
+        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       }
     },
     methods: {
       _getDropDown:function () {
         let _this=this;
         getDropDown().then((res)=>{
-          console.log(res)
           _this.UPDATE_DROPDOWN_DROPDOWNDATA(res.data)
-          console.log(res.data[_this.dropDown_count])
           if(res.data&&res.data[_this.dropDown_count||0]&&res.data[_this.dropDown_count||0]['location']){
             _this._getBoxContent(res.data[_this.dropDown_count].location)
           }
@@ -109,16 +125,16 @@
         console.log("请进行身份验证后使用！")
       },
       closeTab: function () {/* 删除当前 */
-        if (this.showKey && this.tabData && this.tabData[this.showKey]) {
-          this.DELETE_TABDATA_DELETETAB(this.showKey);
+        if (this.tabData_show && this.tabData_infoData && this.tabData_infoData[this.tabData_show]) {
+          this.DELETE_TABDATA_DELETETAB(this.tabData_show);
           this.managementShow = false;
           this.countTo = -1;
         }
       },
       closeOthersTab: function () {/* 删除其他 */
-        if (this.showKey && this.tabData) {
-          for (let key in this.tabData) {
-            if (key !== this.showKey) {
+        if (this.tabData_show && this.tabData_infoData) {
+          for (let key in this.tabData_infoData) {
+            if (key !== this.tabData_show) {
               this.DELETE_TABDATA_DELETETAB(key);
             }
           }
@@ -126,7 +142,7 @@
         }
       },
       closeAllTab: function () {
-        if (this.tabData !== {}) {
+        if (this.tabData_infoData !== {}) {
           this.CLEAR_TABDATA_CLEARTAB();
         }
         this.countTo = -1;
@@ -153,29 +169,23 @@
       changeCountTo: function (index) {
         this.countTo = index;
       },
-      ...mapMutations(['UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB','UPDATE_DROPDOWN_DROPDOWNDATA','UPDATE_BOXCONTENT_BOXCONTENT']),
+      ...mapMutations(['UPDATE_TABDATA_UPDATETABSHOW','UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB','UPDATE_DROPDOWN_DROPDOWNDATA','UPDATE_BOXCONTENT_BOXCONTENT']),
     },
     components: {interfaceMain, introduction, authorizations},
     computed: {
-      ...mapGetters({
-        tabData:'tabData_infoData',
-        showKey:'tabData_show',
-        swaggerLeftHead:'dropDown_Data',
-        leftDropDownBoxContent:'dropDownBoxContent',
-        dropDown_count:'dropDown_count'
-      }),
+      ...mapGetters(['tabData_infoData', 'tabData_show', 'dropDown_Data', 'dropDownBoxContent', 'dropDown_count']),
       swaggerCategory() {
         let current = [];
         this.quantity = {};
-        for (let i in this.leftDropDownBoxContent.paths) {
-          for (let n in this.leftDropDownBoxContent.paths[i]) {
-            let count = this.leftDropDownBoxContent.paths[i][n].tags[0];
+        for (let i in this.dropDownBoxContent.paths) {
+          for (let n in this.dropDownBoxContent.paths[i]) {
+            let count = this.dropDownBoxContent.paths[i][n].tags[0];
             /* 判断当前数据的name是否与当前激活的接口tags一致:后台接口数据顺序与前台显示不一致，需要通过name判断
              * 对name一致的进行保存
              * */
             this.quantity[count] ? this.$set(this.quantity, count, this.quantity[count] + 1) : this.$set(this.quantity, count, 1);
-            if (count === this.leftDropDownBoxContent.tags[this.count].name) {
-              current.push({pathName: i, name: n, pathInfo: this.leftDropDownBoxContent.paths[i][n]})
+            if (count === this.dropDownBoxContent.tags[this.count].name) {
+              current.push({pathName: i, name: n, pathInfo: this.dropDownBoxContent.paths[i][n]})
             }
           }
         }
@@ -184,8 +194,6 @@
     },
     created(){
       this._getDropDown()
-//      let leftDropContent = this.$store.state.leftDropDownBoxContent && this.$store.state.leftDropDownBoxContent.data;
-//      let defi = leftDropContent && leftDropContent.securityDefinitions && leftDropContent.securityDefinitions['X-Authorization'];
     }
   }
 </script>

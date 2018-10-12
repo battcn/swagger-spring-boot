@@ -29,15 +29,16 @@
 </template>
 <script type="text/ecmascript-6">
   import {deepCopy} from  './../common/js/util'
+  import {mapGetters} from 'vuex'
   export default {
     name: 'introduction',
     data(){
       return {}
     },
-    props: ['leftDropDownBoxContent'],
     computed: {
+      ...mapGetters(['dropDownBoxContent']),
       dataAll(){
-        return deepCopy(this.leftDropDownBoxContent)
+        return deepCopy(this.dropDownBoxContent)
       },
       hostInfo(){/* host字段 */
         return this.dataAll && this.dataAll.host;

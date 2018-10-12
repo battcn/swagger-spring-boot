@@ -23,7 +23,7 @@
         </li>
         <li v-for="(item,key) in copyChildForm">
           <input style="margin-top:10px;" class="parameter-checkbox" type="checkbox"
-                 :disabled="childForm[key].required||linkageSection==item.name" ref="phoneNum"
+                 :disabled="childForm[key].required||linkageSection==item.name" ref="checkboxs"
                  :checked="item.required||selectAll||linkageSection==item.name"/>
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
@@ -31,8 +31,8 @@
                         v-if="childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData'"
                         style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
                         type="text" ></textarea>
-            <div class="parameter-file" v-else-if="(typeof copyChildForm[key].default)=='object'&&copyChildForm[key].default.in==='formData'&&copyChildForm[key].default.type==='file'">
-              <input type="file" ref="fileInput"/>选择文件
+            <div class="parameter-file" v-else-if="(typeof childForm[key].default)=='object'&&childForm[key].default.in==='formData'&&childForm[key].default.type==='file'">
+              <input type="file" @change="fileChange($event)" ref="fileInput"/>选择文件  {{fileName}}
             </div>
             <input v-else-if="linkageSection==item.name"
                    v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
@@ -52,12 +52,11 @@
   export default {
     name: "submit-form",
     data() {
-      return {bg:bg,keyValue: "", selectAll: false, s: false,file:""}
+      return {bg:bg,keyValue: "", selectAll: false, s: false,fileName:""}
     },
     props: ['childForm',  'swaggerCategory','selected', 'count', 'countTo', 'InterfaceRequest', 'parameterValue'],
     computed: {
       ...mapGetters({
-        leftDropDownBoxContent:'dropDownBoxContent',
         infoData:'tabData_infoData'
       }),
       copyChildForm(){ /* 数据字段  */
@@ -107,7 +106,7 @@
       }
     },
     methods: {
-      ...mapMutations(['UPDATE_TABDATA_INFODATAITEM','SELETE_TABDATA_INFODATAITEM','INSERT_TABDATA_ADDTAB', 'UPDATE_TABDATA_UPDATETABSHOW','UPDATE_TABDATA_INFODATA']),
+      ...mapMutations(['UPDATE_TABDATA_INFODATAITEM','SELETE_TABDATA_INFODATAITEM','INSERT_TABDATA_ADDTAB','UPDATE_TABDATA_INFODATA']),
       saveTab(){
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
@@ -141,8 +140,8 @@
             return false;
           }
       }
-        for (let key in this.$refs.phoneNum) {
-          data[key].required = this.$refs.phoneNum[key].checked;
+        for (let key in this.$refs.checkboxs) {
+          data[key].required = this.$refs.checkboxs[key].checked;
         }
         /* 判断是否有对应的文件上传存在 */
         let param = undefined;
@@ -162,23 +161,25 @@
         this.copyChildForm.splice(key, 1);
         this.selectAll = !this.selectAll;
         this.selectAll = !this.selectAll;
+      },
+      fileChange($event){
+        let fileName = this.$refs.fileInput&&this.$refs.fileInput[0]&&this.$refs.fileInput[0].files&&this.$refs.fileInput[0].files[0]&&this.$refs.fileInput[0].files[0].name;
+        if(fileName!==undefined&&fileName!==""){
+          this.fileName=fileName;
+          return true;
+        }
+        this.fileName="";
       }
     },
     watch: {
       selected(){
         this.initInfo();
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
       count(){
         this.initInfo();
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
       countTo(){
         this.initInfo();
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
-        this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
       keyValue(){
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;

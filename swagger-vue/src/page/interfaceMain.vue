@@ -132,7 +132,7 @@
             <a v-if="debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['content-type']!=='image/jpeg'"  href="javascript:" class="fontColor copyJson" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
             <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" >
               <pre v-if="debugRequest_debugResponse && debugRequest_debugResponse.headers && debugRequest_debugResponse.headers['content-type']!=='image/jpeg'" style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
-              <p v-else>{{codeImgUrl}}</p>
+              <p v-else v-html="codeImgUrl"></p>
             </li>
           </div>
           <div v-show="debugging=='cookies'">
@@ -195,7 +195,8 @@
         parameterValue: {},
         responseCodePre: [],
         responseObjectName: "",
-        codeImgUrl:""
+        codeImgUrl:"",
+        isImgResponse:false
       }
     },
     computed: {
@@ -239,7 +240,8 @@
         return RequiredAr;
       },
       InterfaceResponse: function () {/* 响应参数 */
-        let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
+        let pathInfo=deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo);
+        let resp =  pathInfo&&pathInfo.responses;
         let respBasis = false;
         let respState;
         if (resp === undefined) {
@@ -290,6 +292,15 @@
               return "无";
             }
           } else {
+            /* 判断其响应是否为图片 */
+            if(pathInfo.produces){
+              for(let key in pathInfo.produces){
+                if(pathInfo.produces[key].indexOf("image")=== 0){
+                  this.isImgResponse=true;
+                  return pathInfo.produces[key]+"      [object Blob]";
+                }
+              }
+            }
             this.jsonValue=JSON.stringify(this.jsonObject);
             return "无";
           }
@@ -416,7 +427,6 @@
     },
     methods: {
       ...mapMutations(["SET_DEBUGREQUEST_REQUESTTIME","SET_DEBUGREQUEST_RESPONSE"]),
-
       iniData: function () {
         this.switchA = 0;
         this.resultShow = false;
@@ -430,6 +440,7 @@
         this.parameterValue = {};
         this.responseCodePre = [];
         this.responseObjectName = "";
+        this.isImgResponse=false;
       },
       responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
         if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
@@ -491,14 +502,20 @@
                     let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
                     if (properties[k].type === 'array') {
                       result.properties[k].properties = [];
-                      let adds = this.formatRequest(Ref);
+                      let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
+                      let adds={"properties":{[Ref2]:{type:"object",title:"TreeNode"}}};
+                      if(itemsRef!==Ref){/* 树形结构判断。包含的属性为自身类 */
+                        adds = this.formatRequest(Ref);
+                      }
                       adds.name === undefined || adds.name === null ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
                       result.properties[k].properties.push(adds);
                       continue;
                     }
-                    //  result.properties[k].properties={};
-                    // result.properties[k].properties[Ref.match("#/definitions/(.*)")[1].toLowerCase()]=this.formatRequest(Ref);
-                    result.properties[k] = this.formatRequest(Ref);
+                    if(itemsRef!==Ref){/* 树形结构判断。包含的属性为自身类 */
+                      result.properties[k] = this.formatRequest(Ref);
+                    }else{
+                      result.properties[k] ={[Ref]:{type:"object",title:"TreeNode"}}
+                    }
                   } else {
                     result.properties[k] = properties[k];
                   }
@@ -539,6 +556,10 @@
               if ((typeof ref === "string") && regex.test(ref)) {
                 let a = ref.match("#/definitions/(.*)");
                 let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
+                if(refType===refType2){
+                  deftion[key]={};
+                  continue;
+                }
                 deftion[key] = this.JSONinit(refType2);
                 continue;
               }
@@ -548,9 +569,12 @@
               let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
               let regex = new RegExp("#/definitions/(.*)$", "ig");
               if ((typeof ref === "string") && regex.test(ref)) {
-                let a = ref.match("#/definitions/(.*)");
                 let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
                 deftion[key] = [];
+                if(refType===refType2){
+                  deftion[key].push({[refType2]:{}});
+                  continue;
+                }
                 deftion[key].push(this.JSONinit(refType2));
                 continue;
               }
@@ -639,12 +663,22 @@
           }
         }
         /*  判断是否为文件类型上传 */
-        for (let key in reqdata) {
-          if (reqdata.hasOwnProperty(key)&&param !== undefined && reqdata[key] && reqdata[key]['in'] && reqdata[key]['in'] === 'formData' && reqdata[key]['type'] && reqdata[key]['type'] === 'file') {
-            headerParams['Content'] = 'multipart/form-data; charset=utf-8';
-            reqdata = param;
+        if(typeof reqdata ==="object"){
+          for (let key in reqdata) {
+            if(typeof  reqdata[key] === 'string'){
+              try {
+                reqdata[key]= JSON.parse(reqdata[key])
+              }catch(err){
+                reqdata[key]=reqdata[key];
+              }
+            }
+            if (reqdata.hasOwnProperty(key)&&param !== undefined && reqdata[key] && reqdata[key]['in'] && reqdata[key]['in'] === 'formData' && reqdata[key]['type'] && reqdata[key]['type'] === 'file') {
+              headerParams['Content'] = 'multipart/form-data; charset=utf-8';
+              reqdata = param;
+            }
           }
         }
+
         let requestData={
           url:url,
           headerParams: headerParams,
@@ -652,14 +686,38 @@
           data: reqdata,
         }
         let enterTime = new Date();
+        if(_this.isImgResponse){
+          _this.codeImgUrl=`<span>请求中。。。。${SWAGGER_URL+url}</span>`;
+          _this.codeImgUrl=`<img src=${SWAGGER_URL+url+'?'+new Date().getTime()} />`;
+          let outTime = new Date();
+          console.log("请求发送成功  "+SWAGGER_URL+url);
+          _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime)
+         /* 伪造数据响应头 */
+          let contentType="";
+          let pathInfo=deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo)
+          for(let key in pathInfo.produces){
+            if(pathInfo.produces[key].indexOf("image")=== 0){
+              contentType=pathInfo.produces[key];
+            }
+          }
+          let res={
+            data:null,
+            status:200,
+            headers:{"content-type":contentType},
+            config:{"url":SWAGGER_URL+url}
+          };
+          _this.SET_DEBUGREQUEST_RESPONSE(res)
+          _this.StitchingCurl(headerParams, jsonReqdata)
+          return true;
+        }
         getDebugRequest(requestData).then((res)=>{
           let outTime = new Date();
           _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime)
           _this.SET_DEBUGREQUEST_RESPONSE(res)
           if(_this.debugRequest_debugResponse && _this.debugRequest_debugResponse.headers && _this.debugRequest_debugResponse.headers['content-type'].indexOf('image')===0){
-            _this.codeImgUrl="[object Blob]";
+            _this.codeImgUrl="<span>[object Blob]</span>";
           }
-          console.log("请求发送成功");
+          console.log("请求发送成功  "+(_this.debugRequest_debugResponse&&_this.debugRequest_debugResponse.config&&_this.debugRequest_debugResponse.config.url));
           _this.StitchingCurl(headerParams, jsonReqdata)
         }).catch(function (err) {
           console.log("请求发送失败" + err);
@@ -693,7 +751,7 @@
             curlAccept = `-H 'Accept: ${response_header['content-type']}'`;
           }
           // url
-          if (response_config !== null && response_config.url !== undefined) {
+          if (response_config&& response_config.url !== undefined) {
             contentUrl = process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0 ? `'${response_config.url}'` : `'${SWAGGER_URL + response_config.url}'`;
           }
         }
@@ -725,7 +783,7 @@
             } catch (e) {
               this.isJsonObject = false;
             }
-            this.jsonObjectTo = response.response.data;
+            this.jsonObjectTo = response&&response.response&&response.response.data;
             this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
             this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           }
@@ -733,7 +791,11 @@
         this.resultShow = true;
         /* 显示结果 */
       },
-
+      Timing:function (enterTime) {
+        let outTime = new Date();
+        console.log(document.getElementById("codeimgUrl"))
+//        _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime)
+      }
     },
     props: ['swaggerCategory', 'selected', 'count', 'countTo'],
     components: {FormFold, SubmitForm, JsonView},
@@ -769,8 +831,9 @@
   .ResponseParameter > ul li > span {
     width: 30%;
     float: left;
-    padding: 8px 4px;
+    padding: 8px 4px 999px;
     border-right: 1px solid #ddd;
+    margin-bottom: -999px;
   }
 
   .ResponseParameter .head span {
