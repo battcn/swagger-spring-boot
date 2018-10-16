@@ -16,7 +16,7 @@ public class TreeNode {
     private Integer id;
     @ApiModelProperty("节点名字")
     private String name;
-    private List<TreeNode> treeNodes;
+    private List<TreeNode> testTreeNodes;
 
     public Integer getId() {
         return id;
@@ -34,11 +34,11 @@ public class TreeNode {
         this.name = name;
     }
 
-    public List<TreeNode> getTreeNodes() {
-        return treeNodes;
+    public List<TreeNode> getTestTreeNodes() {
+        return testTreeNodes;
     }
 
-    public void setTreeNodes(List<TreeNode> treeNodes) {
-        this.treeNodes = treeNodes;
+    public void setTestTreeNodes(List<TreeNode> testTreeNodes) {
+        this.testTreeNodes = testTreeNodes;
     }
 }
