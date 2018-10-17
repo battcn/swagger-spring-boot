@@ -1,5 +1,6 @@
 package com.swagger.controller;
 
+import com.swagger.entity.PojoA;
 import com.swagger.entity.TreeNode;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,5 +24,9 @@ public class TreeController {
         return new TreeNode();
     }
 
+    @GetMapping("/test2")
+    public PojoA test2() {
+        return new PojoA();
+    }
 
 }
