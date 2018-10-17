@@ -265,8 +265,8 @@
               let deftion = undefined;
               let definition = {};
               let Response = {};
-              Response[refType] = this.formatRequest(ref);
-              deftion = this.JSONinit(refType);
+              Response[refType] = this.formatRequest(ref,[ref]);
+              deftion = this.JSONinit(refType,[refType]);
               if (schema["type"] && schema["type"] === "array") {
                 let arrs={};
                 arrs['properties'] = Response;
@@ -297,7 +297,7 @@
               for(let key in pathInfo.produces){
                 if(pathInfo.produces[key].indexOf("image")=== 0){
                   this.isImgResponse=true;
-                  return pathInfo.produces[key]+"      [object Blob]";
+                  return pathInfo.produces[key];
                 }
               }
             }
@@ -479,7 +479,8 @@
         }
         return obj;
       },
-      formatRequest: function (itemsRef) {/* 传入#/definitions/User，进行格式化 */
+      formatRequest: function (itemsRef,refType) {/* 传入#/definitions/User，进行格式化 */
+        refType===undefined?refType=[]:"";
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
           return result;
@@ -504,17 +505,19 @@
                       result.properties[k].properties = [];
                       let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
                       let adds={"properties":{[Ref2]:{type:"object",title:"TreeNode"}}};
-                      if(itemsRef!==Ref){/* 树形结构判断。包含的属性为自身类 */
-                        adds = this.formatRequest(Ref);
+                      if(refType.indexOf(Ref) <0){/* 树形结构判断。包含的属性为自身类 */
+                        refType.push(Ref);
+                        adds = this.formatRequest(Ref,refType);
                       }
                       adds.name === undefined || adds.name === null ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
-                      result.properties[k].properties.push(adds);
+                      result.properties[k].properties={};
                       continue;
                     }
-                    if(itemsRef!==Ref){/* 树形结构判断。包含的属性为自身类 */
-                      result.properties[k] = this.formatRequest(Ref);
+                    if(refType.indexOf(Ref)<0){/* 树形结构判断。包含的属性为自身类 */
+                      refType.push(Ref);
+                      result.properties[k] = this.formatRequest(Ref,refType);
                     }else{
-                      result.properties[k] ={[Ref]:{type:"object",title:"TreeNode"}}
+                      result.properties[k] ={}
                     }
                   } else {
                     result.properties[k] = properties[k];
@@ -525,7 +528,8 @@
         }
         return result;
       },
-      JSONinit: function (refType) {/*  */
+      JSONinit: function (refType,topRefType) {/*  */
+        topRefType===undefined?topRefType=[]:"";
         let _this = this;
         let definitionsArray = deepCopy(_this.dropDownBoxContent && _this.dropDownBoxContent.definitions);
         let deftion = undefined;
@@ -556,11 +560,12 @@
               if ((typeof ref === "string") && regex.test(ref)) {
                 let a = ref.match("#/definitions/(.*)");
                 let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
-                if(refType===refType2){
+                if(topRefType.indexOf(refType2) > 0){
                   deftion[key]={};
                   continue;
                 }
-                deftion[key] = this.JSONinit(refType2);
+                topRefType.push(refType2);
+                deftion[key] = this.JSONinit(refType2,topRefType);
                 continue;
               }
             }
@@ -571,11 +576,12 @@
               if ((typeof ref === "string") && regex.test(ref)) {
                 let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
                 deftion[key] = [];
-                if(refType===refType2){
-                  deftion[key].push({[refType2]:{}});
+                if(topRefType.indexOf(refType2)>0){
+                  deftion[key]={};
                   continue;
                 }
-                deftion[key].push(this.JSONinit(refType2));
+                topRefType.push(refType2);
+                deftion[key].push(this.JSONinit(refType2,topRefType));
                 continue;
               }
             }
@@ -791,11 +797,6 @@
         this.resultShow = true;
         /* 显示结果 */
       },
-      Timing:function (enterTime) {
-        let outTime = new Date();
-        console.log(document.getElementById("codeimgUrl"))
-//        _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime)
-      }
     },
     props: ['swaggerCategory', 'selected', 'count', 'countTo'],
     components: {FormFold, SubmitForm, JsonView},
@@ -976,7 +977,7 @@
     min-height: 210px;
     font-size: 16px;
     text-align: left;
-    padding: 40px 15px 15px;
+    padding: 17px 15px 15px;
   }
 
   .debugging-header > ul {

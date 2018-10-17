@@ -36,7 +36,7 @@
   li {
     list-style: none;
   }
-  .key{    padding-right: 6px;line-height: 30px;  letter-spacing: 1px;}
+  .key{    padding-right: 6px;line-height: 21px;  letter-spacing: 1px;}
   .string{color: green;}
   .number{color: #ee422e;}
 
