@@ -1,5 +1,6 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="" xmlns: xmlns:>
   <div style="padding-top:5px;">
+    <login v-if="lock"></login>
     <div class="swagger-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
       <ul class="nav-list">
         <select class="form-control" v-model.lazy="selected">
@@ -44,23 +45,26 @@
     </div>
     <introduction v-show="countTo==-1"></introduction>
     <interfaceMain v-show="countTo!==-1"
-                    v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
+                   v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
                    v-bind:count="count" v-bind:countTo="countTo"></interfaceMain>
     <authorizations></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
-  import {ERR_OK,bg} from './../api/config'
-  import {getDropDown,getBoxContent} from './../api/getData'
+  import {ERR_OK, bg} from './../api/config'
+  import {getDropDown, getBoxContent} from './../api/getData'
+  import {isVerify} from './../api/accounts'
+  import login from './login.vue'
   import introduction from './introduction.vue'
   import interfaceMain from './interfaceMain.vue'
-  import authorizations from  './authorizations.vue'
+  import authorizations from './authorizations.vue'
+
   export default {
     name: 'app',
     data() {
       return {
-        bg:bg,
+        bg: bg,
         selected: 0,
         count: 0,
         countTo: -1,
@@ -71,6 +75,9 @@
       }
     },
     watch: {
+      lock: function () {
+        this._getDropDown()
+      },
       selected: function (newSelected) {
         this.count = 0;
         this.countTo = 0;
@@ -80,44 +87,59 @@
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.swaggerCategory[this.countTo].pathName;
         this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
-      count:function () {
-        if(this.swaggerCategory&&this.swaggerCategory[this.countTo]===undefined){
-          this.countTo= -1;
+      count: function () {
+        if (this.swaggerCategory && this.swaggerCategory[this.countTo] === undefined) {
+          this.countTo = -1;
           this.UPDATE_TABDATA_UPDATETABSHOW("");
-          return ;
+          return;
         }
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" +this.swaggerCategory[this.countTo].pathName;
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.swaggerCategory[this.countTo].pathName;
         this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
-      countTo(){
-        if(this.countTo===-1){
+      countTo() {
+        if (this.countTo === -1) {
           this.UPDATE_TABDATA_UPDATETABSHOW("");
-          return ;
+          return;
         }
-        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" +this.swaggerCategory[this.countTo].pathName;
+        let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.swaggerCategory[this.countTo].pathName;
         this.UPDATE_TABDATA_UPDATETABSHOW(key);
       }
     },
     methods: {
-      _getDropDown:function () {
-        let _this=this;
-        getDropDown().then((res)=>{
+      isVerify: function () {
+        let _this = this;
+        isVerify().then((res) => {
+          let security = res.data && res.data.security !== undefined;
+          try {
+            security = (security ? (typeof res.data.security === "string" ? JSON.parse(res.data.security) : res.data.security) : false);
+          } catch (err) {
+            console.log("验证开关设置错误" + err);
+            security = false;
+          }
+          _this.DECIDE_ACCOUNT_ISVERIFY(security);
+        }).catch((err) => {
+          console.log("请求失败" + err);
+        })
+      },
+      _getDropDown: function () {
+        let _this = this;
+        getDropDown().then((res) => {
           _this.UPDATE_DROPDOWN_DROPDOWNDATA(res.data)
-          if(res.data&&res.data[_this.dropDown_count||0]&&res.data[_this.dropDown_count||0]['location']){
+          if (res.data && res.data[_this.dropDown_count || 0] && res.data[_this.dropDown_count || 0]['location']) {
             _this._getBoxContent(res.data[_this.dropDown_count].location)
           }
-        }).catch((err)=>{
+        }).catch((err) => {
           console.info("身份验证失败啦...." + err);
-          _this.UPDATE_DROPDOWN_DROPDOWNDATA('请求失败'+err)
+          _this.UPDATE_DROPDOWN_DROPDOWNDATA('请求失败' + err)
           _this.failureJump();
         })
       },
-      _getBoxContent:function (url) {
-        let _this=this;
-        getBoxContent(url).then((res)=>{
+      _getBoxContent: function (url) {
+        let _this = this;
+        getBoxContent(url).then((res) => {
           _this.UPDATE_BOXCONTENT_BOXCONTENT(res.data)
-        }).catch((err)=>{
-          _this.UPDATE_BOXCONTENT_BOXCONTENT('请求失败'+err);
+        }).catch((err) => {
+          _this.UPDATE_BOXCONTENT_BOXCONTENT('请求失败' + err);
         })
       },
       failureJump: function () {/* 请求失败时跳转至登录路由 */
@@ -169,11 +191,14 @@
       changeCountTo: function (index) {
         this.countTo = index;
       },
-      ...mapMutations(['UPDATE_TABDATA_UPDATETABSHOW','UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB','UPDATE_DROPDOWN_DROPDOWNDATA','UPDATE_BOXCONTENT_BOXCONTENT']),
+      ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY', 'UPDATE_TABDATA_UPDATETABSHOW', 'UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB', 'UPDATE_DROPDOWN_DROPDOWNDATA', 'UPDATE_BOXCONTENT_BOXCONTENT']),
     },
-    components: {interfaceMain, introduction, authorizations},
+    components: {login, interfaceMain, introduction, authorizations},
     computed: {
-      ...mapGetters(['tabData_infoData', 'tabData_show', 'dropDown_Data', 'dropDownBoxContent', 'dropDown_count']),
+      ...mapGetters(['account_isSecurity', 'tabData_infoData', 'tabData_show', 'dropDown_Data', 'dropDownBoxContent', 'dropDown_count']),
+      lock() {
+        return this.account_isSecurity;
+      },
       swaggerCategory() {
         let current = [];
         this.quantity = {};
@@ -192,8 +217,8 @@
         return current;
       }
     },
-    created(){
-      this._getDropDown()
+    created() {
+      this.isVerify();
     }
   }
 </script>
@@ -424,7 +449,8 @@
     background: #30ABF9;
     padding: 10px;
     border-radius: 5px;
-    color: #fff;right:0;
+    color: #fff;
+    right: 0;
   }
 
   .tabSwitch .management ul li {

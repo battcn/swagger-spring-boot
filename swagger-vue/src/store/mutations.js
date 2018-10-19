@@ -39,9 +39,11 @@ const mutations={
     state.tabData_show=val
   },
   /* 账号验证 */
+  /* 判断是否设置账户验证 */
   [types.DECIDE_ACCOUNT_ISVERIFY](state,security){
     state.account_isSecurity=security
   },
+  /* 账户login验证 */
   [types.DECIDE_ACCOUNT_DECIDEACCOUNT](state){
 
   },

@@ -8,8 +8,8 @@ export function isVerify() {
 }
 export function login(params) {
   let url =SWAGGER_URL+LOGIN;
-  if(params!==undefined&&params===null&&JSON.stringify(params)!=="{}"){
-    url=+'?';
+  if(params!==undefined&&params!==null&&JSON.stringify(params)!=="{}"){
+    url+='?';
     for (let key in params) {
       url += `${key}=${params[key]}&`;
     }

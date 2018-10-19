@@ -28,7 +28,6 @@
     left: 0;
     z-index: 1;
     background: rgba(55, 58, 71, 0.9);
-    /*opacity: 0;*/
     transition: opacity 0.3s;
   }
 

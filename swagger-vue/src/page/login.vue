@@ -1,108 +1,100 @@
 <template>
   <div class="login">
+    <div class="content">
     <header>
       swagger 在线接口调试
     </header>
-    <div class="content">
-
-      <div class="right">
+      <div class="input">
         <h3>用户登录 / User login</h3>
         <input v-model="username" placeholder="账号" type="text">
         <input v-model="password" placeholder="密码" type="text">
-        <button @click="loginOperat">登录</button>
+        <button @click="_login">登录</button>
       </div>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapGetters} from 'vuex'
+  import {mapMutations} from 'vuex'
   import {login} from './../api/accounts'
   export default {
     name: 'login',
     data() {
-      return {username: "", password: ""}
-    },
-    computed: {
-      ...mapGetters(['account_isSecurity']),
+      return {username: "battcn", password: "battcn"}
     },
     methods: {
-      loginOperat(){/* 登录操作 */
-        let obj = {'swagger-username': this.username, 'swagger-password': this.password};
+      ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY']),
+      _login(){
+       let obj = {'username': this.username, 'password': this.password};
+        this.loginOperat(obj);
+      },
+      loginOperat(obj){/* 登录操作 */
         let _this = this;
         login(obj).then((res)=>{
-          _this.$router.push('swagger-ui.html');
+          window.sessionStorage.setItem("account",JSON.stringify(obj))
+          _this.DECIDE_ACCOUNT_ISVERIFY(false);
         }).catch(function (err) {
           console.log("账号验证失败" + err);
         });
       }
     },
     created(){
-      let _this = this;
-      _this.$store.dispatch('carriedIsVerify').then(function () {
-        let is = _this.account_isSecurity && (typeof _this.account_isSecurity === "string") ? JSON.parse(_this.account_isSecurity) : _this.account_isSecurity;
-        if (!is) {
-          console.log("未设置身份验证,跳转至数据页面....");
-          _this.$router.push('swagger-ui.html');
-        }
-      });
+      let account= window.sessionStorage.getItem("account");
+      if(account&&typeof account==="string"){
+        let obj=JSON.parse(account);
+          this.loginOperat(obj);
+      }
+
     }
   }
 </script>
 <style>
   .login {
-    background: url("../common/image/bg.jpg") no-repeat;
-    background-size: cover;
     position: fixed;
+    background: #ccc;
+    z-index:999;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
   }
-
-  .login header {
-    background-color: #12722E;
+  .login .content {
+position: absolute;border-radius:5px;
+    top:50%;
+    left:50%;transform: translate(-50%, -50%);    overflow: hidden;
+  }
+  .login .content header {
+    background-color: #73CCFE;
     height: 45px;
-    padding-left: 15%;
+    padding-left: 15px;
     text-align: left;
     line-height: 45px;
     color: #fff;
     font-weight: 600;
   }
 
-  .login .content {
-    width: 80%;
-    margin: 0 auto;
-  }
 
-  .login .content p {
-    text-align: left;
-    font-size: 27px;
-    font-weight: bold;
-    color: #fff;
-  }
 
-  .login .content .right {
+
+  .login .content .input {
     box-sizing: border-box;
   }
 
-  .login .content .right {
+  .login .content .input {
     background: #fff;
     float: right;
-    border-radius: 5px;
     padding: 10px 20px 15px;
     min-width: 390px;
     box-sizing: border-box;
     box-shadow: 0 0 10px #ccc;
-    margin-top: 16%;
   }
 
-  .login .content .right h3 {
-    color: #12722E;
+  .login .content .input h3 {
+    color: #73CCFE;
   }
 
-  .login .content .right input {
+  .login .content .input input {
     display: block;
-    color: rgba(18, 114, 46, .8);
+    color: #2196F3;
     font-size: 16px;
     border: 1px solid #E9E9E9;
     width: 244px;
@@ -112,20 +104,23 @@
     margin: 24px auto;
   }
 
-  .login .content .right input::-webkit-input-placeholder {
-    color: rgba(18, 114, 46, .6);
+  .login .content .input input::-webkit-input-placeholder {
+    color: #73CCFE;
   }
 
-  .login .content .right button {
-    outline: none;
+  .login .content .input button {
+    outline: none;    cursor: pointer;
     width: 251px;
     height: 38px;
     padding: 5px 24px;
     border: 0;
     border-radius: 5px;
-    background-color: #12722E;
+    background-color: #73CCFE;
     color: #fff;
     letter-spacing: 5px;
+  }
+  .login .content .input button:hover{
+    background-color:#2196F3;
   }
 
 </style>
