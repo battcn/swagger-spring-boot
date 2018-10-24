@@ -106,7 +106,7 @@
       }
     },
     methods: {
-      isVerify: function () {
+      isVerify: function () {/*  判断是否设置登录验证 */
         let _this = this;
         isVerify().then((res) => {
           let security = res.data && res.data.security !== undefined;
@@ -131,7 +131,8 @@
         }).catch((err) => {
           console.info("身份验证失败啦...." + err);
           _this.UPDATE_DROPDOWN_DROPDOWNDATA('请求失败' + err)
-          _this.failureJump();
+          console.log("请进行身份验证后使用！")
+
         })
       },
       _getBoxContent: function (url) {
@@ -141,10 +142,6 @@
         }).catch((err) => {
           _this.UPDATE_BOXCONTENT_BOXCONTENT('请求失败' + err);
         })
-      },
-      failureJump: function () {/* 请求失败时跳转至登录路由 */
-        this.$router.push('swagger-login.html');
-        console.log("请进行身份验证后使用！")
       },
       closeTab: function () {/* 删除当前 */
         if (this.tabData_show && this.tabData_infoData && this.tabData_infoData[this.tabData_show]) {
