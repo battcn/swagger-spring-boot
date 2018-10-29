@@ -45,7 +45,6 @@
         if (this.properties && ((this.properties["length"]) || (typeof this.properties) === "array")) {
           return this.properties[0] && this.properties[0].properties;
         }
-        /* (this.properties&&this.properties.properties)|| */
         return this.properties;
       },
       indent() {

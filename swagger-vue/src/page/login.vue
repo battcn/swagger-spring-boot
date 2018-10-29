@@ -14,12 +14,12 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapMutations} from 'vuex'
-  import {login} from './../api/accounts'
+  import {mapMutations,mapGetters} from 'vuex'
+  import {login,isVerify} from './../api/accounts'
   export default {
     name: 'login',
     data() {
-      return {username: "battcn", password: "battcn"}
+      return {username: "", password: ""}
     },
     methods: {
       ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY']),
@@ -30,19 +30,37 @@
       loginOperat(obj){/* 登录操作 */
         let _this = this;
         login(obj).then((res)=>{
-          window.sessionStorage.setItem("account",JSON.stringify(obj))
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
         }).catch(function (err) {
           console.log("账号验证失败" + err);
         });
+      },
+      isVerify: function () {/*  判断是否设置登录验证 */
+        let _this = this;
+        isVerify().then((res) => {
+          let security = res.data && res.data.security !== undefined;
+          try {
+            security = (security ? (typeof res.data.security === "string" ? JSON.parse(res.data.security) : res.data.security) : false);
+          } catch (err) {
+            console.log("验证开关设置错误" + err);
+            security = false;
+          }
+          _this.DECIDE_ACCOUNT_ISVERIFY(security);
+        }).catch((err) => {
+          console.log("请求失败" + err);
+        })
       }
     },
+    computed:{
+      ...mapGetters(['account_isSecurity'])
+    },
     created(){
-      let account= window.sessionStorage.getItem("account");
-      if(account&&typeof account==="string"){
+      this.isVerify();
+     /* let account= window.sessionStorage.getItem("account");
+      if(account_isSecurity&&account&&typeof account==="string"){
         let obj=JSON.parse(account);
           this.loginOperat(obj);
-      }
+      }*/
 
     }
   }

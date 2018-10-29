@@ -54,7 +54,7 @@
   import {mapGetters, mapMutations} from 'vuex'
   import {ERR_OK, bg} from './../api/config'
   import {getDropDown, getBoxContent} from './../api/getData'
-  import {isVerify} from './../api/accounts'
+
   import login from './login.vue'
   import introduction from './introduction.vue'
   import interfaceMain from './interfaceMain.vue'
@@ -106,21 +106,7 @@
       }
     },
     methods: {
-      isVerify: function () {/*  判断是否设置登录验证 */
-        let _this = this;
-        isVerify().then((res) => {
-          let security = res.data && res.data.security !== undefined;
-          try {
-            security = (security ? (typeof res.data.security === "string" ? JSON.parse(res.data.security) : res.data.security) : false);
-          } catch (err) {
-            console.log("验证开关设置错误" + err);
-            security = false;
-          }
-          _this.DECIDE_ACCOUNT_ISVERIFY(security);
-        }).catch((err) => {
-          console.log("请求失败" + err);
-        })
-      },
+
       _getDropDown: function () {
         let _this = this;
         getDropDown().then((res) => {
@@ -215,7 +201,7 @@
       }
     },
     created() {
-      this.isVerify();
+//      this.isVerify();
     }
   }
 </script>
