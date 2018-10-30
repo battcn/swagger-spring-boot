@@ -1,6 +1,6 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="" xmlns: xmlns:>
   <div style="padding-top:5px;">
-    <login v-if="lock"></login>
+    <login v-on:getDropDown="getDropDown" v-if="lock"></login>
     <div class="swagger-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
       <ul class="nav-list">
         <select class="form-control" v-model.lazy="selected">
@@ -75,12 +75,13 @@
       }
     },
     watch: {
+
       selected: function (newSelected) {
         this.count = 0;
         this.countTo = 0;
         /* 初始化 */
         this.UPDATE_DROPDOWN_DROPDOWNCOUNT(newSelected)
-        this._getDropDown()
+        this.getDropDown()
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.swaggerCategory[this.countTo].pathName;
         this.UPDATE_TABDATA_UPDATETABSHOW(key);
       },
@@ -103,7 +104,7 @@
       }
     },
     methods: {
-      _getDropDown: function () {
+      getDropDown: function () {
         let _this = this;
         getDropDown().then((res) => {
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
@@ -112,8 +113,8 @@
             _this._getBoxContent(res.data[_this.dropDown_count].location)
           }
         }).catch((error) => {
-          let response=JSON.parse(JSON.stringify(error)).response;
-          if(response&&response.status===404){
+          let response=error.response;
+          if(response&&response.status===ERR_OK.logCode){
             _this.DECIDE_ACCOUNT_ISVERIFY(true);
             console.info("身份验证失败啦...." + error);
             console.log("请进行身份验证后使用！");
@@ -201,8 +202,7 @@
       }
     },
     created() {
-      this._getDropDown()
-//      this.isVerify();
+      this.getDropDown()
     }
   }
 </script>

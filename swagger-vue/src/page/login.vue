@@ -31,6 +31,7 @@
         let _this = this;
         login(obj).then((res)=>{
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
+          _this.$emit('getDropDown');
         }).catch(function (err) {
           console.log("账号验证失败" + err);
         });

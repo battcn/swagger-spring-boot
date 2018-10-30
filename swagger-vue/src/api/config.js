@@ -21,7 +21,7 @@ const ISVERIFY='/v2/swagger-security'
 /*  账号登录验证 */
 const LOGIN='/v2/swagger-login'
 /* 响应码 */
-const ERR_OK={min:200,max:299}
+const ERR_OK={min:200,max:299,logCode:401}
 /* 颜色 */
 const bg={GET: '#D1EAFF', POST: '#D1FED3', PATCH: '#FFE2D2', DELETE: '#FFD1D1', PUT: "#F0E0CA"}
 
