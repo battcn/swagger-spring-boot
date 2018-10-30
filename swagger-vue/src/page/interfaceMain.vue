@@ -480,7 +480,7 @@
         return obj;
       },
       formatRequest: function (itemsRef,refType) {/* 传入#/definitions/User，进行格式化 */
-        refType===undefined?refType=[]:"";
+        let _refType=refType?refType:[];
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
           return result;
@@ -505,17 +505,19 @@
                       result.properties[k].properties = [];
                       let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
                       let adds={"properties":{[Ref2]:{type:"object",title:"TreeNode"}}};
-                      if(refType.indexOf(Ref) <0){/* 树形结构判断。包含的属性为自身类 */
-                        refType.push(Ref);
-                        adds = this.formatRequest(Ref,refType);
+                      console.log(_refType,Ref)
+                      if(_refType.indexOf(Ref) <0){/* 树形结构判断。包含的属性为自身类 */
+                        _refType.push(Ref);
+                        adds = this.formatRequest(Ref,_refType);
                       }
-                      adds.name === undefined || adds.name === null ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
+                      (adds.name === undefined || adds.name === null) ? "" : adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
                       result.properties[k].properties={};
                       continue;
                     }
-                    if(refType.indexOf(Ref)<0){/* 树形结构判断。包含的属性为自身类 */
-                      refType.push(Ref);
-                      result.properties[k] = this.formatRequest(Ref,refType);
+
+                    if(_refType.indexOf(Ref)<0){/* 树形结构判断。包含的属性为自身类 */
+                      _refType.push(Ref);
+                      result.properties[k] = this.formatRequest(Ref,_refType);
                     }else{
                       result.properties[k] ={}
                     }
@@ -529,7 +531,7 @@
         return result;
       },
       JSONinit: function (refType,topRefType) {/*  */
-        topRefType===undefined?topRefType=[]:"";
+        let _topRefType=topRefType?topRefType:[];
         let _this = this;
         let definitionsArray = deepCopy(_this.dropDownBoxContent && _this.dropDownBoxContent.definitions);
         let deftion = undefined;
@@ -555,33 +557,35 @@
             }
             if (deftion[key].$ref) {
               let schema = deftion[key];
-              let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
+              let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"]["$ref"] : schema["$ref"];
               let regex = new RegExp("#/definitions/(.*)$", "ig");
               if ((typeof ref === "string") && regex.test(ref)) {
-                let a = ref.match("#/definitions/(.*)");
                 let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
-                if(topRefType.indexOf(refType2) > 0){
+                if(_topRefType.indexOf(refType2) > 0){
                   deftion[key]={};
                   continue;
                 }
-                topRefType.push(refType2);
-                deftion[key] = this.JSONinit(refType2,topRefType);
+                _topRefType.push(refType2);
+                deftion[key] = this.JSONinit(refType2,_topRefType);
                 continue;
               }
             }
             if (deftion[key].type === "array" && deftion[key].items) {
               let schema = deftion[key];
+              console.log(schema);
               let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
               let regex = new RegExp("#/definitions/(.*)$", "ig");
+              console.log(ref,regex);
               if ((typeof ref === "string") && regex.test(ref)) {
-                let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
+                let refType2 = ((ref.match("#/definitions/(.*)")&&ref.match("#/definitions/(.*)").length>0)? ref.match("#/definitions/(.*)")[1] :"" );
                 deftion[key] = [];
-                if(topRefType.indexOf(refType2)>0){
+                console.log(_topRefType,refType2,_topRefType.indexOf(refType2))
+                if(_topRefType.indexOf(refType2)>=0){
                   deftion[key]={};
                   continue;
                 }
-                topRefType.push(refType2);
-                deftion[key].push(this.JSONinit(refType2,topRefType));
+                _topRefType.push(refType2);
+                deftion[key].push(this.JSONinit(refType2,_topRefType));
                 continue;
               }
             }
