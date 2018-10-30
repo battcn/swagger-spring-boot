@@ -1,6 +1,5 @@
 package com.battcn.boot.swagger.configuration;
 
-import com.battcn.boot.swagger.properties.SwaggerProperties;
 import com.battcn.boot.swagger.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
