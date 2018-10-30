@@ -7,7 +7,7 @@ const state={
 
   tabData_infoData:{},
   tabData_show:"",
-  account_isSecurity:true,
+  account_isSecurity:false,
 
   dropDown_Data:[],
   dropDown_count:0,

@@ -53,15 +53,6 @@
     },
     computed:{
       ...mapGetters(['account_isSecurity'])
-    },
-    created(){
-      this.isVerify();
-     /* let account= window.sessionStorage.getItem("account");
-      if(account_isSecurity&&account&&typeof account==="string"){
-        let obj=JSON.parse(account);
-          this.loginOperat(obj);
-      }*/
-
     }
   }
 </script>

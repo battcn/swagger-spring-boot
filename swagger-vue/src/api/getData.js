@@ -5,7 +5,6 @@ export function getDropDown() {
   console.log("正在请求。。。")
   return axios.get(SWAGGER_URL+DROPDOWN).then((res)=>{
     console.log("请求成功")
-
     return  Promise.resolve(res)
   })
 }

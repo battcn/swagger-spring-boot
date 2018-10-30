@@ -75,9 +75,6 @@
       }
     },
     watch: {
-      lock: function () {
-        this._getDropDown()
-      },
       selected: function (newSelected) {
         this.count = 0;
         this.countTo = 0;
@@ -106,19 +103,22 @@
       }
     },
     methods: {
-
       _getDropDown: function () {
         let _this = this;
         getDropDown().then((res) => {
-          _this.UPDATE_DROPDOWN_DROPDOWNDATA(res.data)
+          _this.DECIDE_ACCOUNT_ISVERIFY(false);
+          _this.UPDATE_DROPDOWN_DROPDOWNDATA(res.data);
           if (res.data && res.data[_this.dropDown_count || 0] && res.data[_this.dropDown_count || 0]['location']) {
             _this._getBoxContent(res.data[_this.dropDown_count].location)
           }
-        }).catch((err) => {
-          console.info("身份验证失败啦...." + err);
-          _this.UPDATE_DROPDOWN_DROPDOWNDATA('请求失败' + err)
-          console.log("请进行身份验证后使用！")
-
+        }).catch((error) => {
+          let response=JSON.parse(JSON.stringify(error)).response;
+          if(response&&response.status===404){
+            _this.DECIDE_ACCOUNT_ISVERIFY(true);
+            console.info("身份验证失败啦...." + error);
+            console.log("请进行身份验证后使用！");
+          }
+          _this.UPDATE_DROPDOWN_DROPDOWNDATA('请求失败' + error);
         })
       },
       _getBoxContent: function (url) {
@@ -201,6 +201,7 @@
       }
     },
     created() {
+      this._getDropDown()
 //      this.isVerify();
     }
   }
