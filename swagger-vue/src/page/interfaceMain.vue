@@ -505,7 +505,6 @@
                       result.properties[k].properties = [];
                       let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
                       let adds={"properties":{[Ref2]:{type:"object",title:"TreeNode"}}};
-                      console.log(_refType,Ref)
                       if(_refType.indexOf(Ref) <0){/* 树形结构判断。包含的属性为自身类 */
                         _refType.push(Ref);
                         adds = this.formatRequest(Ref,_refType);
@@ -572,14 +571,11 @@
             }
             if (deftion[key].type === "array" && deftion[key].items) {
               let schema = deftion[key];
-              console.log(schema);
               let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
               let regex = new RegExp("#/definitions/(.*)$", "ig");
-              console.log(ref,regex);
               if ((typeof ref === "string") && regex.test(ref)) {
                 let refType2 = ((ref.match("#/definitions/(.*)")&&ref.match("#/definitions/(.*)").length>0)? ref.match("#/definitions/(.*)")[1] :"" );
                 deftion[key] = [];
-                console.log(_topRefType,refType2,_topRefType.indexOf(refType2))
                 if(_topRefType.indexOf(refType2)>=0){
                   deftion[key]={};
                   continue;
