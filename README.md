@@ -37,6 +37,18 @@
 </dependency>
 ```
 
+> 中文乱码
+
+如果遇到中文乱码，请确保自己的资源文件是 `UTF-8` 然后添加以下配置（一般情况只要自身环境正确，无需额外配置）
+
+``` properties
+server.tomcat.uri-encoding=UTF-8
+spring.http.encoding.force=true
+spring.http.encoding.enabled=true
+spring.http.encoding.charset=UTF-8
+spring.messages.encoding=UTF-8
+```
+
 - 在`application.yml`中添加
 
 ``` yaml
