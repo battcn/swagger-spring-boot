@@ -1,11 +1,11 @@
 <template>
   <div class="authorizations">
-    <a @click="setAuthorizeShow" class="sign" href="javascript:">A</a>
+    <a @click="_setAuthorizeShow" class="sign" href="javascript:">A</a>
     <div v-show="authorizeShow">
       <div>
         <div class="header">
           <h3>Available authorizations</h3>
-          <a href="javascript:" @click="closeAuthorize" class="close">X</a>
+          <a href="javascript:" @click="_closeAuthorize" class="close">X</a>
         </div>
         <div class="content">
           <p class="title">X-Authorization ({{authorizeInfo && authorizeInfo.type ? authorizeInfo.type : ''}})</p>
@@ -14,8 +14,8 @@
           <p>Value</p>
           <input v-model="authorizeVal" class="enter" type="text">
           <div class="control">
-            <button @click="setAuthorizeVal">Authorize</button>
-            <button @click="closeAuthorize">Close</button>
+            <button @click="_setAuthorizeVal">Authorize</button>
+            <button @click="_closeAuthorize">Close</button>
           </div>
         </div>
       </div>
@@ -24,47 +24,47 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex'
-  import {PromptPopUpShow}   from './../common/js/util'
+  import {promptPopUpShow}   from './../common/js/util'
   export default {
     name: 'authorizations',
     data() {
       return {authorizeShow: false, authorizeVal: ""}
     },
     computed: {
-      ...mapGetters(['debugRequest_authorization','dropDownBoxContent']),
+      ...mapGetters(['debugAuthorization','dropDownBoxContent']),
       authorizeInfo() {
         return this.dropDownBoxContent && this.dropDownBoxContent.securityDefinitions && this.dropDownBoxContent.securityDefinitions['X-Authorization'];
       }
     },
     methods: {
       ...mapMutations(['SET_DEBUGREQUEST_SECRETKEY', 'SET_DEBUGREQUEST_SECRETKEYS']),
-      setAuthorizeShow: function () {
+      _setAuthorizeShow: function () {
         this.authorizeShow = !this.authorizeShow;
       },
-      setAuthorizeVal: function () {
+      _setAuthorizeVal: function () {
         this.SET_DEBUGREQUEST_SECRETKEY(this.authorizeVal);
         if (window.sessionStorage) {
           let arr = [this.authorizeInfo && this.authorizeInfo.name, this.authorizeVal];
           sessionStorage.setItem("authorize", JSON.stringify(arr));
         }
-        this.setAuObj(this.authorizeInfo.name);
-        PromptPopUpShow.call(this,"修改 X-Authorization 成功");
-        this.closeAuthorize();
+        this._setAuObj(this.authorizeInfo.name);
+        promptPopUpShow.call(this,"修改 X-Authorization 成功");
+        this._closeAuthorize();
       },
-      setAuObj: function (name) {/* 保存对象 */
+      _setAuObj: function (name) {/* 保存对象 */
         let key = name || (this.authorizeInfo && this.authorizeInfo.name);
         let value = this.authorizeVal;
         let obj = {};
         obj[key] = value;
         this.SET_DEBUGREQUEST_SECRETKEYS(obj)
       },
-      closeAuthorize: function () {
+      _closeAuthorize: function () {
         this.authorizeShow = false;
       }
     },
     watch: {
       authorizeShow() {
-        this.authorizeVal = this.debugRequest_authorization;
+        this.authorizeVal = this.debugAuthorization;
       }
     },
     created(){
@@ -74,16 +74,13 @@
         if (val) {
           _this.authorizeVal = JSON.parse(val)[1];
           _this.SET_DEBUGREQUEST_SECRETKEY(_this.authorizeVal);
-          _this.setAuObj(JSON.parse(val)[0]);
+          _this._setAuObj(JSON.parse(val)[0]);
         }
       }
     }
   }
 </script>
 <style>
-  .authorizations {
-
-  }
 
   .authorizations > div { /* 蒙层 */
 

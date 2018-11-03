@@ -1,16 +1,16 @@
 const state={
   debugRequest_count:0,
-  debugRequest_debugResponse:{},
-  debugRequest_requestTime:0,
-  debugRequest_authorizeObj:{},
-  debugRequest_authorization:"",
+  debugResponse:{},
+  debugRequestTime:0,
+  debugAuthorizeObj:{},
+  debugAuthorization:"",
 
-  tabData_infoData:{},
-  tabData_show:"",
-  account_isSecurity:false,
+  tabDataInfo:{},
+  tabDataShow:"",
+  accountIsSecurity:false,
 
-  dropDown_Data:[],
-  dropDown_count:0,
+  dropDownData:[],
+  dropDownCount:0,
   dropDownBoxContent:""
 }
 

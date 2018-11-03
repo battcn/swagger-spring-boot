@@ -14,17 +14,22 @@ function rootPath() {
 
 const SWAGGER_URL=process.env.SWAGGER_URL === "" ? rootPath() : process.env.SWAGGER_URL;
 /* 获取单选框数据链接 */
-const DROPDOWN='/swagger-resources'
+const DROPDOWN='/swagger-resources';
 
 /* 判断是否需要账号验证接口链接 */
-const ISVERIFY='/v2/swagger-security'
+const ISVERIFY='/v2/swagger-security';
 /*  账号登录验证 */
-const LOGIN='/v2/swagger-login'
+const LOGIN='/v2/swagger-login';
 /* 响应码 */
-const ERR_OK={min:200,max:299,logCode:401}
+const ERR_OK={min:200,max:299,logCode:401};
 /* 颜色 */
-const bg={GET: '#D1EAFF', POST: '#D1FED3', PATCH: '#FFE2D2', DELETE: '#FFD1D1', PUT: "#F0E0CA"}
-
-export {SWAGGER_URL,ISVERIFY,LOGIN,DROPDOWN,ERR_OK,bg}
+const BG={GET: '#D1EAFF', POST: '#D1FED3', PATCH: '#FFE2D2', DELETE: '#FFD1D1', PUT: "#F0E0CA"}
+/* 消息提示语 */
+const CONSOLE={
+  ERROR:"请求发送失败",
+  SUCCESS:"请求发送成功  ",
+  PERMISSION_ERROR:'身份验证失败啦,请进行身份验证后使用！'
+};
+export {SWAGGER_URL,ISVERIFY,LOGIN,DROPDOWN,ERR_OK,BG,CONSOLE}
 
 

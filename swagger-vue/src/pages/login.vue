@@ -15,6 +15,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {mapMutations,mapGetters} from 'vuex'
+  import {CONSOLE} from './../api/config'
   import {login,isVerify} from './../api/accounts'
   export default {
     name: 'login',
@@ -25,35 +26,35 @@
       ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY']),
       _login(){
        let obj = {'username': this.username, 'password': this.password};
-        this.loginOperat(obj);
+        this._loginOperat(obj);
       },
-      loginOperat(obj){/* 登录操作 */
+      _loginOperat(obj){// 登录操作
         let _this = this;
         login(obj).then((res)=>{
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
           _this.$emit('getDropDown');
         }).catch(function (err) {
-          console.log("账号验证失败" + err);
+          console.log(CONSOLE.PERMISSION_ERROR + err);
         });
       },
-      isVerify: function () {/*  判断是否设置登录验证 */
+      _isVerify: function () {//  判断是否设置登录验证
         let _this = this;
         isVerify().then((res) => {
           let security = res.data && res.data.security !== undefined;
           try {
             security = (security ? (typeof res.data.security === "string" ? JSON.parse(res.data.security) : res.data.security) : false);
           } catch (err) {
-            console.log("验证开关设置错误" + err);
+            console.log(CONSOLE.PERMISSION_ERROR + err);
             security = false;
           }
           _this.DECIDE_ACCOUNT_ISVERIFY(security);
         }).catch((err) => {
-          console.log("请求失败" + err);
+          console.log(CONSOLE.ERROR + err);
         })
       }
     },
     computed:{
-      ...mapGetters(['account_isSecurity'])
+      ...mapGetters(['accountIsSecurity'])
     }
   }
 </script>

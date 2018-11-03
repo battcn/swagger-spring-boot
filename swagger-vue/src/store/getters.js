@@ -1,20 +1,20 @@
 export  const debugRequest_count=state => state.debugRequest_count
-export  const debugRequest_debugResponse=state => state.debugRequest_debugResponse
-export  const debugRequest_requestTime=state => state.debugRequest_requestTime
-export  const debugRequest_authorizeObj=state => state.debugRequest_authorizeObj
-export  const debugRequest_authorization=state => state.debugRequest_authorization
+export  const debugResponse=state => state.debugResponse
+export  const debugRequestTime=state => state.debugRequestTime
+export  const debugAuthorizeObj=state => state.debugAuthorizeObj
+export  const debugAuthorization=state => state.debugAuthorization
 
-export  const tabData_infoData=state => state.tabData_infoData
+export  const tabDataInfo=state => state.tabDataInfo
 
 
 
-export  const tabData_show=state => state.tabData_show
+export  const tabDataShow=state => state.tabDataShow
 
-export  const account_isSecurity=state => state.account_isSecurity
+export  const accountIsSecurity=state => state.accountIsSecurity
 
-export  const dropDown_Data=state => state.dropDown_Data
+export  const dropDownData=state => state.dropDownData
 
-export  const dropDown_count=state => state.dropDown_count
+export  const dropDownCount=state => state.dropDownCount
 
 export  const dropDownBoxContent=state => state.dropDownBoxContent
 

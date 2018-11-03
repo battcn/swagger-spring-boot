@@ -23,7 +23,7 @@ const  syntaxHighlight=function (json) {
     return '<span class="' + cls + '">' + match + '</span>';
   } );
 }
-const PromptPopUpShow=function (hint) {/* 修改成功提示 */
+const promptPopUpShow=function (hint) {/* 修改成功提示 */
   this.$layer.msg(hint, {time: 2});
 }
 const deepCopy = function (source) {
@@ -107,5 +107,5 @@ const formatterJson=function (text_value) {/*JSON数据格式化(将其以 上�
   return res;
 };
 export {
-  deepCopy, basicTypeInit,formatterJson,PromptPopUpShow,syntaxHighlight
+  deepCopy, basicTypeInit,formatterJson,promptPopUpShow,syntaxHighlight
 }
