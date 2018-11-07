@@ -1,5 +1,5 @@
 <template>
-  <div class="introduction">
+  <div class="about">
     <ul>
       <li class="head"><span>{{infoData && infoData.title ? infoData.title : 'swagger-vue-ui'}}</span></li>
       <li>
@@ -28,10 +28,10 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {deepCopy} from  './../common/js/util'
+  import {deepCopy} from '../../common/js/util'
   import {mapGetters} from 'vuex'
   export default {
-    name: 'introduction',
+    name: 'about',
     data(){
       return {}
     },
@@ -54,7 +54,7 @@
   }
 </script>
 <style>
-  .introduction {
+  .about {
     box-shadow: 1px 1px 5px #f3f4ef;
     border: 1px solid #F3F4EF;
     margin-left: 43%;
@@ -62,49 +62,49 @@
     transition: all 0.2s;
   }
 
-  .introduction > ul {
+  .about > ul {
     overflow: hidden;
     border: 1px solid #ddd;
   }
 
-  .introduction .head {
+  .about .head {
     font-size: 16px;
     font-weight: 700;
     background-color: #F8F8F8;
   }
 
-  .introduction > ul li {
+  .about > ul li {
     overflow: hidden;
     border-bottom: 1px solid #ddd;
   }
 
-  .introduction > ul li:last-child {
+  .about > ul li:last-child {
     border-bottom: 0;
   }
 
-  .introduction > ul li > span {
+  .about > ul li > span {
     float: left;
     box-sizing: border-box;
     padding: 8px 4px;
     border-right: 1px solid #ddd;
   }
 
-  .introduction > ul li > span:first-child {
+  .about > ul li > span:first-child {
     width: 30%;
   }
 
-  .introduction > ul li > span:last-child {
+  .about > ul li > span:last-child {
     border-right: 0;
     width: 70%;
   }
 
-  .introduction > ul li.head > span {
+  .about > ul li.head > span {
     width: 100%;
   }
 
   /* 响应式 */
   @media screen and (min-width: 1600px) {
-    .introduction {
+    .about {
       margin-left: 36%;
     }
   }

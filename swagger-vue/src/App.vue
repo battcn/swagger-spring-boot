@@ -8,7 +8,7 @@
 
 <script type="text/ecmascript-6">
   import 'normalize.css'
-  import list from './pages/interface_list.vue'
+  import list from './pages/view/list.vue'
   export default {
     name: 'app',
     components: {list}

@@ -46,11 +46,11 @@
   </div>
 </template>
 <script>
-  import {deepCopy, basicTypeInit,formatterJson,promptPopUpShow} from './../common/js/util'
+  import {deepCopy, basicTypeInit,formatterJson,promptPopUpShow} from '../../common/js/util'
   import {mapGetters, mapMutations} from 'vuex'
-  import {BG} from './../api/config'
+  import {BG} from '../../api/config'
   export default {
-    name: "submit-form",
+    name: "commit",
     data() {
       return {BG:BG,keyValue: "", selectAll: false, s: false,fileName:""}
     },

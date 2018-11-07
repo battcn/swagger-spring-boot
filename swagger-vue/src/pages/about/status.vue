@@ -11,7 +11,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {ERR_OK} from './../api/config'
+  import {ERR_OK} from '../../api/config'
   export default {
     name: "app"
   }

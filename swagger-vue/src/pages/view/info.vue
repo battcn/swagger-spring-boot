@@ -113,28 +113,29 @@
     </div>
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
-      <submit-form v-on:getCollection="getForm" :childForm.sync="childForm"
-                   :parameterValue="parameterValue"
-                   v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
-                   :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo"
-                   :interfaceRequest="interfaceRequest">
-      </submit-form>
+      <commit v-on:getCollection="getForm" :childForm.sync="childForm"
+              :parameterValue="parameterValue"
+              v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
+              :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo"
+              :interfaceRequest="interfaceRequest">
+      </commit>
       <div class="debugging-result" v-show="resultShow">
-      <span style="cursor:pointer;" @click="debugging='content'"
+      <span style="" @click="debugging='content'"
             :class="[debugging=='content'?'active':'']">响应内容</span>
-        <span style="cursor:pointer;" @click="debugging='cookies'"
+        <span style="" @click="debugging='cookies'"
               :class="[debugging=='cookies'?'active':'']">Cookies</span>
-        <span style="cursor:pointer;" @click="debugging='header'"
+        <span style="" @click="debugging='header'"
               :class="[debugging=='header'?'active':'']">Header</span>
-        <span style="cursor:pointer;" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
+        <span style="" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
         <b>Time:<a href="javascript:"> {{debugRequestTime}} ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <a v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'"
                href="javascript:" class="font-color copy-json" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
             <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;">
-              <pre v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'"
-                   style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
+              <pre
+                v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'||(debugResponse&&debugResponse.response&&debugResponse.response.headers&&debugResponse.response.headers['content-type'])"
+                style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
               <p v-else v-html="codeImgUrl"></p>
             </li>
           </div>
@@ -154,9 +155,10 @@
                 <span>x-application-context</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['x-application-context']}}</span>
               </li>
               <li>
-                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['content-type']}}</span>
+                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['content-type']||(debugResponse&&debugResponse.response&&debugResponse.response.headers&&debugResponse.response.headers['content-type'])}}</span>
               </li>
-              <li><span>response-code</span><span>{{debugResponse && debugResponse.status}}</span></li>
+              <li><span>response-code</span><span>{{(debugResponse && debugResponse.status)||(debugResponse&&debugResponse.response&&debugResponse.response.status)}}</span>
+              </li>
             </ul>
           </div>
           <div class="debugging-curl" v-show="debugging=='curl'">
@@ -170,17 +172,17 @@
 <script type="text/ecmascript-6">
   import Clipboard from 'clipboard'
   import {mapGetters, mapState, mapMutations} from 'vuex'
-  import {getDebugRequest} from '../api/debug_request'
-  import {SWAGGER_URL, ERR_OK, CONSOLE} from './../api/config'
-  import FormFold from './form_fold.vue'
-  import {deepCopy, basicTypeInit, formatterJson, syntaxHighlight} from './../common/js/util'
-  import SubmitForm from './submit_form.vue'
-  import JsonView from './json_view.vue'
+  import {getDebugRequest} from '../../api/debug_request'
+  import {SWAGGER_URL, ERR_OK, CONSOLE} from '../../api/config'
+  import FormFold from '../util/view/form_fold.vue'
+  import {deepCopy, basicTypeInit, formatterJson, syntaxHighlight} from '../../common/js/util'
+  import Commit from './commit.vue'
+  import JsonView from '../util/view/json_view.vue'
 
   new Clipboard('.copy-json');
   let Base64 = require('js-base64').Base64;
   export default {
-    name: "app",
+    name: "info",
     data() {
       return {
         formatJsonObjectTo: "", /* 格式化后的响应JSON数据 */
@@ -735,8 +737,10 @@
           _this._stitchingCurl(headerParams, jsonReqdata);
         }).catch(function (err) {
           console.error(CONSOLE.ERROR + err);
+          let errInfo = JSON.parse(JSON.stringify(err));
+          _this.SET_DEBUGREQUEST_RESPONSE(errInfo);
+          _this._stitchingCurl(headerParams, jsonReqdata);
         })
-
       },
       _stitchingCurl: function (headerParams, reqData) {
         let _this = this;
@@ -808,7 +812,7 @@
       },
     },
     props: ['swaggerCategory', 'selected', 'count', 'countTo'],
-    components: {FormFold, SubmitForm, JsonView},
+    components: {FormFold, Commit, JsonView},
   }
 </script>
 <style>
@@ -939,6 +943,7 @@
   .debugging-result > span {
     font-size: 14px;
     display: inline-block;
+    cursor: pointer;
     padding: 10px 15px;
     border: 1px solid #EBEBEB;
     position: relative;

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 Vue.use(Router);
-import list from '@/pages/interface_list';
+import list from './../pages/view/list.vue';
 
 export default new Router({
   mode: 'history',

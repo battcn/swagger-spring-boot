@@ -15,8 +15,8 @@
 </template>
 <script type="text/ecmascript-6">
   import {mapMutations,mapGetters} from 'vuex'
-  import {CONSOLE} from './../api/config'
-  import {login,isVerify} from './../api/accounts'
+  import {CONSOLE} from '../../api/config'
+  import {login,isVerify} from '../../api/accounts'
   export default {
     name: 'login',
     data() {

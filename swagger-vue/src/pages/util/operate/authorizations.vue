@@ -24,7 +24,7 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex'
-  import {promptPopUpShow}   from './../common/js/util'
+  import {promptPopUpShow}   from '../../../common/js/util'
   export default {
     name: 'authorizations',
     data() {

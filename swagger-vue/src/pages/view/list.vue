@@ -42,22 +42,22 @@
           <span>{{key}}</span><a href="javascript:">X</a></li>
       </ul>
     </div>
-    <introduction v-show="countTo==-1"></introduction>
-    <interface-main v-show="countTo!==-1"
+    <about v-show="countTo==-1"></about>
+    <info-view v-show="countTo!==-1"
                    v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
-                   v-bind:count="count" v-bind:countTo="countTo"></interface-main>
+                   v-bind:count="count" v-bind:countTo="countTo"></info-view>
     <authorizations></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
-  import {ERR_OK, CONSOLE,BG} from './../api/config'
-  import {getDropDown, getBoxContent} from '../api/get_data'
+  import {ERR_OK, CONSOLE,BG} from '../../api/config'
+  import {getDropDown, getBoxContent} from '../../api/get_data'
 
-  import Login from './login.vue'
-  import Introduction from './introduction.vue'
-  import InterfaceMain from './interface_main.vue'
-  import Authorizations from './authorizations.vue'
+  import Login from '../login/index.vue'
+  import About from '../about/index.vue'
+  import InfoView from './info.vue'
+  import Authorizations from '../util/operate/authorizations.vue'
 
   export default {
     name: 'app',
@@ -174,7 +174,7 @@
       },
       ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY', 'UPDATE_TABDATA_UPDATETABSHOW', 'UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB', 'UPDATE_DROPDOWN_DROPDOWNDATA', 'UPDATE_BOXCONTENT_BOXCONTENT']),
     },
-    components: {Login, InterfaceMain, Introduction, Authorizations},
+    components: {Login, InfoView, About, Authorizations},
     computed: {
       ...mapGetters(['accountIsSecurity', 'tabDataInfo', 'tabDataShow', 'dropDownData', 'dropDownBoxContent', 'dropDownCount']),
       lock() {
