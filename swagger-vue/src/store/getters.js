@@ -1,4 +1,4 @@
-export  const debugRequest_count=state => state.debugRequest_count
+export  const debugRequestCount=state => state.debugRequestCount
 export  const debugResponse=state => state.debugResponse
 export  const debugRequestTime=state => state.debugRequestTime
 export  const debugAuthorizeObj=state => state.debugAuthorizeObj

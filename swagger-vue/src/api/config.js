@@ -28,7 +28,8 @@ const BG={GET: '#D1EAFF', POST: '#D1FED3', PATCH: '#FFE2D2', DELETE: '#FFD1D1', 
 const CONSOLE={
   ERROR:"请求发送失败",
   SUCCESS:"请求发送成功  ",
-  PERMISSION_ERROR:'身份验证失败啦,请进行身份验证后使用！'
+  PERMISSION_ERROR:'身份验证失败啦,请进行身份验证后使用！',
+  LOADSTATUS:'加载失败'
 };
 export {SWAGGER_URL,ISVERIFY,LOGIN,DROPDOWN,ERR_OK,BG,CONSOLE}
 

@@ -3,7 +3,7 @@ import Vue from 'vue'
 
 const mutations={
   [types.SET_DEBUGREQUEST_COUNT](state,count){
-    state.debugRequest_count=count
+    state.debugRequestCount=count
   },
   [types.SET_DEBUGREQUEST_RESPONSE](state,response){
     state.debugResponse=response

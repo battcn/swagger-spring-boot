@@ -244,7 +244,7 @@
         let respBasis = false;
         let respState;
         if (resp === undefined) {
-          return '加载失败';
+          return CONSOLE.LOADSTATUS;
         }
         for (let key in resp) {/* 通过判断响应码判定请求是否成功 */
             if (resp.hasOwnProperty(key)&&parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {

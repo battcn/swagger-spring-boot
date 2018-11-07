@@ -1,5 +1,5 @@
 const state={
-  debugRequest_count:0,
+  debugRequestCount:0,
   debugResponse:{},
   debugRequestTime:0,
   debugAuthorizeObj:{},
