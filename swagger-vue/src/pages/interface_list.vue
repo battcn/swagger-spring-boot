@@ -124,7 +124,7 @@
         getBoxContent(url).then((res) => {
           _this.UPDATE_BOXCONTENT_BOXCONTENT(res.data)
         }).catch((err) => {
-          _this.UPDATE_BOXCONTENT_BOXCONTENT(C + err);
+          _this.UPDATE_BOXCONTENT_BOXCONTENT(CONSOLE.ERROR + err);
         })
       },
       _closeTab: function () {/* 删除当前 */

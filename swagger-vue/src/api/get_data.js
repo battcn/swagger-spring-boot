@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {SWAGGER_URL,DROPDOWN} from './config'
+import {SWAGGER_URL,PROJECT_NAME,DROPDOWN} from './config'
 
 export function getDropDown() {
   return axios.get(SWAGGER_URL+DROPDOWN).then((res)=>{
@@ -7,7 +7,7 @@ export function getDropDown() {
   })
 }
 export function getBoxContent(urlSuffix) {
-return axios.get(SWAGGER_URL+urlSuffix).then((res)=>{
+return axios.get(SWAGGER_URL+PROJECT_NAME+urlSuffix).then((res)=>{
   return  Promise.resolve(res)
 })
 }

@@ -20,7 +20,8 @@
           <div><span>{{swaggerCategory[countTo] ? swaggerCategory[countTo].name : ""}}</span></div>
         </li>
         <li><span>接口说明</span>
-          <div><span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.description ? swaggerCategory[countTo].pathInfo.description : ""}}</span></div>
+          <div><span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.description ? swaggerCategory[countTo].pathInfo.description : ""}}</span>
+          </div>
         </li>
         <li><span>consumes</span>
           <div>
@@ -49,7 +50,7 @@
                   <form-fold :depth="0"
                              :properties="item.properties&&item.properties.properties||(item.properties&&item.properties[0]&&item.properties[0].properties)"
                              :keyTo="key"
-                             :item="item" :requireds="requireds"></form-fold>
+                             :item="item" :requiredArray="requiredArray"></form-fold>
                 </div>
               </ul>
             </div>
@@ -112,7 +113,7 @@
     </div>
     <div v-show="switchA==1" class="debugging-content">
       <!-- 此处为接收 -->
-      <submit-form  v-on:getCollection="getForm" :childForm.sync="childForm"
+      <submit-form v-on:getCollection="getForm" :childForm.sync="childForm"
                    :parameterValue="parameterValue"
                    v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo"
                    :swaggerCategory="swaggerCategory" :selected="selected" :count="count" :countTo="countTo"
@@ -129,9 +130,11 @@
         <b>Time:<a href="javascript:"> {{debugRequestTime}} ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
-            <a v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'"  href="javascript:" class="font-color copy-json" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
-            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;" >
-              <pre v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'" style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
+            <a v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'"
+               href="javascript:" class="font-color copy-json" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
+            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;">
+              <pre v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'"
+                   style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
               <p v-else v-html="codeImgUrl"></p>
             </li>
           </div>
@@ -166,22 +169,23 @@
 </template>
 <script type="text/ecmascript-6">
   import Clipboard from 'clipboard'
-  import {mapGetters,mapState, mapMutations} from 'vuex'
+  import {mapGetters, mapState, mapMutations} from 'vuex'
   import {getDebugRequest} from '../api/debug_request'
-  import {SWAGGER_URL,ERR_OK,CONSOLE} from './../api/config'
+  import {SWAGGER_URL, ERR_OK, CONSOLE} from './../api/config'
   import FormFold from './form_fold.vue'
-  import {deepCopy, basicTypeInit, formatterJson,syntaxHighlight} from './../common/js/util'
+  import {deepCopy, basicTypeInit, formatterJson, syntaxHighlight} from './../common/js/util'
   import SubmitForm from './submit_form.vue'
   import JsonView from './json_view.vue'
+
   new Clipboard('.copy-json');
   let Base64 = require('js-base64').Base64;
   export default {
     name: "app",
     data() {
       return {
-        formatJsonObjectTo:"",/* 格式化后的响应JSON数据 */
-        jsonValue:"",/* 复制的表单响应JSON数据 */
-        jsonObjectToValue:"",/* 复制的实际响应JSON数据 */
+        formatJsonObjectTo: "", /* 格式化后的响应JSON数据 */
+        jsonValue: "", /* 复制的表单响应JSON数据 */
+        jsonObjectToValue: "", /* 复制的实际响应JSON数据 */
         isJsonObject: false,
         childForm: {},
         indentation: 1,
@@ -194,25 +198,25 @@
         parameterValue: {},
         responseCodePre: [],
         responseObjectName: "",
-        codeImgUrl:"",
-        isImgResponse:false
+        codeImgUrl: "",
+        isImgResponse: false
       }
     },
     computed: {
       /**
        * @return {string}
        */
-      ...mapGetters(['dropDownBoxContent','debugResponse','debugRequestTime','debugAuthorizeObj']),
-      requireds:function () {/* 提取必需请求参数数组 */
+      ...mapGetters(['dropDownBoxContent', 'debugResponse', 'debugRequestTime', 'debugAuthorizeObj']),
+      requiredArray: function () {/* 提取必需请求参数数组 */
         let requiredAr = [];
-        let obj=undefined;
-        for(let key in this.interfaceRequest) {
+        let obj = undefined;
+        for (let key in this.interfaceRequest) {
           if (this.interfaceRequest.hasOwnProperty(key)) {
             if (this.interfaceRequest[key].properties && ((this.interfaceRequest[key].properties["length"]) || (typeof this.interfaceRequest[key].properties) === "array")) {
               obj = this.interfaceRequest[key].properties[0] && this.interfaceRequest[key].properties[0].properties;
               for (let i in obj) {
                 if (obj.hasOwnProperty(i)) {
-                  if ( typeof  obj[i].required === "object" && obj[i].required['length'] > 0) {
+                  if (typeof  obj[i].required === "object" && obj[i].required['length'] > 0) {
                     requiredAr = requiredAr.concat(obj[i].required);
                   }
                   if (typeof  obj[i].required === "string") {
@@ -239,19 +243,19 @@
         return requiredAr;
       },
       interfaceResponse: function () {/* 响应参数 */
-        let pathInfo=deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo);
-        let resp =  pathInfo&&pathInfo.responses;
+        let pathInfo = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo);
+        let resp = pathInfo && pathInfo.responses;
         let respBasis = false;
         let respState;
         if (resp === undefined) {
           return CONSOLE.LOADSTATUS;
         }
         for (let key in resp) {/* 通过判断响应码判定请求是否成功 */
-            if (resp.hasOwnProperty(key)&&parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
-              respBasis = true;
-              respState = key;
-              break;
-            }
+          if (resp.hasOwnProperty(key) && parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
+            respBasis = true;
+            respState = key;
+            break;
+          }
         }
         if (respBasis) {
           let ok = resp[respState];
@@ -264,22 +268,22 @@
               let deftion = undefined;
               let definition = {};
               let response = {};
-              response[refType] = this._formatRequest(ref,[ref]);
-              deftion = this._jsonInit(refType,[refType]);
+              response[refType] = this._formatRequest(ref, [ref]);
+              deftion = this._jsonInit(refType, [refType]);
               if (schema["type"] && schema["type"] === "array") {
-                let arrs={};
+                let arrs = {};
                 arrs['properties'] = response;
-                arrs['type']="array";
+                arrs['type'] = "array";
                 definition['Array'] = arrs;
                 this.jsonObject = [];
-                let jsonObj= {};
-                jsonObj[refType]=deftion;
+                let jsonObj = {};
+                jsonObj[refType] = deftion;
                 this.jsonObject.push(jsonObj)
               } else {
                 definition = response;
                 this.jsonObject = deftion;
               }
-              this.jsonValue=JSON.stringify(this.jsonObject);
+              this.jsonValue = JSON.stringify(this.jsonObject);
               return definition;
             } else {
               //未发现ref属性
@@ -287,24 +291,24 @@
                 this.jsonObject = schema["type"];
                 return schema["type"];
               }
-              this.jsonValue=JSON.stringify(this.jsonObject);
+              this.jsonValue = JSON.stringify(this.jsonObject);
               return "无";
             }
           } else {
             /* 判断其响应是否为图片 */
-            if(pathInfo.produces){
-              for(let key in pathInfo.produces){
-                if(pathInfo.produces[key].indexOf("image")=== 0){
-                  this.isImgResponse=true;
+            if (pathInfo.produces) {
+              for (let key in pathInfo.produces) {
+                if (pathInfo.produces[key].indexOf("image") === 0) {
+                  this.isImgResponse = true;
                   return pathInfo.produces[key];
                 }
               }
             }
-            this.jsonValue=JSON.stringify(this.jsonObject);
+            this.jsonValue = JSON.stringify(this.jsonObject);
             return "无";
           }
         } else {
-          this.jsonValue=JSON.stringify(this.jsonObject);
+          this.jsonValue = JSON.stringify(this.jsonObject);
           return "没有指定响应成功信息";
         }
       },
@@ -316,10 +320,10 @@
           return "加载失败";
         }
         for (let key in resp) {
-            if (resp.hasOwnProperty(key)&&parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
-              respBasis = true;
-              respState = key;
-              break;
+          if (resp.hasOwnProperty(key) && parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
+            respBasis = true;
+            respState = key;
+            break;
           }
         }
         if (respBasis) {
@@ -341,7 +345,7 @@
           return result;
         }
         for (let i in parameters) {
-          if(parameters.hasOwnProperty(i)) {
+          if (parameters.hasOwnProperty(i)) {
             result[i] = parameters[i];
             if (parameters[i].schema && parameters[i].schema.$ref) {
               result[i]['properties'] = this._formatRequest(parameters[i].schema.$ref);
@@ -360,7 +364,7 @@
         for (let key in resultCopy) {
           // 如果该字段没有type属性且存在子字段，子字段内有类型type属性
           // 判断是否为list数组类型
-          if(resultCopy.hasOwnProperty(key)) {
+          if (resultCopy.hasOwnProperty(key)) {
             if ((!resultCopy[key].type && resultCopy[key].properties && resultCopy[key].properties.type === "object")
               || (resultCopy[key].properties && Array.isArray(resultCopy[key].properties))) {
               // 当前字段为object类型
@@ -381,31 +385,31 @@
         //提取数据传递给子组件
         this.childForm = [];
         for (let key in result) {
-          if(result.hasOwnProperty(key)) {
+          if (result.hasOwnProperty(key)) {
             let array = {};
             this.childForm[key] = {};
             array['name'] = result && result[key] && result[key]['name'];
-            array['default'] = result[key]['default']||this.parameterValue[key];
+            array['default'] = result[key]['default'] || this.parameterValue[key];
             array['required'] = result && result[key] && result[key]['required'];
             this.childForm[key] = deepCopy(array);
           }
         }
-          for(let i in parameters){// 对于list数据类型进行加层包装，使表格展现更加直观
-          if (parameters.hasOwnProperty(i)&&parameters[i].schema && parameters[i].schema.type && parameters[i].schema.type === 'array' && parameters[i].schema.items && parameters[i].schema.items.$ref) {
+        for (let i in parameters) {// 对于list数据类型进行加层包装，使表格展现更加直观
+          if (parameters.hasOwnProperty(i) && parameters[i].schema && parameters[i].schema.type && parameters[i].schema.type === 'array' && parameters[i].schema.items && parameters[i].schema.items.$ref) {
             let formatData = this._formatRequest(parameters[i].schema.items.$ref);
             let title = formatData.title;
             let objData = {};
-            objData[title]=formatData;
-            result[i]['properties']=objData;
+            objData[title] = formatData;
+            result[i]['properties'] = objData;
             let arrsTo = [];
             arrsTo.push(result[i]);
             result[i] = {
-              'properties':arrsTo,
-              'name':"Array",
-              'type':"array",
-              'title':"Array",
-              'description':"Array",
-              'required':true
+              'properties': arrsTo,
+              'name': "Array",
+              'type': "array",
+              'title': "Array",
+              'description': "Array",
+              'required': true
             };
           }
         }
@@ -425,7 +429,7 @@
       }
     },
     methods: {
-      ...mapMutations(["SET_DEBUGREQUEST_REQUESTTIME","SET_DEBUGREQUEST_RESPONSE"]),
+      ...mapMutations(["SET_DEBUGREQUEST_REQUESTTIME", "SET_DEBUGREQUEST_RESPONSE"]),
       _iniData: function () {
         this.switchA = 0;
         this.resultShow = false;
@@ -439,7 +443,7 @@
         this.parameterValue = {};
         this.responseCodePre = [];
         this.responseObjectName = "";
-        this.isImgResponse=false;
+        this.isImgResponse = false;
       },
       _responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
         if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
@@ -461,7 +465,7 @@
       _iniObject: function (properties) {// 传入对象，对其进行类型初始化
         let obj = {};
         for (let key in properties) {
-          if(properties.hasOwnProperty(key)) {
+          if (properties.hasOwnProperty(key)) {
             if ((properties[key].type && properties[key].properties && properties[key].type === "object") || (properties[key].type === 'array' && properties[key].properties)) {
               // 包含子字段
               if (properties[key].type === 'array' && properties[key].properties) {
@@ -478,8 +482,8 @@
         }
         return obj;
       },
-      _formatRequest: function (itemsRef,refType) {/* 传入#/definitions/User，进行格式化 */
-        let _refType=refType?refType:[];
+      _formatRequest: function (itemsRef, refType) {/* 传入#/definitions/User，进行格式化 */
+        let _refType = refType ? refType : [];
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
           return result;
@@ -490,51 +494,51 @@
           return result;
         }
         for (let key in definitions) {
-            if (definitions.hasOwnProperty(key)&&key.toLowerCase() === objName.toLowerCase()) {
-              result = deepCopy(definitions[key]);
-              let properties = definitions[key].properties;
-              if (properties === undefined || properties === null || (typeof properties) === "string") {
-                return result;
-              }
-              for (let k in properties) {
-                if(properties.hasOwnProperty(k)) {
-                  if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
-                    let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
-                    if (properties[k].type === 'array') {
-                      result.properties[k].properties = [];
-                      let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
-                      let adds={"properties":{[Ref2]:{type:"object",title:"TreeNode"}}};
-                      if(_refType.indexOf(Ref) <0){// 树形结构判断。包含的属性为自身类
-                        _refType.push(Ref);
-                        adds = this._formatRequest(Ref,_refType);
-                      }
-                      if(adds.name !== undefined && adds.name !== null){
-                        adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
-                      }
-
-                      result.properties[k].properties=adds.properties;
-                      continue;
-                    }
-
-                    if(_refType.indexOf(Ref)<0){/* 树形结构判断。包含的属性为自身类 */
+          if (definitions.hasOwnProperty(key) && key.toLowerCase() === objName.toLowerCase()) {
+            result = deepCopy(definitions[key]);
+            let properties = definitions[key].properties;
+            if (properties === undefined || properties === null || (typeof properties) === "string") {
+              return result;
+            }
+            for (let k in properties) {
+              if (properties.hasOwnProperty(k)) {
+                if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
+                  let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
+                  if (properties[k].type === 'array') {
+                    result.properties[k].properties = [];
+                    let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
+                    let adds = {"properties": {[Ref2]: {type: "object", title: "TreeNode"}}};
+                    if (_refType.indexOf(Ref) < 0) {// 树形结构判断。包含的属性为自身类
                       _refType.push(Ref);
-                      result.properties[k] = this._formatRequest(Ref,_refType);
-                    }else{
-                      result.properties[k] ={}
+                      adds = this._formatRequest(Ref, _refType);
                     }
-                    continue;
-                  } else {
-                    result.properties[k] = properties[k];
+                    if (adds.name !== undefined && adds.name !== null) {
+                      adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
+                    }
+
+                    result.properties[k].properties = adds.properties;
                     continue;
                   }
+
+                  if (_refType.indexOf(Ref) < 0) {/* 树形结构判断。包含的属性为自身类 */
+                    _refType.push(Ref);
+                    result.properties[k] = this._formatRequest(Ref, _refType);
+                  } else {
+                    result.properties[k] = {}
+                  }
+                  continue;
+                } else {
+                  result.properties[k] = properties[k];
+                  continue;
                 }
               }
             }
+          }
         }
         return result;
       },
-      _jsonInit: function (refType,topRefType) {/*  */
-        let _topRefType=topRefType?topRefType:[];
+      _jsonInit: function (refType, topRefType) {/*  */
+        let _topRefType = topRefType ? topRefType : [];
         let _this = this;
         let definitionsArray = deepCopy(_this.dropDownBoxContent && _this.dropDownBoxContent.definitions);
         let deftion = undefined;
@@ -542,7 +546,7 @@
           return deftion;
         }
         for (let i in definitionsArray) {
-          if (definitionsArray.hasOwnProperty(i)&&i === refType) {
+          if (definitionsArray.hasOwnProperty(i) && i === refType) {
             deftion = definitionsArray[i].properties;
             break
           }
@@ -564,12 +568,12 @@
               let regex = new RegExp("#/definitions/(.*)$", "ig");
               if ((typeof ref === "string") && regex.test(ref)) {
                 let refType2 = (ref.match("#/definitions/(.*)") === null ? "" : ref.match("#/definitions/(.*)")[1]);
-                if(_topRefType.indexOf(refType2) > 0){
-                  deftion[key]={};
+                if (_topRefType.indexOf(refType2) > 0) {
+                  deftion[key] = {};
                   continue;
                 }
                 _topRefType.push(refType2);
-                deftion[key] = this._jsonInit(refType2,_topRefType);
+                deftion[key] = this._jsonInit(refType2, _topRefType);
                 continue;
               }
             }
@@ -578,14 +582,14 @@
               let ref = (schema["type"] && schema["type"] === "array" && schema["items"]) ? schema["items"].$ref : schema["$ref"];
               let regex = new RegExp("#/definitions/(.*)$", "ig");
               if ((typeof ref === "string") && regex.test(ref)) {
-                let refType2 = ((ref.match("#/definitions/(.*)")&&ref.match("#/definitions/(.*)").length>0)? ref.match("#/definitions/(.*)")[1] :"" );
+                let refType2 = ((ref.match("#/definitions/(.*)") && ref.match("#/definitions/(.*)").length > 0) ? ref.match("#/definitions/(.*)")[1] : "" );
                 deftion[key] = [];
-                if(_topRefType.indexOf(refType2)>=0){
-                  deftion[key]={};
+                if (_topRefType.indexOf(refType2) >= 0) {
+                  deftion[key] = {};
                   continue;
                 }
                 _topRefType.push(refType2);
-                deftion[key].push(this._jsonInit(refType2,_topRefType));
+                deftion[key].push(this._jsonInit(refType2, _topRefType));
                 continue;
               }
             }
@@ -597,7 +601,7 @@
               deftion[key] = true;
               continue;
             }
-            if (deftion[key].type === "integer"|| deftion[key].type === "number") {
+            if (deftion[key].type === "integer" || deftion[key].type === "number") {
               deftion[key] = 0;
               continue;
             }
@@ -613,7 +617,7 @@
         let _this = this;
         let result = [];
         for (let key in data) {
-          if (data.hasOwnProperty(key)&&data[key].required) {
+          if (data.hasOwnProperty(key) && data[key].required) {
             let obj = [];
             obj.push(data[key].name);
             obj.push(data[key].default);
@@ -667,67 +671,67 @@
         // 判断调试请求中是否有Security字段
         if (this.isExistSecurity) {// headerParams
           for (let key in this.debugAuthorizeObj) {
-            if(this.debugAuthorizeObj.hasOwnProperty(key)) {
+            if (this.debugAuthorizeObj.hasOwnProperty(key)) {
               headerParams[key] = this.debugAuthorizeObj[key];
             }
           }
         }
         /*  判断是否为文件类型上传 */
-        if(typeof reqData ==="object"){
+        if (typeof reqData === "object") {
           for (let key in reqData) {
-            if(typeof  reqData[key] === 'string'){
+            if (typeof  reqData[key] === 'string') {
               try {
-                reqData[key]= JSON.parse(reqData[key])
-              }catch(err){
-                reqData[key]=reqData[key];
+                reqData[key] = JSON.parse(reqData[key])
+              } catch (err) {
+                reqData[key] = reqData[key];
               }
             }
-            if (reqData.hasOwnProperty(key)&&param !== undefined && reqData[key] && reqData[key]['in'] && reqData[key]['in'] === 'formData' && reqData[key]['type'] && reqData[key]['type'] === 'file') {
+            if (reqData.hasOwnProperty(key) && param !== undefined && reqData[key] && reqData[key]['in'] && reqData[key]['in'] === 'formData' && reqData[key]['type'] && reqData[key]['type'] === 'file') {
               headerParams['Content'] = 'multipart/form-data; charset=utf-8';
               reqData = param;
             }
           }
         }
 
-        let requestData={
-          url:url,
+        let requestData = {
+          url: url,
           headerParams: headerParams,
           type: _this.swaggerCategory[this.countTo].name,
           data: reqData,
         }
         let enterTime = new Date();
-        if(_this.isImgResponse){
-          _this.codeImgUrl=`<span>请求中。。。。${SWAGGER_URL+url}</span>`;
-          _this.codeImgUrl=`<img src=${SWAGGER_URL+url+'?'+new Date().getTime()} />`;
+        if (_this.isImgResponse) {
+          _this.codeImgUrl = `<span>请求中。。。。${SWAGGER_URL + url}</span>`;
+          _this.codeImgUrl = `<img src=${SWAGGER_URL + url + '?' + new Date().getTime()} />`;
           let outTime = new Date();
-          console.info(CONSOLE.SUCCESS+SWAGGER_URL+url);
-          _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime);
-         // 当响应数据为图片显示时，伪造数据响应头
-          let contentType="";
-          let pathInfo=deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo);
-          for(let key in pathInfo.produces){
-            if(pathInfo.produces[key].indexOf("image")=== 0){
-              contentType=pathInfo.produces[key];
+          console.info(CONSOLE.SUCCESS + SWAGGER_URL + url);
+          _this.SET_DEBUGREQUEST_REQUESTTIME(outTime - enterTime);
+          // 当响应数据为图片显示时，伪造数据响应头
+          let contentType = "";
+          let pathInfo = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo);
+          for (let key in pathInfo.produces) {
+            if (pathInfo.produces[key].indexOf("image") === 0) {
+              contentType = pathInfo.produces[key];
             }
           }
-          let res={
-            data:null,
-            status:200,
-            headers:{"content-type":contentType},
-            config:{"url":SWAGGER_URL+url}
+          let res = {
+            data: null,
+            status: 200,
+            headers: {"content-type": contentType},
+            config: {"url": SWAGGER_URL + url}
           };
           _this.SET_DEBUGREQUEST_RESPONSE(res);
           _this._stitchingCurl(headerParams, jsonReqdata);
           return true;
         }
-        getDebugRequest(requestData).then((res)=>{
+        getDebugRequest(requestData).then((res) => {
           let outTime = new Date();
-          _this.SET_DEBUGREQUEST_REQUESTTIME(outTime-enterTime);
+          _this.SET_DEBUGREQUEST_REQUESTTIME(outTime - enterTime);
           _this.SET_DEBUGREQUEST_RESPONSE(res);
-          if(_this.debugResponse && _this.debugResponse.headers && _this.debugResponse.headers['content-type'].indexOf('image')===0){
-            _this.codeImgUrl="<span>[object Blob]</span>";
+          if (_this.debugResponse && _this.debugResponse.headers && _this.debugResponse.headers['content-type'].indexOf('image') === 0) {
+            _this.codeImgUrl = "<span>[object Blob]</span>";
           }
-          console.info(CONSOLE.SUCCESS+(_this.debugResponse&&_this.debugResponse.config&&_this.debugResponse.config.url));
+          console.info(CONSOLE.SUCCESS + (_this.debugResponse && _this.debugResponse.config && _this.debugResponse.config.url));
           _this._stitchingCurl(headerParams, jsonReqdata);
         }).catch(function (err) {
           console.error(CONSOLE.ERROR + err);
@@ -736,22 +740,22 @@
       },
       _stitchingCurl: function (headerParams, reqData) {
         let _this = this;
-        let response=_this.debugResponse,
-        responseHeader=response.headers,
-        responseConfig=response.config,
-        headers = "",
-        contentType = `--header 'application/json;charset=UTF-8'`,
-        contentUrl = "",
-        curlAccept = "-H \"accept: */*\"";
+        let response = _this.debugResponse,
+          responseHeader = response.headers,
+          responseConfig = response.config,
+          headers = "",
+          contentType = `--header 'application/json;charset=UTF-8'`,
+          contentUrl = "",
+          curlAccept = "-H \"accept: */*\"";
 
         for (let key in headerParams) {
-          if(headerParams[key]!==""){
+          if (headerParams[key] !== "") {
             headers += `${key}: ${headerParams[key]},`;
           }
         }
         /* 生成 CURL 头部数据 */
         if (headers !== '' && headers !== undefined && headers.length > 0) {
-          headers=headers.substring(0,headers.length-1);
+          headers = headers.substring(0, headers.length - 1);
           headers = `--header '${headers}' `
         }
         if (response !== null) {
@@ -762,8 +766,8 @@
             curlAccept = `-H 'Accept: ${responseHeader['content-type']}'`;
           }
           // url
-          if (responseConfig&& responseConfig.url !== undefined) {
-            contentUrl = (process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0) ? `'${responseConfig.url}'` : ((responseConfig.url.indexOf(SWAGGER_URL)<0?`'${ SWAGGER_URL+ responseConfig.url}'`:`${responseConfig.url}`));
+          if (responseConfig && responseConfig.url !== undefined) {
+            contentUrl = (process.env.SWAGGER_URL !== null && process.env.SWAGGER_URL.length > 0) ? `'${responseConfig.url}'` : ((responseConfig.url.indexOf(SWAGGER_URL) < 0 ? `'${ SWAGGER_URL + responseConfig.url}'` : `${responseConfig.url}`));
           }
         }
         if (_this.swaggerCategory[this.countTo].name.toLowerCase() === 'get') {
@@ -786,17 +790,17 @@
             if (typeof this.jsonObjectTo === 'object') {
               this.isJsonObject = true;
             }
-            this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
-            this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
+            this.jsonObjectToValue = JSON.stringify(this.jsonObjectTo);
+            this.formatJsonObjectTo = syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           } else {
             try {
               this.isJsonObject = (typeof response.response.data === 'object' ? response.response.data : JSON.parse(response.response.data));
             } catch (e) {
               this.isJsonObject = false;
             }
-            this.jsonObjectTo = response&&response.response&&response.response.data;
-            this.jsonObjectToValue=JSON.stringify(this.jsonObjectTo);
-            this.formatJsonObjectTo=syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
+            this.jsonObjectTo = response && response.response && response.response.data;
+            this.jsonObjectToValue = JSON.stringify(this.jsonObjectTo);
+            this.formatJsonObjectTo = syntaxHighlight(formatterJson(JSON.stringify(this.jsonObjectTo)));
           }
         }
         // 显示结果
@@ -808,8 +812,10 @@
   }
 </script>
 <style>
-  .copy-json{
-    float: right;text-decoration: none;    font-size: 12px;
+  .copy-json {
+    float: right;
+    text-decoration: none;
+    font-size: 12px;
   }
 
   /* 响应参数说明部分 */

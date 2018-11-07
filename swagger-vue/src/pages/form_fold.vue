@@ -15,7 +15,7 @@
      </li>
     <transition-group  name="slide-fade" tag="ul">
       <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
-                 v-for="(item,key) in childProperties" :requireds="requireds"
+                 v-for="(item,key) in childProperties" :requiredArray="requiredArray"
                  :item="item" :keyTo="key" :properties="item.properties">
       </form-fold>
     </transition-group>
@@ -23,7 +23,7 @@
 </template>
 <script>
   export default {
-    props: ['name', 'item', 'properties', 'keyTo', 'depth','requireds'],
+    props: ['name', 'item', 'properties', 'keyTo', 'depth','requiredArray'],
     name: 'form-fold',
     data() {
       return {showChildren: false}
@@ -33,7 +33,7 @@
         if(this.item.required&&typeof this.item.required === 'boolean'&&this.item.required||(typeof this.item.required === 'object'&&this.item.required['length']>0)){
           return true;
         }
-        if(this.requireds&&typeof this.requireds === 'object'&&this.requireds['length']>0&&(this.requireds.includes(this.item.name)||this.requireds.includes(this.keyTo))){
+        if(this.requiredArray&&typeof this.requiredArray === 'object'&&this.requiredArray['length']>0&&(this.requiredArray.includes(this.item.name)||this.requiredArray.includes(this.keyTo))){
           return true;
         }
         return false;
