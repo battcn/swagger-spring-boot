@@ -1,7 +1,7 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="" xmlns: xmlns:>
-  <div style="padding-top:5px;">
+  <div class="list">
     <login v-on:getDropDown="getDropDown" v-if="lock"></login>
-    <div class="swagger-left" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
+    <div class="swagger-left">
       <ul class="nav-list">
         <select class="form-control" v-model.lazy="selected">
           <option v-for="(item,index) in dropDownData" :value="index">
@@ -16,7 +16,7 @@
         </li>
       </ul>
     </div>
-    <div class="swagger-category" style="height: 100%;overflow-y: auto;overflow-x: hidden;">
+    <div class="swagger-category">
       <ul style="margin: 0;padding: 0;">
         <li class="category-li" v-for="item,index in swaggerCategory" @click="_changeCountTo(index)"
             :style="{backgroundColor:BG[item.name.toUpperCase()]}">
@@ -44,15 +44,15 @@
     </div>
     <about v-show="countTo==-1"></about>
     <info-view v-show="countTo!==-1"
-                   v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
-                   v-bind:count="count" v-bind:countTo="countTo"></info-view>
+               v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
+               v-bind:count="count" v-bind:countTo="countTo"></info-view>
     <authorizations></authorizations>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
-  import {ERR_OK, CONSOLE,BG} from '../../api/config'
-  import {getDropDown, getBoxContent} from '../../api/get_data'
+  import {ERR_OK, CONSOLE, BG} from '../../api/config'
+  import {getDropDown, getBoxContent} from '../../api/data'
 
   import Login from '../login/index.vue'
   import About from '../about/index.vue'
@@ -111,8 +111,8 @@
             _this._getBoxContent(res.data[_this.dropDownCount].location)
           }
         }).catch((error) => {
-          let response=error.response;
-          if(response&&response.status===ERR_OK.logCode){
+          let response = error.response;
+          if (response && response.status === ERR_OK.logCode) {
             _this.DECIDE_ACCOUNT_ISVERIFY(true);
             console.error(CONSOLE.PERMISSION_ERROR + error);
           }
@@ -213,9 +213,14 @@
     opacity: 0;
   }
 
+  .list {
+    padding-top: 5px;
+  }
+
   /* select及其下方的接口宽度样式 */
   .swagger-left {
     width: 21%;
+    overflow: hidden auto;
     margin-top: 0px;
     position: fixed;
     height: 100%;
@@ -291,6 +296,7 @@
     position: fixed;
     height: 100%;
     transition: all 0.2s;
+    overflow: hidden auto;
   }
 
   .swagger-category .category-li {

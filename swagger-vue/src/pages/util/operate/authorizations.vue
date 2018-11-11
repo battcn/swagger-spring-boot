@@ -24,14 +24,15 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex'
-  import {promptPopUpShow}   from '../../../common/js/util'
+  import {promptPopUpShow} from '../../../common/js/util'
+
   export default {
     name: 'authorizations',
     data() {
       return {authorizeShow: false, authorizeVal: ""}
     },
     computed: {
-      ...mapGetters(['debugAuthorization','dropDownBoxContent']),
+      ...mapGetters(['debugAuthorization', 'dropDownBoxContent']),
       authorizeInfo() {
         return this.dropDownBoxContent && this.dropDownBoxContent.securityDefinitions && this.dropDownBoxContent.securityDefinitions['X-Authorization'];
       }
@@ -48,7 +49,7 @@
           sessionStorage.setItem("authorize", JSON.stringify(arr));
         }
         this._setAuObj(this.authorizeInfo.name);
-        promptPopUpShow.call(this,"修改 X-Authorization 成功");
+        promptPopUpShow.call(this, "修改 X-Authorization 成功");
         this._closeAuthorize();
       },
       _setAuObj: function (name) {/* 保存对象 */
@@ -67,7 +68,7 @@
         this.authorizeVal = this.debugAuthorization;
       }
     },
-    created(){
+    created() {
       let _this = this;
       if (window.sessionStorage) {
         let val = sessionStorage.getItem("authorize");

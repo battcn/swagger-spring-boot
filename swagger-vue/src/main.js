@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store/index'
 import layer from 'vue-layer'
+
 Vue.config.productionTip = false
 Vue.prototype.$layer = layer(Vue);
 /* eslint-disable no-new */

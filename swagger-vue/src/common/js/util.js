@@ -1,29 +1,26 @@
 /* 对象拷贝 */
-const  syntaxHighlight=function (json) {
-  if(json===undefined){return undefined;}
-  json = json.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
-  return json.replace( /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function ( match ) {
+const syntaxHighlight = function (json) {
+  if (json === undefined) {
+    return undefined;
+  }
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
     var cls = 'number';
-    if ( /^"/.test( match ) )
-    {
-      if ( /:$/.test( match ) )
-      {
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) {
         cls = 'key';
-      } else
-      {
+      } else {
         cls = 'string';
       }
-    } else if ( /true|false/.test( match ) )
-    {
+    } else if (/true|false/.test(match)) {
       cls = 'boolean';
-    } else if ( /null/.test( match ) )
-    {
+    } else if (/null/.test(match)) {
       cls = 'null';
     }
     return '<span class="' + cls + '">' + match + '</span>';
-  } );
+  });
 }
-const promptPopUpShow=function (hint) {/* 修改成功提示 */
+const promptPopUpShow = function (hint) {/* 修改成功提示 */
   this.$layer.msg(hint, {time: 2});
 }
 const deepCopy = function (source) {
@@ -81,17 +78,19 @@ const basicTypeInit = function (type) {
     return {type: "file", in: "formData"}
   }
 };
-const formatterJson=function (text_value) {/*JSON数据格式化(将其以 上下展开形式 返回) */
-  if(text_value===undefined){return undefined;}
+const formatterJson = function (text_value) {/*JSON数据格式化(将其以 上下展开形式 返回) */
+  if (text_value === undefined) {
+    return undefined;
+  }
   let res = "";
   for (let i = 0, j = 0, k = 0, ii, ele; i < text_value.length; i++) {//k:缩进，j:""个数
     ele = text_value.charAt(i);
-    if (j % 2 === 0 && (ele === "}"||ele === "]")) {
+    if (j % 2 === 0 && (ele === "}" || ele === "]")) {
       k--;
       for (ii = 0; ii < k; ii++) ele = "    " + ele;
       ele = "\n" + ele;
     }
-    else if (j % 2 === 0 && (ele === "{"||ele === "[")) {
+    else if (j % 2 === 0 && (ele === "{" || ele === "[")) {
       ele += "\n";
       k++;
       //debugger;
@@ -107,5 +106,5 @@ const formatterJson=function (text_value) {/*JSON数据格式化(将其以 上�
   return res;
 };
 export {
-  deepCopy, basicTypeInit,formatterJson,promptPopUpShow,syntaxHighlight
+  deepCopy, basicTypeInit, formatterJson, promptPopUpShow, syntaxHighlight
 }

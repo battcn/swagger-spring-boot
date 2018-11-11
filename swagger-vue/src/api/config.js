@@ -17,7 +17,7 @@ function projectName() {
 }
 
 const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SWAGGER_URL;
-const PROJECT_NAME=projectName();
+const PROJECT_NAME = projectName();
 
 /* 获取单选框数据链接 */
 const DROPDOWN = PROJECT_NAME + '/swagger-resources';
@@ -38,6 +38,6 @@ const CONSOLE = {
   PERMISSION_ERROR: '身份验证失败啦,请进行身份验证后使用！',
   LOADSTATUS: '加载失败'
 };
-export {SWAGGER_URL,PROJECT_NAME, ISVERIFY, LOGIN, DROPDOWN, ERR_OK, BG, CONSOLE}
+export {SWAGGER_URL, PROJECT_NAME, ISVERIFY, LOGIN, DROPDOWN, ERR_OK, BG, CONSOLE}
 
 

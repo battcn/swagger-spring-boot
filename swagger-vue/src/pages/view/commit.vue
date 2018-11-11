@@ -6,19 +6,21 @@
           :style="{backgroundColor:BG[swaggerCategory&&swaggerCategory[countTo]&&swaggerCategory[countTo].name.toUpperCase()]}">{{swaggerCategory[countTo] && swaggerCategory[countTo].name ? swaggerCategory[countTo].name.toUpperCase() : ""}}</span>
       <div>
         <input v-if="(typeof linkagePath)=='string'" v-bind:value="linkagePath"
-               style="width:100%;height: 23px;line-height: 23px;" type="text"/>
+               type="text"/>
         <input v-else v-bind:value="linkagePath"
-               style="width:100%;height: 23px;line-height: 23px;" type="text"/>
+               type="text"/>
       </div>
       <button type="button" @click="_formCollection">发送</button>
     </div>
-    <div v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters" class="content-parameter">
+    <div
+      v-if="swaggerCategory[countTo]&&swaggerCategory[countTo].pathInfo&&swaggerCategory[countTo].pathInfo.parameters"
+      class="content-parameter">
       <ul>
         <li class="parameter-head">
-          <input v-model="selectAll" style="margin-top:10px;" type="checkbox"
+          <input v-model="selectAll" type="checkbox"
                  @click="selectAll=!selectAll"/>
           <span>参数名称</span>
-          <span style="border-right: 7px solid transparent;">参数值</span>
+          <span>参数值</span>
           <span>操作</span>
         </li>
         <li v-for="(item,key) in copyChildForm">
@@ -29,16 +31,16 @@
           <div class="parameter-value">
               <textarea rows="10" v-model="copyChildForm[key].default"
                         v-if="childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData'"
-                        style="height:auto;width:100%;color: #858585;padding: 5px 9px;"
-                        type="text" ></textarea>
-            <div class="parameter-file" v-else-if="(typeof childForm[key].default)=='object'&&childForm[key].default.in==='formData'&&childForm[key].default.type==='file'">
-              <input type="file" @change="_fileChange($event)" ref="fileInput"/>选择文件  {{fileName}}
+                        type="text"></textarea>
+            <div class="parameter-file"
+                 v-else-if="(typeof childForm[key].default)=='object'&&childForm[key].default.in==='formData'&&childForm[key].default.type==='file'">
+              <input type="file" @change="_fileChange($event)" ref="fileInput"/>选择文件 {{fileName}}
             </div>
             <input v-else-if="linkageSection==item.name"
-                   v-model="keyValue" type="text" style="width:100%;margin-top: 8px;"/>
-            <input v-else  v-model="copyChildForm[key].default" type="text" style="width:100%;margin-top: 8px;"/>
+                   v-model="keyValue" type="text"/>
+            <input v-else v-model="copyChildForm[key].default" type="text"/>
           </div>
-          <span  v-if="childForm[key].default==''||(typeof childForm[key].default)!='object'"
+          <span v-if="childForm[key].default==''||(typeof childForm[key].default)!='object'"
                 class="parameter-operating" @click="_deleteInterfaceRequest(key,item)">删除</span>
         </li>
       </ul>
@@ -46,21 +48,22 @@
   </div>
 </template>
 <script>
-  import {deepCopy, basicTypeInit,formatterJson,promptPopUpShow} from '../../common/js/util'
+  import {deepCopy, basicTypeInit, formatterJson, promptPopUpShow} from '../../common/js/util'
   import {mapGetters, mapMutations} from 'vuex'
   import {BG} from '../../api/config'
+
   export default {
     name: "commit",
     data() {
-      return {BG:BG,keyValue: "", selectAll: false, s: false,fileName:""}
+      return {BG: BG, keyValue: "", selectAll: false, s: false, fileName: ""}
     },
-    props: ['childForm',  'swaggerCategory','selected', 'count', 'countTo', 'interfaceRequest', 'parameterValue'],
+    props: ['childForm', 'swaggerCategory', 'selected', 'count', 'countTo', 'interfaceRequest', 'parameterValue'],
     computed: {
       ...mapGetters({
-        infoData:'tabDataInfo'
+        infoData: 'tabDataInfo'
       }),
-      copyChildForm(){ // 数据字段
-        let _this=this;
+      copyChildForm() { // 数据字段
+        let _this = this;
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         if (this.infoData[key] !== undefined) {
           return this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][0];
@@ -70,13 +73,13 @@
           if (copyChildForms[key]['default'] === undefined) {
             copyChildForms[key]['default'] = {};
           }
-          if(typeof copyChildForms[key]['default'] === "object"){
-            copyChildForms[key]['default']=formatterJson(JSON.stringify(copyChildForms[key]['default']));
+          if (typeof copyChildForms[key]['default'] === "object") {
+            copyChildForms[key]['default'] = formatterJson(JSON.stringify(copyChildForms[key]['default']));
           }
         }
         return copyChildForms;
       },
-      copyLinkPath(){
+      copyLinkPath() {
         return (this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathName) ? this.swaggerCategory[this.countTo].pathName : "";
       },
       linkagePath() {/*   */
@@ -96,7 +99,7 @@
         }
         return path;
       },
-      linkageSection(){/* 路径参数 */
+      linkageSection() {/* 路径参数 */
         let path = this.copyLinkPath;
         if (path !== undefined && path.indexOf("{") > 0) { //判断是否有参数在PATH路径上
           let s = path.match(/\{.+\}/) && path.match(/\{.+\}/)[0];
@@ -106,8 +109,8 @@
       }
     },
     methods: {
-      ...mapMutations(['UPDATE_TABDATA_INFODATAITEM','SELETE_TABDATA_INFODATAITEM','INSERT_TABDATA_ADDTAB','UPDATE_TABDATA_INFODATA']),
-      _saveTab(){
+      ...mapMutations(['UPDATE_TABDATA_INFODATAITEM', 'SELETE_TABDATA_INFODATAITEM', 'INSERT_TABDATA_ADDTAB', 'UPDATE_TABDATA_INFODATA']),
+      _saveTab() {
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
           this.keyValue = this.infoData && this.infoData[key] && this.infoData[key][1];
@@ -117,80 +120,80 @@
         data.value = [this.copyChildForm, this.keyValue, this.selected, this.count, this.countTo];
         this.INSERT_TABDATA_ADDTAB(data);
       },
-      _initInfo(){
+      _initInfo() {
         this.selectAll = false;
         this.s = false;
-        this.keyValue="";
-         this.file="";
+        this.keyValue = "";
+        this.file = "";
         this._saveTab();
       },
       _formCollection: function () { //收集表单信息
         let data = deepCopy(this.copyChildForm);
-      for(let i=0,n=data.length;i<n;i++) {
-        if(this.childForm[i].default!==''&&(typeof this.childForm[i].default)==='object'&&this.childForm[i].default.in!=='formData'){
-           data[i]['default']=JSON.parse(data[i]['default']);
-        }
-        if (data[i]&&data[i]['required']&&data[i]['default']===""&& data[i]['required'] === true) {
-          promptPopUpShow.call(this,data[i].name + "为必选字段");
-            return false;
-        }
-          // 路径参数判断
-          if(data[i]['name']&&data[i]['name'] === this.linkageSection&&this.keyValue===""){
-            promptPopUpShow.call(this,data[i].name + "为必选字段");
+        for (let i = 0, n = data.length; i < n; i++) {
+          if (this.childForm[i].default !== '' && (typeof this.childForm[i].default) === 'object' && this.childForm[i].default.in !== 'formData') {
+            data[i]['default'] = JSON.parse(data[i]['default']);
+          }
+          if (data[i] && data[i]['required'] && data[i]['default'] === "" && data[i]['required'] === true) {
+            promptPopUpShow.call(this, data[i].name + "为必选字段");
             return false;
           }
-      }
+          // 路径参数判断
+          if (data[i]['name'] && data[i]['name'] === this.linkageSection && this.keyValue === "") {
+            promptPopUpShow.call(this, data[i].name + "为必选字段");
+            return false;
+          }
+        }
         for (let key in this.$refs.checkboxs) {
           data[key].required = this.$refs.checkboxs[key].checked;
         }
         /* 判断是否有对应的文件上传存在 */
         let param = undefined;
-        if(this.$refs.fileInput&&this.$refs.fileInput[0]&&this.$refs.fileInput[0].files&&this.$refs.fileInput[0].files.length>0){
-          let file =this.$refs.fileInput[0].files[0];
+        if (this.$refs.fileInput && this.$refs.fileInput[0] && this.$refs.fileInput[0].files && this.$refs.fileInput[0].files.length > 0) {
+          let file = this.$refs.fileInput[0].files[0];
           param = new FormData();
-          param.append('file',file);
+          param.append('file', file);
         }
-        this.$emit('getCollection', data,param);
+        this.$emit('getCollection', data, param);
         return true;
       },
       _deleteInterfaceRequest: function (key, item) {
         if (item.required) {
-          promptPopUpShow.call(this,item.name + "为必选字段");
+          promptPopUpShow.call(this, item.name + "为必选字段");
           return false;
         }
         this.copyChildForm.splice(key, 1);
         this.selectAll = !this.selectAll;
         this.selectAll = !this.selectAll;
       },
-      _fileChange($event){
-        let fileName = this.$refs.fileInput&&this.$refs.fileInput[0]&&this.$refs.fileInput[0].files&&this.$refs.fileInput[0].files[0]&&this.$refs.fileInput[0].files[0].name;
-        if(fileName!==undefined&&fileName!==""){
-          this.fileName=fileName;
+      _fileChange($event) {
+        let fileName = this.$refs.fileInput && this.$refs.fileInput[0] && this.$refs.fileInput[0].files && this.$refs.fileInput[0].files[0] && this.$refs.fileInput[0].files[0].name;
+        if (fileName !== undefined && fileName !== "") {
+          this.fileName = fileName;
           return true;
         }
-        this.fileName="";
+        this.fileName = "";
       }
     },
     watch: {
-      selected(){
+      selected() {
         this._initInfo();
       },
-      count(){
+      count() {
         this._initInfo();
       },
-      countTo(){
+      countTo() {
         this._initInfo();
       },
-      keyValue(){
+      keyValue() {
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + this.copyLinkPath;
         if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
           let inf = deepCopy(this.infoData[key]);
-          inf[1]=this.keyValue;
-          this.UPDATE_TABDATA_INFODATA(key,inf);
+          inf[1] = this.keyValue;
+          this.UPDATE_TABDATA_INFODATA(key, inf);
         }
       }
     },
-    created(){
+    created() {
       this._initInfo();
     }
   }
@@ -227,9 +230,11 @@
     background-color: #fff;
     border: 1px solid #d5d5d5;
     padding: 5px 4px;
-    line-height: 1.2;
     font-size: 14px;
     font-family: inherit;
+    width: 100%;
+    height: 23px;
+    line-height: 23px;
   }
 
   .content-url > button {
@@ -269,7 +274,7 @@
     width: 5%;
     float: left;
     height: 20px;
-    margin-top: 10px;
+    margin-top: 10px !important;
   }
 
   .parameter-head span {
@@ -281,6 +286,7 @@
     width: 48%;
     float: left;
     margin-left: 2%;
+    border-right: 7px solid transparent;
     margin-right: 2%;
   }
 
@@ -314,8 +320,20 @@
     margin-left: 2%;
     margin-right: 2%;
   }
+
+  .content-parameter li .parameter-value textarea {
+    width: 100%;
+    color: #858585;
+    padding: 5px 9px;
+  }
+
+  .content-parameter li .parameter-value > input {
+    width: 100%;
+    margin-top: 8px;
+  }
+
   /* 文件上传 */
-  .content-parameter li .parameter-value .parameter-file{
+  .content-parameter li .parameter-value .parameter-file {
     position: relative;
     background: #D0EEFF;
     border: 1px solid #99D3F5;
@@ -331,20 +349,24 @@
     cursor: pointer;
     font-size: 12px;
   }
-  .content-parameter li .parameter-value .parameter-file input{
+
+  .content-parameter li .parameter-value .parameter-file input {
     position: absolute;
     font-size: 100px;
-    opacity: 0;top: 0;
+    opacity: 0;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
   }
-  .content-parameter li .parameter-value .parameter-file:hover{
+
+  .content-parameter li .parameter-value .parameter-file:hover {
     background: #AADFFD;
     border-color: #78C3F3;
     color: #004974;
     text-decoration: none;
   }
+
   .content-parameter li .parameter-operating {
     font-size: 14px;
     cursor: pointer;

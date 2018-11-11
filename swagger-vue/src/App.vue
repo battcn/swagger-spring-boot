@@ -9,6 +9,7 @@
 <script type="text/ecmascript-6">
   import 'normalize.css'
   import list from './pages/view/list.vue'
+
   export default {
     name: 'app',
     components: {list}
@@ -36,8 +37,19 @@
   li {
     list-style: none;
   }
-  .key{    padding-right: 6px;line-height: 21px;  letter-spacing: 1px;}
-  .string{color: green;}
-  .number{color: #ee422e;}
+
+  .key {
+    padding-right: 6px;
+    line-height: 21px;
+    letter-spacing: 1px;
+  }
+
+  .string {
+    color: green;
+  }
+
+  .number {
+    color: #ee422e;
+  }
 
 </style>

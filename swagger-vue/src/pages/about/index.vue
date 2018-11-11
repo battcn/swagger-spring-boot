@@ -30,23 +30,24 @@
 <script type="text/ecmascript-6">
   import {deepCopy} from '../../common/js/util'
   import {mapGetters} from 'vuex'
+
   export default {
     name: 'about',
-    data(){
+    data() {
       return {}
     },
     computed: {
       ...mapGetters(['dropDownBoxContent']),
-      dataAll(){
+      dataAll() {
         return deepCopy(this.dropDownBoxContent)
       },
-      hostInfo(){/* host字段 */
+      hostInfo() {/* host字段 */
         return this.dataAll && this.dataAll.host;
       },
-      infoData(){/*info字段 数据*/
+      infoData() {/*info字段 数据*/
         return this.dataAll && this.dataAll.info;
       },
-      author(){/* 作者信息 */
+      author() {/* 作者信息 */
         return this.infoData && this.infoData.contact;
       }
 

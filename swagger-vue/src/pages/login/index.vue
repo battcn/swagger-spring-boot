@@ -1,9 +1,9 @@
 <template>
   <div class="login">
     <div class="content">
-    <header>
-      swagger 在线接口调试
-    </header>
+      <header>
+        swagger 在线接口调试
+      </header>
       <div class="input">
         <h3>用户登录 / User login</h3>
         <input v-model="username" placeholder="账号" type="text">
@@ -14,9 +14,10 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapMutations,mapGetters} from 'vuex'
+  import {mapMutations, mapGetters} from 'vuex'
   import {CONSOLE} from '../../api/config'
-  import {login,isVerify} from '../../api/accounts'
+  import {login, isVerify} from '../../api/accounts'
+
   export default {
     name: 'login',
     data() {
@@ -24,13 +25,13 @@
     },
     methods: {
       ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY']),
-      _login(){
-       let obj = {'username': this.username, 'password': this.password};
+      _login() {
+        let obj = {'username': this.username, 'password': this.password};
         this._loginOperat(obj);
       },
-      _loginOperat(obj){// 登录操作
+      _loginOperat(obj) {// 登录操作
         let _this = this;
-        login(obj).then((res)=>{
+        login(obj).then((res) => {
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
           _this.$emit('getDropDown');
         }).catch(function (err) {
@@ -53,7 +54,7 @@
         })
       }
     },
-    computed:{
+    computed: {
       ...mapGetters(['accountIsSecurity'])
     }
   }
@@ -62,17 +63,22 @@
   .login {
     position: fixed;
     background: #ccc;
-    z-index:999;
+    z-index: 999;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
   }
+
   .login .content {
-position: absolute;border-radius:5px;
-    top:50%;
-    left:50%;transform: translate(-50%, -50%);    overflow: hidden;
+    position: absolute;
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
   }
+
   .login .content header {
     background-color: #73CCFE;
     height: 45px;
@@ -82,9 +88,6 @@ position: absolute;border-radius:5px;
     color: #fff;
     font-weight: 600;
   }
-
-
-
 
   .login .content .input {
     box-sizing: border-box;
@@ -120,7 +123,8 @@ position: absolute;border-radius:5px;
   }
 
   .login .content .input button {
-    outline: none;    cursor: pointer;
+    outline: none;
+    cursor: pointer;
     width: 251px;
     height: 38px;
     padding: 5px 24px;
@@ -130,8 +134,9 @@ position: absolute;border-radius:5px;
     color: #fff;
     letter-spacing: 5px;
   }
-  .login .content .input button:hover{
-    background-color:#2196F3;
+
+  .login .content .input button:hover {
+    background-color: #2196F3;
   }
 
 </style>

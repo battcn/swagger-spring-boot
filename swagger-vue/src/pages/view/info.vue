@@ -1,11 +1,11 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="">
   <div class="swagger-main">
     <div class="switch">
-      <span style="cursor:pointer;" @click="switchA=0" :class="[switchA==0?'active':'']">接口说明</span>
-      <span style="cursor:pointer;" @click="switchA=1" :class="[switchA==1?'active':'']">在线调试</span>
+      <span @click="switchA=0" :class="[switchA==0?'active':'']">接口说明</span>
+      <span @click="switchA=1" :class="[switchA==1?'active':'']">在线调试</span>
     </div>
-    <div v-show="switchA==0" style="" class="swagger-content">
-      <ul class="content-list" style="">
+    <div v-show="switchA==0" class="swagger-content">
+      <ul class="content-list">
         <li><span>接口url</span>
           <div>
             <span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathName ? swaggerCategory[countTo].pathName : ""}}</span>
@@ -120,19 +120,19 @@
               :interfaceRequest="interfaceRequest">
       </commit>
       <div class="debugging-result" v-show="resultShow">
-      <span style="" @click="debugging='content'"
+      <span @click="debugging='content'"
             :class="[debugging=='content'?'active':'']">响应内容</span>
-        <span style="" @click="debugging='cookies'"
+        <span @click="debugging='cookies'"
               :class="[debugging=='cookies'?'active':'']">Cookies</span>
-        <span style="" @click="debugging='header'"
+        <span @click="debugging='header'"
               :class="[debugging=='header'?'active':'']">Header</span>
-        <span style="" @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
+        <span @click="debugging='curl'" :class="[debugging=='curl'?'active':'']">curl方式</span>
         <b>Time:<a href="javascript:"> {{debugRequestTime}} ms</a></b>
         <div class="result-content">
           <div class="content" v-show="debugging=='content'">
             <a v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'"
                href="javascript:" class="font-color copy-json" :data-clipboard-text="jsonObjectToValue">复制JSON</a>
-            <li style="white-space: pre-wrap;color: #1A1A1A;font-size: 18px;">
+            <li>
               <pre
                 v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'||(debugResponse&&debugResponse.response&&debugResponse.response.headers&&debugResponse.response.headers['content-type'])"
                 style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
@@ -706,7 +706,6 @@
           _this.codeImgUrl = `<span>请求中。。。。${SWAGGER_URL + url}</span>`;
           _this.codeImgUrl = `<img src=${SWAGGER_URL + url + '?' + new Date().getTime()} />`;
           let outTime = new Date();
-          console.info(CONSOLE.SUCCESS + SWAGGER_URL + url);
           _this.SET_DEBUGREQUEST_REQUESTTIME(outTime - enterTime);
           // 当响应数据为图片显示时，伪造数据响应头
           let contentType = "";
@@ -733,7 +732,6 @@
           if (_this.debugResponse && _this.debugResponse.headers && _this.debugResponse.headers['content-type'].indexOf('image') === 0) {
             _this.codeImgUrl = "<span>[object Blob]</span>";
           }
-          console.info(CONSOLE.SUCCESS + (_this.debugResponse && _this.debugResponse.config && _this.debugResponse.config.url));
           _this._stitchingCurl(headerParams, jsonReqdata);
         }).catch(function (err) {
           console.error(CONSOLE.ERROR + err);
@@ -985,6 +983,7 @@
   .result-content {
     border-top: 1px solid #EBEBEB;
     padding-top: 15px;
+    font-size: 16px;
   }
 
   .result-content > div {
@@ -993,6 +992,12 @@
     font-size: 16px;
     text-align: left;
     padding: 17px 15px 15px;
+  }
+
+  .result-content .content li {
+    white-space: pre-wrap;
+    color: #1A1A1A;
+    font-size: 18px;
   }
 
   .debugging-header > ul {
@@ -1166,6 +1171,7 @@
     font-size: 14px;
     display: inline-block;
     padding: 10px 15px;
+    cursor: pointer;
     border: 1px solid #EBEBEB;
     position: relative;
     top: 1px;

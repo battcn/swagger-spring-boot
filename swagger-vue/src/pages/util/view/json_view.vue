@@ -43,14 +43,14 @@
       }
     },
     computed: {
-      isSet(){
+      isSet() {
         return !!(this.obj && ((typeof this.obj) === 'array' || (typeof this.obj) === 'object'));
       }
     }
   }
 </script>
 <style>
-  .line:before{
+  .line:before {
     position: absolute;
     border-left: 1px dotted #ccc;
     height: 100%;
@@ -58,6 +58,7 @@
     margin-top: 20px;
     left: 7px;
   }
+
   .quantity {
     color: grey;
     font-size: 10pt;
@@ -75,8 +76,11 @@
     display: inline-block;
   }
 
-  .json-view {overflow: hidden;
-    text-align: left;    margin-top: 6px;position: relative;
+  .json-view {
+    overflow: hidden;
+    text-align: left;
+    margin-top: 6px;
+    position: relative;
   }
 
   .test-bottom-border {
