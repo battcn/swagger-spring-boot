@@ -2,9 +2,7 @@ package com.swagger.controller;
 
 import com.swagger.entity.DefaultPojo;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * swagger
@@ -21,5 +19,12 @@ public class DefaultValueController {
     public DefaultPojo defaultPojo() {
 
         return new DefaultPojo();
+    }
+
+
+    @PostMapping
+    public DefaultPojo defaultPojo1(@RequestBody DefaultPojo defaultPojo) {
+
+        return defaultPojo;
     }
 }
