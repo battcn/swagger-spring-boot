@@ -21,6 +21,11 @@ public class DefaultValueController {
         return new DefaultPojo();
     }
 
+    @GetMapping("/query")
+    public DefaultPojo query(DefaultPojo pojo) {
+
+        return pojo;
+    }
 
     @PostMapping
     public DefaultPojo defaultPojo1(@RequestBody DefaultPojo defaultPojo) {
