@@ -28,7 +28,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {deepCopy} from '../../common/js/util'
+  import {deepCopy} from '../../common/util'
   import {mapGetters} from 'vuex'
 
   export default {

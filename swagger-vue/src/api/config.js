@@ -20,24 +20,24 @@ const SWAGGER_URL = process.env.SWAGGER_URL === "" ? rootPath() : process.env.SW
 const PROJECT_NAME = projectName();
 
 /* 获取单选框数据链接 */
-const DROPDOWN = PROJECT_NAME + '/swagger-resources';
+const SWAGGER_RESOURCES = PROJECT_NAME + '/swagger-resources';
 
 /* 判断是否需要账号验证接口链接 */
-const ISVERIFY = PROJECT_NAME + '/v2/swagger-security';
+const SWAGGER_SECURITY = PROJECT_NAME + '/v2/swagger-security';
 /*  账号登录验证 */
-const LOGIN = PROJECT_NAME + '/v2/swagger-login';
+const SWAGGER_LOGIN = PROJECT_NAME + '/v2/swagger-login';
 
 /* 响应码 */
 const HTTP_STATUS = {min: 200, max: 299, logCode: 401};
 /* 颜色 */
 const BG = {GET: '#D1EAFF', POST: '#D1FED3', PATCH: '#FFE2D2', DELETE: '#FFD1D1', PUT: "#F0E0CA"}
 /* 消息提示语 */
-const CONSOLE = {
+const MESSAGES = {
   ERROR: "请求发送失败",
   SUCCESS: "请求发送成功  ",
   PERMISSION_ERROR: '身份验证失败啦,请进行身份验证后使用！',
   LOAD_STATUS: '加载失败'
 };
-export {SWAGGER_URL, PROJECT_NAME, ISVERIFY, LOGIN, DROPDOWN, HTTP_STATUS, BG, CONSOLE}
+export {SWAGGER_URL, PROJECT_NAME, SWAGGER_SECURITY, SWAGGER_LOGIN, SWAGGER_RESOURCES, HTTP_STATUS, BG, MESSAGES}
 
 

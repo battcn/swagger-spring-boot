@@ -1,14 +1,14 @@
 import axios from 'axios'
-import {SWAGGER_URL, ISVERIFY, LOGIN} from './config'
+import {SWAGGER_LOGIN, SWAGGER_SECURITY, SWAGGER_URL} from './config'
 
 export function isVerify() {
-  return axios.get(SWAGGER_URL + ISVERIFY).then((res) => {
+  return axios.get(SWAGGER_URL + SWAGGER_SECURITY).then((res) => {
     return Promise.resolve(res)
   })
 }
 
 export function login(params) {
-  let url = SWAGGER_URL + LOGIN;
+  let url = SWAGGER_URL + SWAGGER_LOGIN;
   if (params !== undefined && params !== null && JSON.stringify(params) !== "{}") {
     url += '?';
     for (let key in params) {

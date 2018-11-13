@@ -9,7 +9,7 @@ export function getDebugRequest(requestData) {
     data: data.data,
     method: data.type.toUpperCase(),
     headers: data.headerParams,
-    responseType: data.responseType || 'json'
+    responseType: data.responseType || 'text'
   }).then((res) => {
     return Promise.resolve(res)
   })

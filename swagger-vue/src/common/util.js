@@ -1,4 +1,8 @@
-/* 对象拷贝 */
+/**
+ * json数据格式化缩进(带dom标签，字体颜色)
+ * @param json数据
+ * @returns {} 缩进后的json数据
+ */
 const syntaxHighlight = function (json) {
   if (json === undefined) {
     return undefined;
@@ -20,9 +24,18 @@ const syntaxHighlight = function (json) {
     return '<span class="' + cls + '">' + match + '</span>';
   });
 }
-const promptPopUpShow = function (hint) {/* 修改成功提示 */
+/**
+ * 显示提示
+ * @param hint 显示的提示语内容
+ */
+const promptPopUpShow = function (hint) {/*  */
   this.$layer.msg(hint, {time: 2});
 }
+/**
+ * 对象拷贝
+ * @param source 对象类型数据
+ * @returns {*} 深层拷贝生成的对象类型数据
+ */
 const deepCopy = function (source) {
   let result = "";
   if (source === undefined || source === null) {
@@ -38,7 +51,12 @@ const deepCopy = function (source) {
     return source;
   }
 
-  function treatObj(source) { //处理对象类型
+  /**
+   * 对象类型数据的复制
+   * @param source  对象类型数据
+   * @returns {*} 深层拷贝生成的单个对象类型数据
+   */
+  function treatObj(source) { //
     result = {};
     for (let key in source) {
       result[key] = deepCopy(source[key]);
@@ -47,7 +65,12 @@ const deepCopy = function (source) {
     return result;
   }
 
-  function treatArray(source) { //处理list数组类型
+  /**
+   * list数组类型数据的拷贝
+   * @param source list数组类型数据
+   * @returns [] 深层拷贝生成的单个list数组类型数据
+   */
+  function treatArray(source) { //处理
     result = [];
     for (let key in source) {
       result.push(deepCopy(source[key]));
@@ -55,12 +78,21 @@ const deepCopy = function (source) {
     return result;
   }
 
-  function treatBasic(source) { //处理基本类型
+  /**
+   * 处理基本类型拷贝
+   * @param source 基本类型数据
+   * @returns string || Boolean || Number 拷贝生成的单个基本类型数据
+   */
+  function treatBasic(source) { //
     result = source;
     return result;
   }
 };
-/* 传入参数类型名字，返回该类型初始化的值 */
+/**
+ * 传入参数类型名字，返回该类型初始化的值
+ * @param type 参数类型名字
+ * @returns {*} 该类型初始化的值
+ */
 const basicTypeInit = function (type) {
   if (type === 'integer' || type === 'number') {
     return 0;
@@ -78,7 +110,12 @@ const basicTypeInit = function (type) {
     return {type: "file", in: "formData"}
   }
 };
-const formatterJson = function (text_value) {/*JSON数据格式化(将其以 上下展开形式 返回) */
+/**
+ * JSON数据格式化(将其以 上下展开形式 返回，不带dom标签及颜色)
+ * @param text_value JSON数据
+ * @returns string 格式化缩进后的json字符串
+ */
+const formatterJson = function (text_value) {/* */
   if (text_value === undefined) {
     return undefined;
   }

@@ -24,8 +24,8 @@ const mutations = {
   [types.SELETE_TABDATA_INFODATAITEM](state, key) {
     return state.tabDataInfo[key] || undefined;
   },
-  [types.UPDATE_TABDATA_INFODATA](state, key, val) {
-    Vue.set(state.tabDataInfo, key, val)
+  [types.UPDATE_TABDATA_INFODATA](state, data) {
+    data.length > 1 ? Vue.set(state.tabDataInfo, data[0], data[1]) : "";
   },
   [types.DELETE_TABDATA_DELETETAB](state, key) {
     if (key && state.tabDataInfo[key] !== undefined) {

@@ -30,7 +30,7 @@
           <input :value="item.name" class="parameter-name" type="text"/>
           <div class="parameter-value">
               <textarea rows="10" v-model="copyChildForm[key].default"
-                        v-if="childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData'"
+                        v-if="(childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData')||copyChildForm[key].addition"
                         type="text"></textarea>
             <div class="parameter-file"
                  v-else-if="(typeof childForm[key].default)=='object'&&childForm[key].default.in==='formData'&&childForm[key].default.type==='file'">
@@ -48,7 +48,7 @@
   </div>
 </template>
 <script>
-  import {deepCopy, basicTypeInit, formatterJson, promptPopUpShow} from '../../common/js/util'
+  import {deepCopy, basicTypeInit, formatterJson, promptPopUpShow} from '../../common/util'
   import {mapGetters, mapMutations} from 'vuex'
   import {BG} from '../../api/config'
 
@@ -71,6 +71,11 @@
         let copyChildForms = deepCopy(this.childForm);
         for (let key in copyChildForms) {/*   替换undefined的字段对象(暂代) */
           if (copyChildForms[key]['default'] === undefined) {
+            if (_this.interfaceRequest[key].schema && _this.interfaceRequest[key].schema.type === "object" && _this.interfaceRequest[key].schema.additionalProperties) {
+              copyChildForms[key]['default'] = "";
+              copyChildForms[key]['addition'] = true;
+              continue;
+            }
             copyChildForms[key]['default'] = {};
           }
           if (typeof copyChildForms[key]['default'] === "object") {
@@ -208,7 +213,7 @@
         if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
           let inf = deepCopy(this.infoData[key]);
           inf[1] = this.keyValue;
-          this.UPDATE_TABDATA_INFODATA(key, inf);
+          this.UPDATE_TABDATA_INFODATA([key, inf]);
         }
       }
     },

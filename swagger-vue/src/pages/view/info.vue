@@ -136,6 +136,8 @@
               <pre
                 v-if="debugResponse && debugResponse.headers && debugResponse.headers['content-type']!=='image/jpeg'||(debugResponse&&debugResponse.response&&debugResponse.response.headers&&debugResponse.response.headers['content-type'])"
                 style="font-family: inherit;" v-html="formatJsonObjectTo"></pre>
+              <p v-else-if="!debugResponse.data&&debugResponse.config&&debugResponse.config.data"
+                 v-text="debugResponse.config.data"></p>
               <p v-else v-html="codeImgUrl"></p>
             </li>
           </div>
@@ -173,9 +175,9 @@
   import Clipboard from 'clipboard'
   import {mapGetters, mapState, mapMutations} from 'vuex'
   import {getDebugRequest} from '../../api/debug_request'
-  import {SWAGGER_URL, HTTP_STATUS, CONSOLE} from '../../api/config'
+  import {SWAGGER_URL, HTTP_STATUS, MESSAGES} from '../../api/config'
   import FormFold from '../util/view/form_fold.vue'
-  import {deepCopy, basicTypeInit, formatterJson, syntaxHighlight} from '../../common/js/util'
+  import {deepCopy, basicTypeInit, formatterJson, syntaxHighlight} from '../../common/util'
   import Commit from './commit.vue'
   import JsonView from '../util/view/json_view.vue'
 
@@ -252,7 +254,7 @@
         let respBasis = false;
         let respState;
         if (resp === undefined) {
-          return CONSOLE.LOAD_STATUS;
+          return MESSAGES.LOAD_STATUS;
         }
         for (let key in resp) {// 通过判断响应码判定请求是否成功
           if (resp.hasOwnProperty(key) && parseInt(key) >= HTTP_STATUS.min && parseInt(key) <= HTTP_STATUS.max) {
@@ -369,6 +371,9 @@
               arr.push(this._formatRequest(parameters[i].schema.items.$ref));
               result[i]['properties'] = arr;
             }
+            if (parameters[i].schema && parameters[i].schema.type === "object" && parameters[i].schema.additionalProperties) {
+              result[i]['properties'] = undefined;
+            }
           }
         }
         let resultCopy = deepCopy(result);
@@ -377,14 +382,19 @@
           // 判断是否为list数组类型
           if (resultCopy.hasOwnProperty(key)) {
             if ((!resultCopy[key].type && resultCopy[key].properties && resultCopy[key].properties.type === "object")
-              || (resultCopy[key].properties && Array.isArray(resultCopy[key].properties))) {
-              // 当前字段为object类型
+              || (resultCopy[key].properties && Array.isArray(resultCopy[key].properties))
+              || (resultCopy[key].properties && resultCopy[key].schema && resultCopy[key].schema.type === "object" && resultCopy[key].schema.additionalProperties)) {
+              // 当前字段为object类型或附带additionalProperties字段
               if (resultCopy[key].properties && Array.isArray(resultCopy[key].properties)) {
                 this.parameterValue[key] = [];
                 this.parameterValue[key].push(this._iniObject(resultCopy[key].properties && resultCopy[key].properties[0] && resultCopy[key].properties[0].properties))
               } else {
                 this.parameterValue[key] = {};
                 this.parameterValue[key] = this._iniObject(resultCopy[key].properties.properties);
+              }
+              // 附带additionalProperties的字段需要转为object类型
+              if (resultCopy[key].properties && resultCopy[key].schema && resultCopy[key].schema.type === "object" && resultCopy[key].schema.additionalProperties) {
+                this.parameterValue[key] = undefined;
               }
             } else {
               // 当前字段为基础类型
@@ -747,7 +757,7 @@
               }
             }
             if (reqData.hasOwnProperty(key) && param !== undefined && reqData[key] && reqData[key]['in'] && reqData[key]['in'] === 'formData' && reqData[key]['type'] && reqData[key]['type'] === 'file') {
-              headerParams['Content'] = 'multipart/form-data; charset=utf-8';
+              headerParams['Content-Type'] = 'multipart/form-data; charset=utf-8';
               reqData = param;
             }
           }
@@ -785,14 +795,18 @@
         }
         getDebugRequest(requestData).then((res) => {
           let outTime = new Date();
+          if (res.data === "") {
+            res.data = undefined;
+          }
           _this.SET_DEBUGREQUEST_REQUESTTIME(outTime - enterTime);
           _this.SET_DEBUGREQUEST_RESPONSE(res);
-          if (_this.debugResponse && _this.debugResponse.headers && _this.debugResponse.headers['content-type'].indexOf('image') === 0) {
+          if (_this.debugResponse && _this.debugResponse.headers && _this.debugResponse.headers['content-type'] && _this.debugResponse.headers['content-type'].indexOf('image') === 0) {
             _this.codeImgUrl = "<span>[object Blob]</span>";
           }
+        }).then(() => {
           _this._stitchingCurl(headerParams, jsonReqdata);
         }).catch(function (err) {
-          console.error(CONSOLE.ERROR + err);
+          console.error(MESSAGES.ERROR + err);
           let errInfo = JSON.parse(JSON.stringify(err));
           _this.SET_DEBUGREQUEST_RESPONSE(errInfo);
           _this._stitchingCurl(headerParams, jsonReqdata);

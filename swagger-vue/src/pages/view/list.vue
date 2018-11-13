@@ -51,7 +51,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
-  import {HTTP_STATUS, CONSOLE, BG} from '../../api/config'
+  import {HTTP_STATUS, MESSAGES, BG} from '../../api/config'
   import {getDropDown, getBoxContent} from '../../api/data'
 
   import Login from './login.vue'
@@ -114,9 +114,9 @@
           let response = error.response;
           if (response && response.status === HTTP_STATUS.logCode) {
             _this.DECIDE_ACCOUNT_ISVERIFY(true);
-            console.error(CONSOLE.PERMISSION_ERROR + error);
+            console.error(MESSAGES.PERMISSION_ERROR + error);
           }
-          _this.UPDATE_DROPDOWN_DROPDOWNDATA(CONSOLE.ERROR + error);
+          _this.UPDATE_DROPDOWN_DROPDOWNDATA(MESSAGES.ERROR + error);
         })
       },
       _getBoxContent: function (url) {
@@ -124,7 +124,7 @@
         getBoxContent(url).then((res) => {
           _this.UPDATE_BOXCONTENT_BOXCONTENT(res.data)
         }).catch((err) => {
-          _this.UPDATE_BOXCONTENT_BOXCONTENT(CONSOLE.ERROR + err);
+          _this.UPDATE_BOXCONTENT_BOXCONTENT(MESSAGES.ERROR + err);
         })
       },
       /**

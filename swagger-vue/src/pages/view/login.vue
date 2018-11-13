@@ -15,7 +15,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {mapMutations, mapGetters} from 'vuex'
-  import {CONSOLE} from '../../api/config'
+  import {MESSAGES} from '../../api/config'
   import {login, isVerify} from '../../api/accounts'
 
   export default {
@@ -39,7 +39,7 @@
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
           _this.$emit('getDropDown');
         }).catch(function (err) {
-          console.log(CONSOLE.PERMISSION_ERROR + err);
+          console.log(MESSAGES.PERMISSION_ERROR + err);
         });
       },
       /**
@@ -53,12 +53,12 @@
           try {
             security = (security ? (typeof res.data.security === "string" ? JSON.parse(res.data.security) : res.data.security) : false);
           } catch (err) {
-            console.log(CONSOLE.PERMISSION_ERROR + err);
+            console.log(MESSAGES.PERMISSION_ERROR + err);
             security = false;
           }
           _this.DECIDE_ACCOUNT_ISVERIFY(security);
         }).catch((err) => {
-          console.log(CONSOLE.ERROR + err);
+          console.log(MESSAGES.ERROR + err);
         })
       }
     },
