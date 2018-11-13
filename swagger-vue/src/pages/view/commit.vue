@@ -1,5 +1,5 @@
-<template xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-model="http://www.w3.org/1999/xhtml"
-          xmlns:v-on="http://www.w3.org/1999/xhtml">
+<template xmlns:v-bind="http://www.w3.org/1999/xhtml"
+>
   <div>
     <div class="content-url">
         <span
@@ -110,6 +110,10 @@
     },
     methods: {
       ...mapMutations(['UPDATE_TABDATA_INFODATAITEM', 'SELETE_TABDATA_INFODATAITEM', 'INSERT_TABDATA_ADDTAB', 'UPDATE_TABDATA_INFODATA']),
+      /**
+       * 表单数据改变时进行保存操作
+       * @private
+       */
       _saveTab() {
         let key = this.swaggerCategory[this.countTo].name.toUpperCase() + "" + this.copyLinkPath;
         if (this.infoData && this.infoData[key] && this.infoData[key] && this.infoData[key][1] !== undefined) {
@@ -127,7 +131,11 @@
         this.file = "";
         this._saveTab();
       },
-      _formCollection: function () { //收集表单信息
+      /**
+       * 提交触发，表单验证 及 收集表单信息 上传到 父组件
+       * @private
+       */
+      _formCollection: function () { //
         let data = deepCopy(this.copyChildForm);
         for (let i = 0, n = data.length; i < n; i++) {
           if (this.childForm[i].default !== '' && (typeof this.childForm[i].default) === 'object' && this.childForm[i].default.in !== 'formData') {
@@ -156,6 +164,12 @@
         this.$emit('getCollection', data, param);
         return true;
       },
+      /**
+       *  删除表单中的某个字段数据
+       * @param key 删除的数据key值
+       * @param item 删除的数据value值
+       * @private
+       */
       _deleteInterfaceRequest: function (key, item) {
         if (item.required) {
           promptPopUpShow.call(this, item.name + "为必选字段");
@@ -165,6 +179,11 @@
         this.selectAll = !this.selectAll;
         this.selectAll = !this.selectAll;
       },
+      /**
+       * 上传文件框数据的更新
+       * @param $event
+       * @private
+       */
       _fileChange($event) {
         let fileName = this.$refs.fileInput && this.$refs.fileInput[0] && this.$refs.fileInput[0].files && this.$refs.fileInput[0].files[0] && this.$refs.fileInput[0].files[0].name;
         if (fileName !== undefined && fileName !== "") {

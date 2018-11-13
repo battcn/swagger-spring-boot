@@ -52,7 +52,12 @@
         promptPopUpShow.call(this, "修改 X-Authorization 成功");
         this._closeAuthorize();
       },
-      _setAuObj: function (name) {/* 保存对象 */
+      /**
+       * 保存附加参数对象
+       * @param name 附加参数名称
+       * @private
+       */
+      _setAuObj: function (name) {
         let key = name || (this.authorizeInfo && this.authorizeInfo.name);
         let value = this.authorizeVal;
         let obj = {};

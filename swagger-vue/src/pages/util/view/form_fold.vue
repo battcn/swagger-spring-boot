@@ -1,4 +1,4 @@
-<template xmlns="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<template xmlns="http://www.w3.org/1999/xhtml">
   <div class="tree-menu" :class="{'menu-border':isResponse}">
     <li v-if="isResponse" :class="{'font-color':properties}" @click="_toggleChildren" class="table-tr">
       <span :class="{'font-right':depth>0}" class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>

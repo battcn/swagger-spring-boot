@@ -28,7 +28,7 @@ const ISVERIFY = PROJECT_NAME + '/v2/swagger-security';
 const LOGIN = PROJECT_NAME + '/v2/swagger-login';
 
 /* 响应码 */
-const ERR_OK = {min: 200, max: 299, logCode: 401};
+const HTTP_STATUS = {min: 200, max: 299, logCode: 401};
 /* 颜色 */
 const BG = {GET: '#D1EAFF', POST: '#D1FED3', PATCH: '#FFE2D2', DELETE: '#FFD1D1', PUT: "#F0E0CA"}
 /* 消息提示语 */
@@ -36,8 +36,8 @@ const CONSOLE = {
   ERROR: "请求发送失败",
   SUCCESS: "请求发送成功  ",
   PERMISSION_ERROR: '身份验证失败啦,请进行身份验证后使用！',
-  LOADSTATUS: '加载失败'
+  LOAD_STATUS: '加载失败'
 };
-export {SWAGGER_URL, PROJECT_NAME, ISVERIFY, LOGIN, DROPDOWN, ERR_OK, BG, CONSOLE}
+export {SWAGGER_URL, PROJECT_NAME, ISVERIFY, LOGIN, DROPDOWN, HTTP_STATUS, BG, CONSOLE}
 
 

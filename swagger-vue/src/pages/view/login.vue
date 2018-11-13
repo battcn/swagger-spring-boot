@@ -29,7 +29,11 @@
         let obj = {'username': this.username, 'password': this.password};
         this._loginOperat(obj);
       },
-      _loginOperat(obj) {// 登录操作
+      /**
+       * 登录操作
+       * @private
+       */
+      _loginOperat(obj) {
         let _this = this;
         login(obj).then((res) => {
           _this.DECIDE_ACCOUNT_ISVERIFY(false);
@@ -38,7 +42,11 @@
           console.log(CONSOLE.PERMISSION_ERROR + err);
         });
       },
-      _isVerify: function () {//  判断是否设置登录验证
+      /**
+       * 判断是否设置登录验证
+       * @private
+       */
+      _isVerify: function () {
         let _this = this;
         isVerify().then((res) => {
           let security = res.data && res.data.security !== undefined;

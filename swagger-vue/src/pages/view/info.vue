@@ -57,7 +57,7 @@
             <span v-else>暂无</span>
           </div>
         </li>
-        <li><span>响应Model</span>
+        <li><span>Example Model</span>
           <div v-if="typeof jsonObject=='object'">
             <a href="javascript:" class="font-color copy-json" :data-clipboard-text="jsonValue">复制JSON</a>
             <span v-if="jsonObject['length']">[</span>
@@ -173,14 +173,13 @@
   import Clipboard from 'clipboard'
   import {mapGetters, mapState, mapMutations} from 'vuex'
   import {getDebugRequest} from '../../api/debug_request'
-  import {SWAGGER_URL, ERR_OK, CONSOLE} from '../../api/config'
+  import {SWAGGER_URL, HTTP_STATUS, CONSOLE} from '../../api/config'
   import FormFold from '../util/view/form_fold.vue'
   import {deepCopy, basicTypeInit, formatterJson, syntaxHighlight} from '../../common/js/util'
   import Commit from './commit.vue'
   import JsonView from '../util/view/json_view.vue'
 
   new Clipboard('.copy-json');
-  let Base64 = require('js-base64').Base64;
   export default {
     name: "info",
     data() {
@@ -205,11 +204,11 @@
       }
     },
     computed: {
-      /**
-       * @return {string}
-       */
       ...mapGetters(['dropDownBoxContent', 'debugResponse', 'debugRequestTime', 'debugAuthorizeObj']),
-      requiredArray: function () {/* 提取必需请求参数数组 */
+      /**
+       * @returns {Array} 提取必需请求参数数组
+       */
+      requiredArray: function () {
         let requiredAr = [];
         let obj = undefined;
         for (let key in this.interfaceRequest) {
@@ -244,16 +243,19 @@
         }
         return requiredAr;
       },
-      interfaceResponse: function () {/* 响应参数 */
+      /**
+       * @returns {*} 响应参数
+       */
+      interfaceResponse: function () {
         let pathInfo = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo);
         let resp = pathInfo && pathInfo.responses;
         let respBasis = false;
         let respState;
         if (resp === undefined) {
-          return CONSOLE.LOADSTATUS;
+          return CONSOLE.LOAD_STATUS;
         }
-        for (let key in resp) {/* 通过判断响应码判定请求是否成功 */
-          if (resp.hasOwnProperty(key) && parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
+        for (let key in resp) {// 通过判断响应码判定请求是否成功
+          if (resp.hasOwnProperty(key) && parseInt(key) >= HTTP_STATUS.min && parseInt(key) <= HTTP_STATUS.max) {
             respBasis = true;
             respState = key;
             break;
@@ -272,6 +274,7 @@
               let response = {};
               response[refType] = this._formatRequest(ref, [ref]);
               deftion = this._jsonInit(refType, [refType]);
+              //数组类型加外层[]包裹
               if (schema["type"] && schema["type"] === "array") {
                 let arrs = {};
                 arrs['properties'] = response;
@@ -297,7 +300,7 @@
               return "无";
             }
           } else {
-            /* 判断其响应是否为图片 */
+            // 判断其响应是否为图片
             if (pathInfo.produces) {
               for (let key in pathInfo.produces) {
                 if (pathInfo.produces[key].indexOf("image") === 0) {
@@ -314,7 +317,10 @@
           return "没有指定响应成功信息";
         }
       },
-      interfaceResponseCode: function () {/*  响应码 */
+      /**
+       * @returns {*} 响应码
+       */
+      interfaceResponseCode: function () {
         let resp = deepCopy(this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.responses);
         let respBasis = false;
         let respState;
@@ -322,7 +328,7 @@
           return "加载失败";
         }
         for (let key in resp) {
-          if (resp.hasOwnProperty(key) && parseInt(key) >= ERR_OK.min && parseInt(key) <= ERR_OK.max) {
+          if (resp.hasOwnProperty(key) && parseInt(key) >= HTTP_STATUS.min && parseInt(key) <= HTTP_STATUS.max) {
             respBasis = true;
             respState = key;
             break;
@@ -333,7 +339,10 @@
         }
         return {};
       },
-      interfaceRequest: function () {/* 请求参数 */
+      /**
+       * @returns {*} 请求参数
+       */
+      interfaceRequest: function () {
         if (!this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.parameters) {
           this.childForm = [];
           return false;
@@ -417,6 +426,10 @@
         }
         return result;
       },
+      /**
+       * 判断源数据下是否存在 security 属性
+       * @returns {boolean}
+       */
       isExistSecurity() {
         let is = this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.security;
         return !!is;
@@ -432,6 +445,10 @@
     },
     methods: {
       ...mapMutations(["SET_DEBUGREQUEST_REQUESTTIME", "SET_DEBUGREQUEST_RESPONSE"]),
+      /**
+       * 初始化当前vue组件的data数据，用于数据页的切换
+       * @private
+       */
       _iniData: function () {
         this.switchA = 0;
         this.resultShow = false;
@@ -447,7 +464,13 @@
         this.responseObjectName = "";
         this.isImgResponse = false;
       },
-      _responseCodeSchema: function (item) {/* 响应码部分 数据是否存在Schema字段 */
+      /**
+       * 响应码部分
+       * @param item 源数据
+       * @returns {boolean}  是否存在Schema字段
+       * @private
+       */
+      _responseCodeSchema: function (item) {
         if (item.schema && item.schema.type && item.schema.type === 'array' && item.schema.items) {
           return true;
         }
@@ -457,14 +480,25 @@
         }
         return false;
       },
-      _responseCodePreToggle: function (index) {/* 响应码部分数据JSON格式化展开收缩切换 */
+      /**
+       * 响应码列表中数据JSON格式化展开收缩切换
+       * @param index 点击数据索引位置
+       * @private
+       */
+      _responseCodePreToggle: function (index) {/*  */
         if (this.responseCodePre && this.responseCodePre[index] && this.responseCodePre[index]) {
           this.$set(this.responseCodePre, index, !this.responseCodePre[index])
         } else {
           this.$set(this.responseCodePre, index, true)
         }
       },
-      _iniObject: function (properties) {// 传入对象，对其进行类型初始化
+      /**
+       *传入对象properties属性，将对象的 properties属性 替换成 真实对象(不包含顶层)
+       * @param properties 待提取属性
+       * @returns {*} 属性的value值初始化后的对象
+       * @private
+       */
+      _iniObject: function (properties) {
         let obj = {};
         for (let key in properties) {
           if (properties.hasOwnProperty(key)) {
@@ -478,13 +512,20 @@
               }
             } else {
               /* 不包含子字段 */
-              obj[key] = basicTypeInit(properties[key].type)
+              obj[key] = properties[key].example || basicTypeInit(properties[key].type)
             }
           }
         }
         return obj;
       },
-      _formatRequest: function (itemsRef, refType) {/* 传入#/definitions/User，进行格式化 */
+      /**
+       *传入#/definitions/User，进行格式化
+       * @param itemsRef #/definitions/*
+       * @param refType 记录当前迭代各层级中元素名称的数组
+       * @returns {*} 用对象 替换 #/definitions/* 字段后 的对象
+       * @private
+       */
+      _formatRequest: function (itemsRef, refType) {
         let _refType = refType ? refType : [];
         let result = {};
         if (itemsRef === undefined || itemsRef === null || (typeof  itemsRef) !== "string") {
@@ -539,7 +580,14 @@
         }
         return result;
       },
-      _jsonInit: function (refType, topRefType) {/*  */
+      /**
+       * 将对象提取成真实对象(包含对象顶层)
+       * @param refType 已经替换了传入对象properties属性属性的对象
+       * @param topRefType 记录当前迭代各层级中元素名称的数组
+       * @returns {*} 真实对象
+       * @private
+       */
+      _jsonInit: function (refType, topRefType) {
         let _topRefType = topRefType ? topRefType : [];
         let _this = this;
         let definitionsArray = deepCopy(_this.dropDownBoxContent && _this.dropDownBoxContent.definitions);
@@ -550,7 +598,7 @@
         for (let i in definitionsArray) {
           if (definitionsArray.hasOwnProperty(i) && i === refType) {
             deftion = definitionsArray[i].properties;
-            break
+            break;
           }
         }
         if (deftion === null || deftion === undefined) {
@@ -600,22 +648,27 @@
               continue;
             }
             if (deftion[key].type === "boolean") {
-              deftion[key] = true;
+              deftion[key] = deftion[key].example || true;
               continue;
             }
             if (deftion[key].type === "integer" || deftion[key].type === "number") {
-              deftion[key] = 0;
+              deftion[key] = deftion[key].example || 0;
               continue;
             }
             if (deftion[key].type === "string") {
-              deftion[key] = "";
+              deftion[key] = deftion[key].example || "";
               continue;
             }
           }
         }
         return deftion;
       },
-      getForm: function (data, param) {/* param为假设存在文件上传时所传输的文件对象 */
+      /**
+       * 将子组件传递过来的表单数据进行提取
+       * @param data 子组件表单数据
+       * @param param 可能存在的上传文件对象
+       */
+      getForm: function (data, param) {
         let _this = this;
         let result = [];
         for (let key in data) {
@@ -628,8 +681,13 @@
           }
         }
         _this._stitchUrl(result, param);
-        /* param为假设存在文件上传时所传输的文件对象 */
       },
+      /**
+       * 根据表单数据 组装成 请求所需全部数据 及 可能的伪造请求head数据
+       * @param result 提取后的表单数据
+       * @param param 可能存在的上传文件对象
+       * @private
+       */
       _stitchUrl: function (result, param) {
         let _this = this;
         let url = (_this.swaggerCategory && _this.swaggerCategory[_this.countTo] && _this.swaggerCategory[_this.countTo].pathName) ? _this.swaggerCategory[_this.countTo].pathName : '',
@@ -678,7 +736,7 @@
             }
           }
         }
-        /*  判断是否为文件类型上传 */
+        //  判断是否为文件类型上传
         if (typeof reqData === "object") {
           for (let key in reqData) {
             if (typeof  reqData[key] === 'string') {
@@ -740,6 +798,12 @@
           _this._stitchingCurl(headerParams, jsonReqdata);
         })
       },
+      /**
+       * 通过请求的head及data数据组装curl
+       * @param headerParams 请求的head数据
+       * @param reqData 请求的data数据
+       * @private
+       */
       _stitchingCurl: function (headerParams, reqData) {
         let _this = this;
         let response = _this.debugResponse,
@@ -781,7 +845,7 @@
         }
         if (response !== null && response !== undefined) {
           // 正确响应
-          if (response.status !== null && response.status >= ERR_OK.min && response.status <= ERR_OK.max) {
+          if (response.status !== null && response.status >= HTTP_STATUS.min && response.status <= HTTP_STATUS.max) {
             this.isJsonObject = false;
             try {
               this.jsonObjectTo = (typeof response.data === 'object') ? response.data : JSON.parse(response.data);

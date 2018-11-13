@@ -51,10 +51,10 @@
 </template>
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
-  import {ERR_OK, CONSOLE, BG} from '../../api/config'
+  import {HTTP_STATUS, CONSOLE, BG} from '../../api/config'
   import {getDropDown, getBoxContent} from '../../api/data'
 
-  import Login from '../login/index.vue'
+  import Login from './login.vue'
   import About from '../about/index.vue'
   import InfoView from './info.vue'
   import Authorizations from '../util/operate/authorizations.vue'
@@ -112,7 +112,7 @@
           }
         }).catch((error) => {
           let response = error.response;
-          if (response && response.status === ERR_OK.logCode) {
+          if (response && response.status === HTTP_STATUS.logCode) {
             _this.DECIDE_ACCOUNT_ISVERIFY(true);
             console.error(CONSOLE.PERMISSION_ERROR + error);
           }
@@ -127,14 +127,22 @@
           _this.UPDATE_BOXCONTENT_BOXCONTENT(CONSOLE.ERROR + err);
         })
       },
-      _closeTab: function () {/* 删除当前 */
+      /**
+       * 删除当前
+       * @private
+       */
+      _closeTab: function () {
         if (this.tabDataShow && this.tabDataInfo && this.tabDataInfo[this.tabDataShow]) {
           this.DELETE_TABDATA_DELETETAB(this.tabDataShow);
           this.managementShow = false;
           this.countTo = -1;
         }
       },
-      _closeOthersTab: function () {/* 删除其他 */
+      /**
+       * 删除其他
+       * @private
+       */
+      _closeOthersTab: function () {
         if (this.tabDataShow && this.tabDataInfo) {
           for (let key in this.tabDataInfo) {
             if (key !== this.tabDataShow) {
