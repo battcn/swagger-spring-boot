@@ -66,6 +66,12 @@ spring.swagger.enabled=true
 
 # 更新记录 #
 ```
+2.1.2
+  发布时间：2018-11-14
+  更新内容：
+    1.解决调试面板 String 类型数据不显示
+    2.解决请求参数为 JSONObject时 没有按 JSON 传输
+    3.调试接口界面中 请求参数值可以添加 @ApiModelProperty 注解中 example 配置的默认值
 2.1.1
   发布时间：2018-11-08
   更新内容：
