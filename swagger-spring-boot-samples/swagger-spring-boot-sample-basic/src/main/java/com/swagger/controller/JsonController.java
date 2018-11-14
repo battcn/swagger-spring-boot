@@ -2,7 +2,6 @@ package com.swagger.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,8 +19,14 @@ public class JsonController {
     public String string(String value) {
         return value;
     }
-    @PostMapping
-    public JSONObject jsonObject(@ApiParam("这是一串JSON内容")@RequestBody JSONObject value) {
-        return value;
+
+    @PostMapping("/test1")
+    public String test1(@RequestBody String object) {
+        return object;
+    }
+
+    @PostMapping("/test2")
+    public JSONObject test2(@RequestBody JSONObject object) {
+        return object;
     }
 }
