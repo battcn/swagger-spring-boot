@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("/images")
-@Api(tags = "1.3")
+@Api(tags = "1.3", description = "图片管理", value = "图片管理")
 public class ImageController {
 
 
