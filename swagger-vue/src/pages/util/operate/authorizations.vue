@@ -24,7 +24,8 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex'
-  import {promptPopUpShow} from '../../../common/util'
+  import {POPUPS_MESSAGES} from './../../../api/config'
+  import {promptPopUpShow} from './../../../common/util'
 
   export default {
     name: 'authorizations',
@@ -49,7 +50,7 @@
           sessionStorage.setItem("authorize", JSON.stringify(arr));
         }
         this._setAuObj(this.authorizeInfo.name);
-        promptPopUpShow.call(this, "修改 X-Authorization 成功");
+        promptPopUpShow.call(this, POPUPS_MESSAGES.SUCCESS);
         this._closeAuthorize();
       },
       /**

@@ -50,7 +50,7 @@
 <script>
   import {deepCopy, basicTypeInit, formatterJson, promptPopUpShow} from '../../common/util'
   import {mapGetters, mapMutations} from 'vuex'
-  import {BG} from '../../api/config'
+  import {BG, POPUPS_MESSAGES} from '../../api/config'
 
   export default {
     name: "commit",
@@ -71,7 +71,10 @@
         let copyChildForms = deepCopy(this.childForm);
         for (let key in copyChildForms) {/*   替换undefined的字段对象(暂代) */
           if (copyChildForms[key]['default'] === undefined) {
-            if (_this.interfaceRequest[key].schema && _this.interfaceRequest[key].schema.type === "object" && _this.interfaceRequest[key].schema.additionalProperties) {
+            if (_this.interfaceRequest[key].schema && _this.interfaceRequest[key].schema.type) {
+              if (_this.interfaceRequest[key].schema.type === "string") {
+                copyChildForms[key]['type'] = "string";
+              }
               copyChildForms[key]['default'] = "";
               copyChildForms[key]['addition'] = true;
               continue;
@@ -140,33 +143,51 @@
        * 提交触发，表单验证 及 收集表单信息 上传到 父组件
        * @private
        */
-      _formCollection: function () { //
-        let data = deepCopy(this.copyChildForm);
+      _formCollection: function () {
+        let _this = this,
+          data = deepCopy(_this.copyChildForm);
         for (let i = 0, n = data.length; i < n; i++) {
-          if (this.childForm[i].default !== '' && (typeof this.childForm[i].default) === 'object' && this.childForm[i].default.in !== 'formData') {
+          if (_this.childForm[i].default !== '' && (typeof _this.childForm[i].default) === 'object' && _this.childForm[i].default.in !== 'formData') {
             data[i]['default'] = JSON.parse(data[i]['default']);
           }
+
           if (data[i] && data[i]['required'] && data[i]['default'] === "" && data[i]['required'] === true) {
-            promptPopUpShow.call(this, data[i].name + "为必选字段");
+            promptPopUpShow.call(_this, data[i].name + POPUPS_MESSAGES.REQUIRED);
             return false;
           }
+          //addition 字段判断
+          if (_this.copyChildForm[i].addition) {
+            if (_this.copyChildForm[i].type === "string") {
+              data[i]['default'] = JSON.stringify(data[i]['default']);
+              data[i]['default'] = data[i]['default'].replace(/[\r|\\n|\"]/g, "");
+              data[i]['default'] = data[i]['default'].replace(/[ ]/g, "");
+              continue;
+            }
+            try {
+              data[i]['default'] = JSON.parse(data[i]['default']);
+              continue;
+            } catch (e) {
+              promptPopUpShow.call(_this, data[i]['default'] + POPUPS_MESSAGES.FORMAT_JSON);
+              return false;
+            }
+          }
           // 路径参数判断
-          if (data[i]['name'] && data[i]['name'] === this.linkageSection && this.keyValue === "") {
-            promptPopUpShow.call(this, data[i].name + "为必选字段");
+          if (data[i]['name'] && data[i]['name'] === _this.linkageSection && _this.keyValue === "") {
+            promptPopUpShow.call(_this, data[i].name + POPUPS_MESSAGES.REQUIRED);
             return false;
           }
         }
-        for (let key in this.$refs.checkboxs) {
-          data[key].required = this.$refs.checkboxs[key].checked;
+        for (let key in _this.$refs.checkboxs) {
+          data[key].required = _this.$refs.checkboxs[key].checked;
         }
         /* 判断是否有对应的文件上传存在 */
         let param = undefined;
-        if (this.$refs.fileInput && this.$refs.fileInput[0] && this.$refs.fileInput[0].files && this.$refs.fileInput[0].files.length > 0) {
-          let file = this.$refs.fileInput[0].files[0];
+        if (_this.$refs.fileInput && _this.$refs.fileInput[0] && _this.$refs.fileInput[0].files && _this.$refs.fileInput[0].files.length > 0) {
+          let file = _this.$refs.fileInput[0].files[0];
           param = new FormData();
           param.append('file', file);
         }
-        this.$emit('getCollection', data, param);
+        _this.$emit('getCollection', data, param);
         return true;
       },
       /**
@@ -177,7 +198,7 @@
        */
       _deleteInterfaceRequest: function (key, item) {
         if (item.required) {
-          promptPopUpShow.call(this, item.name + "为必选字段");
+          promptPopUpShow.call(this, item.name + POPUPS_MESSAGES.REQUIRED);
           return false;
         }
         this.copyChildForm.splice(key, 1);
