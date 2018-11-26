@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/files")
-@Api(tags = "1.8", description = "文件上传", value = "文件上传")
+@Api(tags = "2.18", description = "文件上传", value = "文件上传")
 public class FileUploadController {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadController.class);

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/pages")
-@Api(tags = "1.2", description = "分页管理", value = "系统管理")
+@Api(description = "分页管理", value = "系统管理")
 public class PageController {
 
 

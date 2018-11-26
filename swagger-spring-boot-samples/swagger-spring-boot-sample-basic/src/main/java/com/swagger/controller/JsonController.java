@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/json")
-@Api(tags = "1.7", description = "阿里JSON", value = "阿里JSON")
+@Api(description = "阿里JSON", value = "阿里JSON")
 public class JsonController {
 
     @GetMapping

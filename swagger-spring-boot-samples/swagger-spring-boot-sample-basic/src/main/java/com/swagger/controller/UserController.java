@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
-@Api(tags = "1.1", description = "用户管理", value = "用户管理")
+@Api(tags = "2.0.11", description = "用户管理", value = "用户管理")
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/defaults")
-@Api(tags = "1.6", description = "默认值", value = "默认值")
+@Api(tags = "2.0.5", description = "默认值", value = "默认值")
 public class DefaultValueController {
 
     @GetMapping

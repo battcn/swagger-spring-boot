@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/trees")
-@Api(tags = "1.5", description = "数型结构", value = "数型结构")
+@Api(tags = "2.5", description = "数型结构", value = "数型结构")
 public class TreeController {
 
     @GetMapping
