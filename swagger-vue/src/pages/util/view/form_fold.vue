@@ -1,12 +1,16 @@
 <template xmlns="http://www.w3.org/1999/xhtml">
-  <div class="tree-menu" :class="{'menu-border':isResponse}">
-    <li v-if="isResponse" :class="{'font-color':properties}" @click="_toggleChildren" class="table-tr">
-      <span :class="{'font-right':depth>0}" class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
+  <div class="tree-menu" :style="{backgroundColor:_bg}" :class="{'menu-border':isResponse}">
+    <li v-if="isResponse" :style="{backgroundColor:_bg}" :class="{'font-color':properties}" @click="_toggleChildren"
+        class="table-tr">
+      <span :style="{textIndent:depth*10+'px'}"
+            class="table-td-md">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
       <span class="table-td-md">{{item.type ? item.type : "无"}}</span>
       <span class="table-td-md">{{item.description ? item.description : "无"}}</span>
     </li>
-    <li :class="{'font-color':properties}" @click="_toggleChildren" class="table-tr" v-else>
-      <span :class="{'font-right':depth>0}" class="table-td">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
+    <li :style="{backgroundColor:_bg}" :class="{'font-color':properties}" @click="_toggleChildren" class="table-tr"
+        v-else>
+      <span :style="{textIndent:depth*10-10+'px'}"
+            class="table-td">{{item.name ? item.name : (keyTo ? keyTo : "无")}}</span>
       <span class="table-td">{{item.description ? item.description : "无"}}</span>
       <span class="table-td">{{item.type}}</span>
       <span class="table-td">无</span>
@@ -14,7 +18,7 @@
       <span class="table-td">{{isRequired}}</span>
     </li>
     <transition-group name="slide-fade" tag="ul">
-      <form-fold :name="name" :key="key" :depth="depth + 1" v-show="showChildren"
+      <form-fold :name="name" :key="key" :depth="depth +1" v-show="showChildren"
                  v-for="(item,key) in childProperties" :requiredArray="requiredArray"
                  :item="item" :keyTo="key" :properties="item.properties">
       </form-fold>
@@ -22,6 +26,8 @@
   </div>
 </template>
 <script>
+  import {BGFORM} from './../../../api/config'
+
   export default {
     props: ['name', 'item', 'properties', 'keyTo', 'depth', 'requiredArray'],
     name: 'form-fold',
@@ -29,8 +35,11 @@
       return {showChildren: false}
     },
     computed: {
+      _bg() {
+        return BGFORM[this.depth - 1];
+      },
       isRequired() {
-        if (this.item.required && typeof this.item.required === 'boolean' && this.item.required || (typeof this.item.required === 'object' && this.item.required['length'] > 0)) {
+        if ((this.item.required && typeof this.item.required === 'boolean' && this.item.required) || (typeof this.item.required === 'object' && this.item.required['length'] > 0)) {
           return true;
         }
         if (this.requiredArray && typeof this.requiredArray === 'object' && this.requiredArray['length'] > 0 && (this.requiredArray.includes(this.item.name) || this.requiredArray.includes(this.keyTo))) {
@@ -96,13 +105,17 @@
 
   .table-td {
     border-right: 1px solid #ddd;
-    width: 15%;
+    width: 12%;
     float: left;
     padding: 8px 4px;
     min-height: 18.4px;
     text-align: left;
     padding-bottom: 999px;
     margin-bottom: -999px;
+  }
+
+  .table-td:nth-child(1) {
+    width: 20%;
   }
 
   .table-td:nth-child(2) {
@@ -114,7 +127,7 @@
   }
 
   .table-td:nth-child(5) {
-    width: 10%;
+    width: 8%;
   }
 
   .table-td:last-child {

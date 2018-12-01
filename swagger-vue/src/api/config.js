@@ -44,6 +44,8 @@ const POPUPS_MESSAGES = {
   REQUIRED: "为必选字段",
   FORMAT_JSON: "   不为JSON格式，请重新输入！"
 }
+/* 对象色阶 */
+const BGFORM = ["#FFFFFF", "#F5F5F5", "#E6E6E6", "#CCCCCC", "#C9C9C9", "#C2C2C2"];
 
 export {
   SWAGGER_URL,
@@ -54,7 +56,8 @@ export {
   HTTP_STATUS,
   BG,
   MESSAGES,
-  POPUPS_MESSAGES
+  POPUPS_MESSAGES,
+  BGFORM
 }
 
 

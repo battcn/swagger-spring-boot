@@ -1,6 +1,5 @@
 import * as types from './mutations_types'
 import Vue from 'vue'
-
 const mutations = {
   [types.SET_DEBUGREQUEST_COUNT](state, count) {
     state.debugRequestCount = count

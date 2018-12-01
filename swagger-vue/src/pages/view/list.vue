@@ -8,7 +8,7 @@
             {{item.url || item.location}}
           </option>
         </select>
-        <li v-for="(item,index) in dropDownBoxContent.tags" @click="count=index"
+        <li v-for="(item,index) in _dropDownBoxContent.tags" @click="count=index"
             v-bind:class="[count==index ? 'active' : '']">
           <span class="nav-list-name">{{item.name}}</span>
           <span class="nav-list-description">{{item.description}}</span>
@@ -53,6 +53,7 @@
   import {mapGetters, mapMutations} from 'vuex'
   import {HTTP_STATUS, MESSAGES, BG} from '../../api/config'
   import {getDropDown, getBoxContent} from '../../api/data'
+  import {deepCopy} from './../../common/util'
 
   import Login from './login.vue'
   import About from '../about/index.vue'
@@ -102,6 +103,7 @@
       }
     },
     methods: {
+
       getDropDown: function () {
         let _this = this;
         getDropDown().then((res) => {
@@ -180,6 +182,25 @@
       _changeCountTo: function (index) {
         this.countTo = index;
       },
+      _tagSort: function (_tagN, _tagM) {
+        let tagN = _tagN && _tagN.name && _tagN.name.split("."),
+          tagM = _tagM && _tagM.name && _tagM.name.split(".");
+        if (!tagN || tagN.length <= 0) {
+          return false;
+        }
+        if (!tagN || tagN.length <= 0) {
+          return true;
+        }
+        let n = tagN.length > tagM.length ? tagM.length : tagN.length;
+        for (let i = 0; i < n; i++) {
+          if (Number(tagN[i]) > Number(tagM[i])) {
+            return true;
+          } else if (Number(tagN[i]) < Number(tagM[i])) {
+            return false;
+          }
+        }
+        return false;
+      },
       ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY', 'UPDATE_TABDATA_UPDATETABSHOW', 'UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB', 'UPDATE_DROPDOWN_DROPDOWNDATA', 'UPDATE_BOXCONTENT_BOXCONTENT']),
     },
     components: {Login, InfoView, About, Authorizations},
@@ -188,18 +209,35 @@
       lock() {
         return this.accountIsSecurity;
       },
+      _dropDownBoxContent() {
+        let _dropContent = deepCopy(this.dropDownBoxContent),
+          _tags = _dropContent["tags"];
+        if (!_tags || _tags.length <= 0) {
+          return [];
+        }
+        for (let i = 0, n = _tags.length; i < n; i++) {
+          for (let j = i + 1, m = _tags.length; j < m; j++) {
+            let _tagI = _tags[i];
+            let _tagJ = _tags[j];
+            if (this._tagSort(_tagI, _tagJ)) {
+              [_tags[i], _tags[j]] = [_tags[j], _tags[i]];
+            }
+          }
+        }
+        return _dropContent;
+      },
+
       swaggerCategory() {
         let current = [];
         this.quantity = {};
-        for (let i in this.dropDownBoxContent.paths) {
-          for (let n in this.dropDownBoxContent.paths[i]) {
-            let count = this.dropDownBoxContent.paths[i][n].tags[0];
+        for (let i in this._dropDownBoxContent.paths) {
+          for (let n in this._dropDownBoxContent.paths[i]) {
+            let count = this._dropDownBoxContent.paths[i][n].tags[0];
             /* 判断当前数据的name是否与当前激活的接口tags一致:后台接口数据顺序与前台显示不一致，需要通过name判断
-             * 对name一致的进行保存
-             * */
+             * 对name一致的进行保存*/
             this.quantity[count] ? this.$set(this.quantity, count, this.quantity[count] + 1) : this.$set(this.quantity, count, 1);
-            if (count === this.dropDownBoxContent.tags[this.count].name) {
-              current.push({pathName: i, name: n, pathInfo: this.dropDownBoxContent.paths[i][n]})
+            if (count === this._dropDownBoxContent.tags[this.count].name) {
+              current.push({pathName: i, name: n, pathInfo: this._dropDownBoxContent.paths[i][n]})
             }
           }
         }
@@ -228,8 +266,9 @@
   /* select及其下方的接口宽度样式 */
   .swagger-left {
     width: 21%;
+    overflow: auto;
     overflow: hidden auto;
-    margin-top: 0px;
+    margin-top: 0;
     position: fixed;
     height: 100%;
     transition: all 0.2s;
@@ -273,6 +312,7 @@
   .nav-list-name {
     margin-right: 14px;
     float: left;
+    min-width: 45px;
   }
 
   .nav-list-description {
@@ -304,6 +344,7 @@
     position: fixed;
     height: 100%;
     transition: all 0.2s;
+    overflow: auto;
     overflow: hidden auto;
   }
 

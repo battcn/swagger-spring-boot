@@ -47,7 +47,7 @@
                   <span class="table-td">是否必须</span>
                 </li>
                 <div v-for="(item,key) in interfaceRequest">
-                  <form-fold :depth="0"
+                  <form-fold :depth="1"
                              :properties="item.properties&&item.properties.properties||(item.properties&&item.properties[0]&&item.properties[0].properties)"
                              :keyTo="key"
                              :item="item" :requiredArray="requiredArray"></form-fold>
@@ -352,7 +352,6 @@
         /* 请求参数的遍历 */
         let result = {};
         let parameters = deepCopy(this.swaggerCategory[this.countTo].pathInfo.parameters);
-        let definitions = deepCopy(this.dropDownBoxContent.definitions);
         if (parameters === undefined) {
           this.childForm = [];
           return result;
