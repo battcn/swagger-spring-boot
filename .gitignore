@@ -38,3 +38,7 @@ Thumbs.db
 .idea/
 overlays
 bin
+
+# vue #
+/dist/*
+/dist/*/
