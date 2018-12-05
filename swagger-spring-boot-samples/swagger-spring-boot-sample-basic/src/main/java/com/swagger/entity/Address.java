@@ -1,10 +1,12 @@
 package com.swagger.entity;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel
 public class Address {
 
+    @ApiModelProperty(required = true)
     private int id;
     private String address;
 
