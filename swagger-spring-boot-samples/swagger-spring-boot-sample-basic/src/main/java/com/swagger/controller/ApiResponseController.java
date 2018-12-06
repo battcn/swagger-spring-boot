@@ -1,13 +1,14 @@
 package com.swagger.controller;
 
+import com.battcn.boot.swagger.annotation.ApiOrder;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.swagger.entity.Address;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -21,6 +22,7 @@ import java.util.Set;
  * @author Levin
  * @since 2018/12/3 0003
  */
+@ApiOrder(100)
 @RestController
 @RequestMapping(value = "/api_responses")
 @Api(tags = {"3.0.1", "2.0.5"}, value = "注解测试11", description = "注解测试22")
@@ -31,6 +33,7 @@ public class ApiResponseController {
     @Autowired
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
+    @ApiOperation(value = "test1",tags = "A")
     @ApiResponses({
             @ApiResponse(code = 200, message = "成功"),
             @ApiResponse(code = 204, message = "无数据")
@@ -49,6 +52,7 @@ public class ApiResponseController {
         return classes;
     }
 
+    @ApiOperation(value = "test2",tags = "B")
     @ApiResponses({
             @ApiResponse(code = 200, message = "成功"),
             @ApiResponse(code = 204, message = "无数据")
