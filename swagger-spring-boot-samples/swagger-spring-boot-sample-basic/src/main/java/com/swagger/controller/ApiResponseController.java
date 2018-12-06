@@ -1,11 +1,10 @@
 package com.swagger.controller;
 
+import com.swagger.entity.Address;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Levin
@@ -25,6 +24,16 @@ public class ApiResponseController {
     public String test1() {
 
         return "success";
+    }
+
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "成功"),
+            @ApiResponse(code = 204, message = "无数据")
+    })
+    @PostMapping("/test2")
+    public String test2(@RequestParam("name")String name, @RequestBody Address address) {
+
+        return name + address.toString();
     }
 
 }
