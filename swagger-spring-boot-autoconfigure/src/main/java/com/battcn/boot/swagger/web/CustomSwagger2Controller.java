@@ -64,19 +64,19 @@ public class CustomSwagger2Controller {
     private final DocumentationCache documentationCache;
     private final ServiceModelToSwagger2Mapper mapper;
     private final JsonSerializer jsonSerializer;
-    @Autowired
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Autowired
     public CustomSwagger2Controller(SwaggerSecurityProperties swaggerSecurityProperties, Environment environment,
                                     DocumentationCache documentationCache,
                                     ServiceModelToSwagger2Mapper mapper,
-                                    JsonSerializer jsonSerializer) {
+                                    JsonSerializer jsonSerializer, RequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.hostNameOverride = environment.getProperty("springfox.documentation.swagger.v2.host", "DEFAULT");
         this.documentationCache = documentationCache;
         this.mapper = mapper;
         this.jsonSerializer = jsonSerializer;
         this.swaggerSecurityProperties = swaggerSecurityProperties;
+        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
     }
 
     @GetMapping(value = V3_SWAGGER_SECURITY_URL, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
