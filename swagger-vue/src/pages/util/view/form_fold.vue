@@ -14,12 +14,12 @@
       <span class="table-td">{{item.description ? item.description : "无"}}</span>
       <span class="table-td">{{item.type}}</span>
       <span class="table-td">无</span>
-      <span class="table-td">{{item.in ? item.in : ""}}</span>
+      <!--<span class="table-td">{{item.in ? item.in : ""}}</span>-->
       <span class="table-td">{{isRequired}}</span>
     </li>
     <transition-group name="slide-fade" tag="ul">
       <form-fold :name="name" :key="key" :depth="depth +1" v-show="showChildren"
-                 v-for="(item,key) in childProperties" :requiredArray="requiredArray"
+                 v-for="(item,key) in childProperties" :requiredArray="_requiredArray"
                  :item="item" :keyTo="key" :properties="item.properties">
       </form-fold>
     </transition-group>
@@ -27,6 +27,7 @@
 </template>
 <script>
   import {BGFORM} from './../../../api/config'
+  import {deepCopy} from  './../../../common/util'
 
   export default {
     props: ['name', 'item', 'properties', 'keyTo', 'depth', 'requiredArray'],
@@ -42,10 +43,20 @@
         if ((this.item.required && typeof this.item.required === 'boolean' && this.item.required) || (typeof this.item.required === 'object' && this.item.required['length'] > 0)) {
           return true;
         }
-        if (this.requiredArray && typeof this.requiredArray === 'object' && this.requiredArray['length'] > 0 && (this.requiredArray.includes(this.item.name) || this.requiredArray.includes(this.keyTo))) {
+        if (this._requiredArray && typeof this._requiredArray === 'object' && this._requiredArray['length'] > 0 && (this._requiredArray.includes(this.item.name) || this._requiredArray.includes(this.keyTo))) {
           return true;
         }
         return false;
+      },
+      _requiredArray(){
+        let _required=deepCopy(this.requiredArray)||[];
+        if(this.item.required&&typeof  this.item.required === "object"&&this.item.required['length'] > 0) {
+          _required = _required.concat(this.item.required);
+        }
+        if (typeof  this.item.required === "string") {
+          _required.push(this.item.required);
+        }
+        return _required;
       },
       isResponse() {
         return this.name === 'response';
@@ -93,7 +104,6 @@
   }
 
   .table-head {
-    font-size: 16px;
     font-weight: 700;
     background-color: #F8F8F8;
   }
@@ -105,9 +115,9 @@
 
   .table-td {
     border-right: 1px solid #ddd;
-    width: 12%;
+    width: 12%;    box-sizing: border-box;
     float: left;
-    padding: 8px 4px;
+    padding: 8px 1px 8px 7px;
     min-height: 18.4px;
     text-align: left;
     padding-bottom: 999px;
@@ -115,7 +125,7 @@
   }
 
   .table-td:nth-child(1) {
-    width: 20%;
+    width: 33%;
   }
 
   .table-td:nth-child(2) {
@@ -123,16 +133,16 @@
   }
 
   .table-td:nth-child(3) {
-    width: 10%;
+    width: 13%;
   }
 
-  .table-td:nth-child(5) {
-    width: 8%;
-  }
+  /*.table-td:nth-child(5) {*/
+    /*width: 8%;*/
+  /*}*/
 
   .table-td:last-child {
     border-right: 0;
-    width: 12%;
+    width: 14%;
   }
 
   .table-td-md {

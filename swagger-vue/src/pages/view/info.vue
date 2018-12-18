@@ -43,7 +43,7 @@
                   <span class="table-td">说明</span>
                   <span class="table-td">类型</span>
                   <span class="table-td">条件</span>
-                  <span class="table-td">in</span>
+                  <!--<span class="table-td">in</span>-->
                   <span class="table-td">是否必须</span>
                 </li>
                 <div v-for="(item,key) in interfaceRequest">
@@ -899,8 +899,8 @@
 
   /* 响应参数说明部分 */
   .response-parameter .head {
-    font-size: 16px;
     font-weight: 700;
+    padding-bottom: 8px;
     background-color: #F8F8F8;
   }
 
@@ -921,6 +921,7 @@
 
   .response-parameter > ul li > span {
     width: 30%;
+    box-sizing: border-box;
     float: left;
     padding: 8px 4px 999px;
     border-right: 1px solid #ddd;
@@ -938,7 +939,6 @@
 
   /*  响应状态码部分 */
   .response-code li.head {
-    font-size: 16px;
     font-weight: 700;
     background-color: #F8F8F8;
   }
@@ -1112,7 +1112,6 @@
   }
 
   .table-head {
-    font-size: 16px;
     font-weight: 700;
     background-color: #F8F8F8;
   }
@@ -1270,6 +1269,31 @@
     .swagger-main {
       margin-left: 36%;
     }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .swagger-main {
+      font-size: 12px;
+    }
+    .switch span{font-size: 12px;padding: 10px 7px;}
+    .swagger-content, .debugging-content {
+      padding: 10px 5px;
+    }
+
+    .content-list {
+      padding: 5px;
+    }
+    .content-list > li > span{
+      width: 55px;
+    }
+    .content-list > li > div{
+      margin-left: 72px;
+    }
+    .debugging-result > span{
+      font-size: 12px;padding: 10px 7px;
+    }
+    .result-content > div{font-size: 12px;}
+
   }
 
 </style>

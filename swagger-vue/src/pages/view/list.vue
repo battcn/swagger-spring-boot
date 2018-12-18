@@ -27,6 +27,7 @@
       </ul>
     </div>
     <div class="tab-switch">
+      <!--<span><</span>-->
       <div class="management">
         <a @click="managementShow=!managementShow" class="font-color" href="javascript:">&#9662;</a>
         <transition name="fade">
@@ -39,8 +40,10 @@
       </div>
       <ul>
         <li v-for="(value,key) in tabDataInfo" @click="_controlTab(key,value)" :class="{active:tabDataShow==key}">
-          <span>{{key}}</span><a href="javascript:">X</a></li>
+          <span>{{key}}</span><a href="javascript:">X</a>
+        </li>
       </ul>
+      <!--<span> > </span>-->
     </div>
     <about v-show="countTo==-1"></about>
     <info-view v-show="countTo!==-1"
@@ -316,7 +319,7 @@
   }
 
   .nav-list-description {
-    width: 172px;
+    /*width: 172px;*/
     display: inline-block;
     text-align: left;
   }
@@ -324,7 +327,8 @@
   .nav-list-number {
     position: absolute;
     right: 27px;
-    top: 16px;
+    top: 50%;
+    margin-top: -10px;
     width: 20px;
     height: 20px;
     background-color: #FF3C43;
@@ -390,10 +394,27 @@
     height: 50px;
   }
 
+  .tab-switch > span {position: absolute;
+    padding: 10px 6px 10px 15px;
+    font-size: 14px;
+    font-weight: 500;top:0;
+    border-top: 1px solid #dbdbdb;
+    cursor: pointer;
+    display: inline-block;
+    float: none;
+    box-shadow: 1px 1px 2px #e9e4e4;
+  }
+  .tab-switch > span:first-child{
+left: 0;
+  }
+  .tab-switch > span:last-child{
+    right:0;
+  }
   .tab-switch > ul {
     font-size: 0;
     text-align: left;
   }
+
 
   /* 滚动条样式 */
   .swagger-left::-webkit-scrollbar,
@@ -511,6 +532,38 @@
 
     .tab-switch {
       margin-left: 36%;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    /*  左侧第一栏*/
+    .swagger-left {
+      font-size: 12px;
+    }
+
+    .nav-list > li {
+      padding: 10px 0 10px 5%;
+      margin: 0 auto 2px;
+    }
+
+    .nav-list-number {
+      top: 50%;
+      margin-top: -9px;
+      right: 16px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      font-size: 12px;
+    }
+
+    /* 左侧第二栏 */
+    .swagger-category {
+      font-size: 12px;
+    }
+
+    .swagger-category .category-li {
+      padding: 2px 7px;
+      margin-bottom: 2px;
     }
   }
 </style>

@@ -6,6 +6,9 @@ import router from './router'
 import store from './store/index'
 import layer from 'vue-layer'
 
+// 引入mockjs
+require('./mock.js');
+
 Vue.config.productionTip = false
 Vue.prototype.$layer = layer(Vue);
 /* eslint-disable no-new */

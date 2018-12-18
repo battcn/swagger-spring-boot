@@ -23,9 +23,9 @@ const PROJECT_NAME = projectName();
 const SWAGGER_RESOURCES = PROJECT_NAME + '/swagger-resources';
 
 /* 判断是否需要账号验证接口链接 */
-const SWAGGER_SECURITY = PROJECT_NAME + '/v2/swagger-security';
+const SWAGGER_SECURITY = PROJECT_NAME + '/v3/swagger-security';
 /*  账号登录验证 */
-const SWAGGER_LOGIN = PROJECT_NAME + '/v2/swagger-login';
+const SWAGGER_LOGIN = PROJECT_NAME + '/v3/swagger-login';
 
 /* 响应码 */
 const HTTP_STATUS = {min: 200, max: 299, logCode: 401};
