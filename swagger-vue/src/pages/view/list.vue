@@ -26,8 +26,7 @@
         </li>
       </ul>
     </div>
-    <div class="tab-switch">
-      <!--<span><</span>-->
+    <div class="tab-switch" ref="tabSwitch">
       <div class="management">
         <a @click="managementShow=!managementShow" class="font-color" href="javascript:">&#9662;</a>
         <transition name="fade">
@@ -43,7 +42,10 @@
           <span>{{key}}</span><a href="javascript:">X</a>
         </li>
       </ul>
-      <!--<span> > </span>-->
+    </div>
+    <div class="roll-btn">
+      <a  @mousedown="rollLeft" class="left" href="javascript:"> &lt; </a>
+      <a @click="rollRight" class="right" href="javascript:"> &gt; </a>
     </div>
     <about v-show="countTo==-1"></about>
     <info-view v-show="countTo!==-1"
@@ -74,7 +76,7 @@
         control: false,
         hint: "",
         quantity: {},
-        managementShow: false
+        managementShow: false,
       }
     },
     watch: {
@@ -106,7 +108,14 @@
       }
     },
     methods: {
-
+      rollLeft:function () {
+        let _left=this.$refs.tabSwitch;
+         _left.scrollLeft-=200;
+      },
+      rollRight:function () {
+        let _left=this.$refs.tabSwitch;
+        _left.scrollLeft+=200;
+      },
       getDropDown: function () {
         let _this = this;
         getDropDown().then((res) => {
@@ -235,12 +244,15 @@
         this.quantity = {};
         for (let i in this._dropDownBoxContent.paths) {
           for (let n in this._dropDownBoxContent.paths[i]) {
-            let count = this._dropDownBoxContent.paths[i][n].tags[0];
-            /* 判断当前数据的name是否与当前激活的接口tags一致:后台接口数据顺序与前台显示不一致，需要通过name判断
-             * 对name一致的进行保存*/
-            this.quantity[count] ? this.$set(this.quantity, count, this.quantity[count] + 1) : this.$set(this.quantity, count, 1);
-            if (count === this._dropDownBoxContent.tags[this.count].name) {
-              current.push({pathName: i, name: n, pathInfo: this._dropDownBoxContent.paths[i][n]})
+            let _tags=this._dropDownBoxContent.paths[i][n].tags;
+            for(let j=0,m=_tags.length;j<m;j++){
+              let count = this._dropDownBoxContent.paths[i][n].tags[j];
+              /* 判断当前数据的name是否与当前激活的接口tags一致:后台接口数据顺序与前台显示不一致，需要通过name判断
+               * 对name一致的进行保存*/
+              this.quantity[count] ? this.$set(this.quantity, count, this.quantity[count] + 1) : this.$set(this.quantity, count, 1);
+              if (count === this._dropDownBoxContent.tags[this.count].name) {
+                current.push({pathName: i, name: n, pathInfo: this._dropDownBoxContent.paths[i][n]})
+              }
             }
           }
         }
@@ -386,46 +398,50 @@
   .tab-switch {
     position: relative;
     margin-left: 43%;
-    margin-right: 51px;
+    margin-right: 73px;
     transition: all 0.2s;
     white-space: nowrap;
     overflow-y: hidden;
-    overflow-x: scroll;
+    overflow-x: auto;
     height: 50px;
   }
 
-  .tab-switch > span {position: absolute;
+  .tab-switch > span {
+    position: absolute;
     padding: 10px 6px 10px 15px;
     font-size: 14px;
-    font-weight: 500;top:0;
+    font-weight: 500;
+    top: 0;
     border-top: 1px solid #dbdbdb;
     cursor: pointer;
     display: inline-block;
     float: none;
     box-shadow: 1px 1px 2px #e9e4e4;
   }
-  .tab-switch > span:first-child{
-left: 0;
-  }
-  .tab-switch > span:last-child{
-    right:0;
-  }
-  .tab-switch > ul {
-    font-size: 0;
-    text-align: left;
+
+  .tab-switch > span:first-child {
+    left: 0;
   }
 
+  .tab-switch > span:last-child {
+    right: 0;
+  }
+
+  .tab-switch > ul {
+    font-size: 0;
+    text-align: left;    margin-left: 20px;
+  }
 
   /* 滚动条样式 */
   .swagger-left::-webkit-scrollbar,
-  .tab-switch::-webkit-scrollbar,
+    .tab-switch::-webkit-scrollbar,
   .swagger-category::-webkit-scrollbar { /*滚动条整体样式*/
     width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
     height: 8px;
   }
 
   .swagger-left::-webkit-scrollbar-thumb,
-  .tab-switch::-webkit-scrollbar-thumb,
+    .tab-switch::-webkit-scrollbar-thumb,
   .swagger-category::-webkit-scrollbar-thumb { /*滚动条小方块*/
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
@@ -433,7 +449,7 @@ left: 0;
   }
 
   .swagger-left::-webkit-scrollbar-track,
-  .tab-switch::-webkit-scrollbar-track,
+    .tab-switch::-webkit-scrollbar-track,
   .swagger-category::-webkit-scrollbar-track { /*滚动条轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
@@ -565,5 +581,36 @@ left: 0;
       padding: 2px 7px;
       margin-bottom: 2px;
     }
+  }
+
+  .roll-btn {
+    margin-left: 43%;
+    top: 5px;
+    position: relative;
+  }
+
+  .roll-btn > a {
+    white-space: nowrap;
+    color: #30ABF9;
+    font-size: 18px;
+    text-decoration: none;
+    width: 20px;
+    text-align: center;
+    line-height: 37px;
+    display: block;
+    height: 36px;
+    top: -55px;
+    border-top: 1px solid #e9e4e4;
+    box-shadow: 1px 1px 2px #e9e4e4;
+  }
+
+  .roll-btn .left {
+    position: absolute;left: 0;
+
+  }
+
+  .roll-btn .right {
+    position: absolute;
+    right: 53px;
   }
 </style>

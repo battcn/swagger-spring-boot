@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "clipboard": "^2.0.1",
     "lodash": "^4.17.10",
     "ssri": "^5.2.2",
