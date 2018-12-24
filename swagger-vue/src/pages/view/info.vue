@@ -20,12 +20,13 @@
           <div><span>{{swaggerCategory[countTo] ? swaggerCategory[countTo].name : ""}}</span></div>
         </li>
         <li><span>接口说明</span>
-          <div><span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.description ? swaggerCategory[countTo].pathInfo.description : ""}}</span>
+          <div>
+            <span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.description ? swaggerCategory[countTo].pathInfo.description : ""}}</span>
           </div>
         </li>
         <li><span>consumes</span>
           <div>
-            <span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.consumes&& swaggerCategory[countTo].pathInfo.consumes['length'] ? swaggerCategory[countTo].pathInfo.consumes[0] : ""}}</span>
+            <span>{{swaggerCategory[countTo] && swaggerCategory[countTo].pathInfo && swaggerCategory[countTo].pathInfo.consumes && swaggerCategory[countTo].pathInfo.consumes['length'] ? swaggerCategory[countTo].pathInfo.consumes[0] : ""}}</span>
           </div>
         </li>
         <li><span>produces</span>
@@ -157,9 +158,10 @@
                 <span>x-application-context</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['x-application-context']}}</span>
               </li>
               <li>
-                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['content-type']||(debugResponse&&debugResponse.response&&debugResponse.response.headers&&debugResponse.response.headers['content-type'])}}</span>
+                <span>content-type</span><span>{{debugResponse && debugResponse.headers && debugResponse.headers['content-type'] || (debugResponse && debugResponse.response && debugResponse.response.headers && debugResponse.response.headers['content-type'])}}</span>
               </li>
-              <li><span>response-code</span><span>{{(debugResponse && debugResponse.status)||(debugResponse&&debugResponse.response&&debugResponse.response.status)}}</span>
+              <li>
+                <span>response-code</span><span>{{(debugResponse && debugResponse.status) || (debugResponse && debugResponse.response && debugResponse.response.status)}}</span>
               </li>
             </ul>
           </div>
@@ -705,11 +707,11 @@
           reqData = "",
           bodyParams = "";
 
-        if (typeof (_this.dropDownBoxContent.basePath) !== "undefined" && _this.dropDownBoxContent.basePath !== "") {
-          if (_this.dropDownBoxContent.basePath !== "/") {
-            url = _this.dropDownBoxContent.basePath + url;
-          }
-        }
+        /*if (typeof (_this.dropDownBoxContent.basePath) !== "undefined" && _this.dropDownBoxContent.basePath !== "") {
+         if (_this.dropDownBoxContent.basePath !== "/") {
+         url = _this.dropDownBoxContent.basePath + url;
+         }
+         }*/
         let isQuery = false;
         for (let i = 0, n = result.length; i < n; i++) {
           if (result[i][2]["in"] === "path") {
@@ -1275,7 +1277,12 @@
     .swagger-main {
       font-size: 12px;
     }
-    .switch span{font-size: 12px;padding: 10px 7px;}
+
+    .switch span {
+      font-size: 12px;
+      padding: 10px 7px;
+    }
+
     .swagger-content, .debugging-content {
       padding: 10px 5px;
     }
@@ -1283,16 +1290,23 @@
     .content-list {
       padding: 5px;
     }
-    .content-list > li > span{
+
+    .content-list > li > span {
       width: 55px;
     }
-    .content-list > li > div{
+
+    .content-list > li > div {
       margin-left: 72px;
     }
-    .debugging-result > span{
-      font-size: 12px;padding: 10px 7px;
+
+    .debugging-result > span {
+      font-size: 12px;
+      padding: 10px 7px;
     }
-    .result-content > div{font-size: 12px;}
+
+    .result-content > div {
+      font-size: 12px;
+    }
 
   }
 
