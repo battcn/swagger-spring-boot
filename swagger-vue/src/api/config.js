@@ -1,7 +1,7 @@
 //js获取项目根路径，如： http://localhost:8080/battcn
 const getBaseURL = () => {
   const urlMatches = /(.*)\/swagger-ui.html.*/.exec(window.location.href);
-  return urlMatches[1];
+  return urlMatches&&urlMatches[1];
 };
 
 const SWAGGER_URL = getBaseURL();
