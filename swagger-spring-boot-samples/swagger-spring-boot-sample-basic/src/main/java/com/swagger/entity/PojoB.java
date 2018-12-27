@@ -1,9 +1,12 @@
 package com.swagger.entity;
 
+import io.swagger.annotations.ApiModel;
+
 /**
  * @author Levin
  * @since 2018/10/17 0017
  */
+@ApiModel(description = "class pojoB对象")
 public class PojoB {
 
     private long id;
