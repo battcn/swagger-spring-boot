@@ -36,7 +36,7 @@
 <dependency>
     <groupId>com.battcn</groupId>
     <artifactId>swagger-spring-boot-starter</artifactId>
-    <version>2.1.2-RELEASE</version>
+    <version>2.1.3-RELEASE</version>
 </dependency>
 ```
 
@@ -69,6 +69,17 @@ spring.swagger.enabled=true
 
 # 更新记录 #
 ```
+2.1.3
+  发布时间：2018-12-27
+  更新内容：
+    1.修复多层`content-path`时，路径404BUG
+    2.修复嵌套实体时，`@ApiModelProperty` 必填项显示错误
+    3.修复新版UI无缩进问题
+    4.修复接口过多情况下，未出现滚动条BUG
+    5.当接口类型是 `JAVA POJO`时，渲染的对象添加颜色区分
+    6.UI自适应优化，在不同分辨率下显示更加友好
+    7.UI兼容性优化，支持在IE11，EDGE等浏览器显示
+    8.致歉：近期较忙，所以发布周期延后，十分抱歉
 2.1.2
   发布时间：2018-11-14
   更新内容：
