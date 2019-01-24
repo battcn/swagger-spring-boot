@@ -276,7 +276,8 @@
               let deftion = undefined;
               let definition = {};
               let response = {};
-              response[refType] = this._formatRequest(ref, [ref]);
+              // response[refType] = this._formatRequest(ref, [ref]);
+              response[refType] = Object.assign({}, this._formatRequest(ref, [ref]), ok)
               deftion = this._jsonInit(refType, [refType]);
               //数组类型加外层[]包裹
               if (schema["type"] && schema["type"] === "array") {
@@ -547,48 +548,72 @@
         if (objName === null || objName === undefined || definitions === undefined) {
           return result;
         }
-        for (let key in definitions) {
-          if (definitions.hasOwnProperty(key) && key.toLowerCase() === objName.toLowerCase()) {
-            result = deepCopy(definitions[key]);
-            let properties = definitions[key].properties;
-            if (properties === undefined || properties === null || (typeof properties) === "string") {
-              return result;
-            }
-            for (let k in properties) {
-              if (properties.hasOwnProperty(k)) {
-                if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
-                  let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
-                  if (properties[k].type === 'array') {
-                    result.properties[k].properties = [];
-                    let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
-                    let adds = {"properties": {[Ref2]: {type: "object", title: "TreeNode"}}};
-                    if (_refType.indexOf(Ref) < 0) {// 树形结构判断。包含的属性为自身类
-                      _refType.push(Ref);
-                      adds = this._formatRequest(Ref, _refType);
-                    }
-                    if (adds.name !== undefined && adds.name !== null) {
-                      adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
-                    }
-
-                    result.properties[k].properties = adds.properties;
-                    continue;
-                  }
-
-                  if (_refType.indexOf(Ref) < 0) {/* 树形结构判断。包含的属性为自身类 */
-                    _refType.push(Ref);
-                    result.properties[k] = this._formatRequest(Ref, _refType);
-                  } else {
-                    result.properties[k] = {}
-                  }
-                  continue;
-                } else {
-                  result.properties[k] = properties[k];
-                  continue;
+        if (definitions.hasOwnProperty(objName)) {
+          result = deepCopy(definitions[objName])
+          let properties = definitions[objName].properties
+          if (properties === undefined || properties === null || (typeof properties) === 'string') {
+            return result
+          }
+          for (let k in properties) {
+            if (properties.hasOwnProperty(k)) {
+              let Ref = (properties[k].items && properties[k].items.$ref) || properties[k].$ref;
+              if (Ref) {
+                // let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
+                // let adds = {"properties": {[Ref2]: {type: "object", title: "TreeNode"}}};
+                if (_refType.indexOf(Ref) < 0) {// 树形结构判断。包含的属性为自身类
+                  _refType.push(Ref)
+                  result.properties[k].properties = this._formatRequest(Ref, _refType).properties;
+                  // 当type字段不存在时，使用value的类型
+                  result.properties[k].type = (result.properties[k].type || typeof this._formatRequest(Ref, _refType).properties);
+                  result.properties[k].required = this._formatRequest(Ref, _refType).required;
                 }
               }
             }
           }
+          return result
         }
+        // for (let key in definitions) {
+        //   if (definitions.hasOwnProperty(key) && key.toLowerCase() === objName.toLowerCase()) {
+        //     result = deepCopy(definitions[key]);
+        //     let properties = definitions[key].properties;
+        //     if (properties === undefined || properties === null || (typeof properties) === "string") {
+        //       return result;
+        //     }
+        //     for (let k in properties) {
+        //       if (properties.hasOwnProperty(k)) {
+        //         if ((properties[k].items && properties[k].items.$ref) || properties[k].$ref) {
+        //           let Ref = (properties[k].items && properties[k].items.$ref) ? (properties[k].items && properties[k].items.$ref) : properties[k].$ref;
+        //           if (properties[k].type === 'array') {
+        //             result.properties[k].properties = [];
+        //             let Ref2 = (Ref.match("#/definitions/(.*)") === null ? "" : Ref.match("#/definitions/(.*)")[1]);
+        //             let adds = {"properties": {[Ref2]: {type: "object", title: "TreeNode"}}};
+        //             if (_refType.indexOf(Ref) < 0) {// 树形结构判断。包含的属性为自身类
+        //               _refType.push(Ref);
+        //               adds = this._formatRequest(Ref, _refType);
+        //             }
+        //             if (adds.name !== undefined && adds.name !== null) {
+        //               adds['name'] = Ref.match("#/definitions/(.*)")[1].toLowerCase();
+        //             }
+        //
+        //             result.properties[k].properties = adds.properties;
+        //             continue;
+        //           }
+        //
+        //           if (_refType.indexOf(Ref) < 0) {/* 树形结构判断。包含的属性为自身类 */
+        //             _refType.push(Ref);
+        //             result.properties[k] = this._formatRequest(Ref, _refType);
+        //           } else {
+        //             result.properties[k] = {}
+        //           }
+        //           continue;
+        //         } else {
+        //           result.properties[k] = properties[k];
+        //           continue;
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
         return result;
       },
       /**
