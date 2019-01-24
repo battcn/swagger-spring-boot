@@ -4,7 +4,7 @@ const getBaseURL = () => {
   return urlMatches&&urlMatches[1];
 };
 
-const SWAGGER_URL = getBaseURL();
+const SWAGGER_URL = process.env.SWAGGER_URL === "" ? getBaseURL() : process.env.SWAGGER_URL;
 
 
 //const SWAGGER_URL = getBaseURL();
