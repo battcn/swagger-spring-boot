@@ -21,6 +21,7 @@ public class User implements Serializable {
     private String username;
     @ApiModelProperty(value = "密码", required = true)
     private String password;
+    @ApiModelProperty(value = "List消息", required = true)
     private List<Message> messages;
 
     @ApiModelProperty("测试属性")

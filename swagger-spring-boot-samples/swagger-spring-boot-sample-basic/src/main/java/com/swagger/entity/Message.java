@@ -3,7 +3,7 @@ package com.swagger.entity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel
+@ApiModel(description = "描述消息")
 public class Message {
 
     @ApiModelProperty(name = "消息", required = true)
