@@ -18,7 +18,7 @@
       <span class="table-td">{{isRequired}}</span>
     </li>
     <transition-group name="slide-fade" tag="ul">
-      <form-fold :name="name" :key="key" :depth="depth +1" v-show="showChildren"
+      <form-fold :name="name" :key="key + 1" :depth="depth +1" v-show="showChildren"
                  v-for="(item,key) in childProperties" :requiredArray="_requiredArray"
                  :item="item" :keyTo="key" :properties="item.properties">
       </form-fold>
