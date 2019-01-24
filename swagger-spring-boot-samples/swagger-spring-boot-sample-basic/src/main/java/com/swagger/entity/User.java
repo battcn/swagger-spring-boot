@@ -26,6 +26,7 @@ public class User implements Serializable {
 
     @ApiModelProperty("测试属性")
     private BigDecimal price;
+    @ApiModelProperty("测试地址")
     private Address address;
 
     // TODO  省略get set

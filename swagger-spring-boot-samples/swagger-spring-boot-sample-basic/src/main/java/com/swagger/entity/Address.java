@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel
 public class Address {
 
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = true,value = "ID啊")
     private int id;
     private String address;
 
