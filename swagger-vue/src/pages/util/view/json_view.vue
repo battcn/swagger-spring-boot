@@ -4,14 +4,21 @@
       <li class="json-view-li" @click="_toggleStatus">
         <span class="font-basic">
           <span style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
-          {{'"'+keyTo+'"'}}
+          <span v-if="typeof keyTo !=='number'">{{'"'+keyTo+'"'}} :</span>
+          {{this.obj instanceof Array ? '[' : ((typeof this.obj) === 'object' ? '{' : '')}}
         </span>
-        <span class="quantity">
-           {{ obj ? (obj["length"] ? "[" + obj.length + "]" : (typeof obj == "object" ? "{" + _subQuantity(obj) + "}" : "null")) : "null"}},
+        <span v-show="!showStatus && _subQuantity(obj)">
+          ...
          </span>
+        <!--<span v-show="!showStatus">-->
+           <!--{{ obj ? (obj['length'] ? obj.length : (typeof obj === 'object' ? _subQuantity(obj) : 'null')) : 'null'}}-->
+         <!--</span>-->
       </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"
                  :obj="item"></json-view>
+      <span class="font-basic">
+      {{this.obj instanceof Array ? ']' : ((typeof this.obj) === 'object' ? '}' : '')}}
+      </span>
     </div>
     <div v-else>
       <li @click="_toggleStatus">
@@ -21,7 +28,7 @@
           </span>{{'"'+keyTo+'"'}}
         </span>:
         <span :style="{color:(typeof obj)=='number'?'#ee422e':'green'}">
-          {{obj === "" ? '""' : (typeof obj==="string"?('"'+obj+'"'):obj)}}
+          {{obj === '' ? '""' : (typeof obj==='string'?('"'+obj+'"'):obj)}}
         </span>
       </li>
     </div>
@@ -30,21 +37,21 @@
 <script type="text/ecmascript-6">
   export default {
     name: 'json-view',
-    data() {
+    data () {
       return {showStatus: true}
     },
     props: ['obj', 'indentation', 'keyTo'],
     methods: {
       _subQuantity: function (item) {
-        return Object.keys(item) && Object.keys(item).length;
+        return Object.keys(item) && Object.keys(item).length
       },
       _toggleStatus: function () {
-        this.showStatus = !this.showStatus;
+        this.showStatus = !this.showStatus
       }
     },
     computed: {
-      isSet() {
-        return !!(this.obj && ((typeof this.obj) === 'array' || (typeof this.obj) === 'object'));
+      isSet () {
+        return !!(this.obj && ((typeof this.obj) === 'array' || (typeof this.obj) === 'object'))
       }
     }
   }
