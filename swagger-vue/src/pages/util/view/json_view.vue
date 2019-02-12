@@ -5,28 +5,31 @@
         <span class="font-basic">
           <span style="color: #4C4C4C;">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
           <span v-if="typeof keyTo !=='number'">{{'"'+keyTo+'"'}} :</span>
-          {{this.obj instanceof Array ? '[' : ((typeof this.obj) === 'object' ? '{' : '')}}
+          {{obj instanceof Array ? '[' : ((typeof obj) === 'object' ? '{' : '')}}
         </span>
         <span v-show="!showStatus && _subQuantity(obj)">
           ...
          </span>
         <!--<span v-show="!showStatus">-->
-           <!--{{ obj ? (obj['length'] ? obj.length : (typeof obj === 'object' ? _subQuantity(obj) : 'null')) : 'null'}}-->
-         <!--</span>-->
+        <!--{{ obj ? (obj['length'] ? obj.length : (typeof obj === 'object' ? _subQuantity(obj) : 'null')) : 'null'}}-->
+        <!--</span>-->
       </li>
       <json-view v-show="showStatus" :key="key" v-for="(item,key) in obj" :indentation="indentation+1" :keyTo="key"
                  :obj="item"></json-view>
-      <span class="font-basic">
-      {{this.obj instanceof Array ? ']' : ((typeof this.obj) === 'object' ? '}' : '')}}
+      <li class="json-view-li">
+              <span class="font-basic">
+                 <span style="color:transparent" :style="!showStatus ? 'display: none' : ''">{{showStatus ? '&#9662;' : '&#9656;'}}</span>
+      {{obj instanceof Array ? ']' : ((typeof obj) === 'object' ? '}' : '')}}
       </span>
+      </li>
     </div>
     <div v-else>
       <li @click="_toggleStatus">
         <span class="font-basic">
           <span style="visibility: hidden">
             {{showStatus ? '&#9662;' : '&#9656;'}}
-          </span>{{'"'+keyTo+'"'}}
-        </span>:
+          </span><span v-if="typeof keyTo !=='number'">{{'"'+keyTo+'"'}} :</span>
+        </span>
         <span :style="{color:(typeof obj)=='number'?'#ee422e':'green'}">
           {{obj === '' ? '""' : (typeof obj==='string'?('"'+obj+'"'):obj)}}
         </span>

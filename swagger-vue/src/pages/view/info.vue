@@ -59,7 +59,7 @@
           </div>
         </li>
         <li><span>Example Model</span>
-          <div v-if="typeof jsonObject=='object'" style="font-family: monospace, monospace; font-size: 18px">
+          <div v-if="typeof jsonObject === 'object'" style="font-family: monospace, monospace; font-size: 18px">
             <a href="javascript:" class="font-color copy-json" :data-clipboard-text="jsonValue">复制JSON</a>
             <span v-if="jsonObject['length']">[</span>
             <span v-else>{</span>
@@ -279,6 +279,7 @@
               // response[refType] = this._formatRequest(ref, [ref]);
               response[refType] = Object.assign({}, this._formatRequest(ref, [ref]), ok)
               deftion = this._jsonInit(refType, [refType])
+              console.log(deftion)
               //数组类型加外层[]包裹
               if (schema['type'] && schema['type'] === 'array') {
                 let arrs = {}
@@ -422,7 +423,6 @@
             this.childForm[key] = deepCopy(array)
           }
         }
-        console.log(parameters)
         for (let i in parameters) {// 对于list数据类型进行加层包装，使表格展现更加直观
           if (parameters.hasOwnProperty(i) && parameters[i].schema && parameters[i].schema.type && parameters[i].schema.type === 'array' && parameters[i].schema.items && parameters[i].schema.items.$ref) {
             let formatData = this._formatRequest(parameters[i].schema.items.$ref)
@@ -442,7 +442,6 @@
             }
           }
         }
-        console.log(result)
         return result
       },
       /**
@@ -687,7 +686,10 @@
               }
             }
             if (deftion[key].type === 'array') {
-              deftion[key] = []
+              deftion[key] = deftion[key].enum || deftion[key].items.enum || []
+              if (deftion[key].length > 0) {
+                deftion[key] = [deftion[key][0]]
+              }
               continue
             }
             if (deftion[key].type === 'boolean') {
@@ -695,11 +697,21 @@
               continue
             }
             if (deftion[key].type === 'integer' || deftion[key].type === 'number') {
-              deftion[key] = deftion[key].example || 0
+              if (deftion[key].enum && deftion[key].enum instanceof Array && deftion[key].enum.length > 0) {
+                deftion[key] = deftion[key].enum[0]
+              } else {
+                deftion[key] = 0
+              }
+              // deftion[key] = deftion[key].example || 0
               continue
             }
             if (deftion[key].type === 'string') {
-              deftion[key] = deftion[key].example || ''
+              if (deftion[key].enum && deftion[key].enum instanceof Array && deftion[key].enum.length > 0) {
+                deftion[key] = deftion[key].enum[0]
+              } else {
+                deftion[key] = ''
+              }
+              // deftion[key] = deftion[key].example || ''
               continue
             }
           }
