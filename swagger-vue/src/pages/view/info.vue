@@ -279,7 +279,6 @@
               // response[refType] = this._formatRequest(ref, [ref]);
               response[refType] = Object.assign({}, this._formatRequest(ref, [ref]), ok)
               deftion = this._jsonInit(refType, [refType])
-              console.log(deftion)
               //数组类型加外层[]包裹
               if (schema['type'] && schema['type'] === 'array') {
                 let arrs = {}
@@ -420,6 +419,8 @@
             array['name'] = result && result[key] && result[key]['name']
             array['default'] = result[key]['default'] || this.parameterValue[key]
             array['required'] = result && result[key] && result[key]['required']
+            // 通过该字段判断是否为下来选择
+            array['enum'] = result && result[key] && result[key]['enum']
             this.childForm[key] = deepCopy(array)
           }
         }
