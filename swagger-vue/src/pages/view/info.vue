@@ -70,7 +70,6 @@
             <span v-else>}</span>
           </div>
           <div v-else>无</div>
-          <pre style="display: none" class="example-model">{{jsonObject}}</pre>
         </li>
         <li><span>响应参数说明</span>
           <div class="response-parameter">
@@ -287,9 +286,10 @@
                 arrs['type'] = 'array'
                 definition['Array'] = arrs
                 this.jsonObject = []
-                let jsonObj = {}
-                jsonObj[refType] = deftion
-                this.jsonObject.push(jsonObj)
+                this.jsonObject.push(deftion)
+                // let jsonObj = {}
+                // jsonObj[refType] = deftion
+                // this.jsonObject.push(jsonObj)
               } else {
                 definition = response
                 this.jsonObject = deftion
@@ -526,8 +526,10 @@
             if ((properties[key].type && properties[key].properties && properties[key].type === 'object') || (properties[key].type === 'array' && properties[key].properties)) {
               // 包含子字段
               if (properties[key].type === 'array' && properties[key].properties) {
-                obj[key] = {}
-                obj[key] = (Object.values(this._iniObject(properties[key].properties)))
+                obj[key] = []
+                obj[key].push(this._iniObject(properties[key].properties))
+                // obj[key] = {}
+                // obj[key] = (Object.values(this._iniObject(properties[key].properties)))
               } else {
                 obj[key] = this._iniObject(properties[key].properties)
               }
