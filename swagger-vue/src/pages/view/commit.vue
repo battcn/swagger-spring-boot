@@ -36,7 +36,8 @@
           <div class="parameter-value">
               <textarea rows="10" v-model="copyChildForm[key].default"
                         v-if="(childForm[key].default!=''&&(typeof childForm[key].default)=='object'&&childForm[key].default.in!=='formData')||copyChildForm[key].addition"
-                        type="text"></textarea>
+                        type="text">
+              </textarea>
             <div class="parameter-file"
                  v-else-if="(typeof childForm[key].default)=='object'&&childForm[key].default.in==='formData'&&childForm[key].default.type==='file'">
               <input type="file" @change="_fileChange($event)" ref="fileInput" />选择文件 {{fileName}}
@@ -45,7 +46,9 @@
               <option v-for="enumItem in item.enum" :value="enumItem">{{enumItem}}</option>
             </select>
             <input v-else-if="linkageSection==item.name"
-                   v-model="keyValue" type="text" />
+                   v-model="copyChildForm[key].default" type="text" />
+            <!--<input v-else-if="linkageSection==item.name"-->
+                   <!--v-model="keyValue" type="text" />-->
             <input v-else v-model="copyChildForm[key].default" type="text" />
           </div>
           <!--<span v-if="childForm[key].default==''||(typeof childForm[key].default)!='object'"-->
@@ -107,21 +110,30 @@
       copyLinkPath () {
         return (this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathName) ? this.swaggerCategory[this.countTo].pathName : ''
       },
-      linkagePath () {/*   */
-        let path = this.copyLinkPath
-        let digits = path.indexOf('{')
-        let digitsEnd = path.indexOf('}')
-        if (path !== undefined && digits > 0 && digitsEnd > 0) { //判断是否有参数在PATH路径上
-          if (this.keyValue === '') {
-            return path
+      /**
+       * 路由占位符替换为输入的值
+       */
+      linkagePath () {
+        let path = deepCopy(this.copyLinkPath)
+        this.copyChildForm.forEach((item, key) => {
+          // 数字0 布尔false
+          if (String(item.default)) {
+            path = path.replace(new RegExp("\\{" + item.name + "\\}", "g"), item.default)
           }
-          for (let key in this.copyChildForm) {
-            if (this.copyChildForm[key].name === this.linkageSection) {
-              this.copyChildForm[key].default = this.keyValue
-            }
-          }
-          return this.copyLinkPath.match(/(\S*)\{/)[1] + this.keyValue + this.copyLinkPath.match(/\}(\S*)/)[1]
-        }
+        })
+        // let digits = path.indexOf('{')
+        // let digitsEnd = path.indexOf('}')
+        // if (path !== undefined && digits > 0 && digitsEnd > 0) { //判断是否有参数在PATH路径上
+        //   if (this.keyValue === '') {
+        //     return path
+        //   }
+        //   for (let key in this.copyChildForm) {
+        //     if (this.copyChildForm[key].name === this.linkageSection) {
+        //       this.copyChildForm[key].default = this.keyValue
+        //     }
+        //   }
+        //   return this.copyLinkPath.match(/(\S*)\{/)[1] + this.keyValue + this.copyLinkPath.match(/\}(\S*)/)[1]
+        // }
         return path
       },
       linkageSection () {/* 路径参数 */
@@ -218,7 +230,11 @@
           }
 
           // 必填项判断
-          if (data[i] && data[i]['required'] && data[i]['default'] === '' && data[i]['required'] === true) {
+          // if (data[i] && data[i]['required'] && data[i]['default'] === '' && data[i]['required'] === true) {
+          //   promptPopUpShow.call(_this, data[i].name + POPUPS_MESSAGES.REQUIRED)
+          //   return false
+          // }
+          if (data[i] && (data[i]['default'] === '' || data[i]['default'] === null || data[i]['default'] === undefined)) {
             promptPopUpShow.call(_this, data[i].name + POPUPS_MESSAGES.REQUIRED)
             return false
           }
@@ -239,10 +255,10 @@
             }
           }
           // 路径参数判断
-          if (data[i]['name'] && data[i]['name'] === _this.linkageSection && _this.keyValue === '') {
-            promptPopUpShow.call(_this, data[i].name + POPUPS_MESSAGES.REQUIRED)
-            return false
-          }
+          // if (data[i]['name'] && data[i]['name'] === _this.linkageSection && _this.keyValue === '') {
+          //   promptPopUpShow.call(_this, data[i].name + POPUPS_MESSAGES.REQUIRED)
+          //   return false
+          // }
         }
         // for (let key in _this.$refs.checkboxs) {
         //   data[key].required = _this.$refs.checkboxs[key].checked
