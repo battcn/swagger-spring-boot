@@ -70,6 +70,7 @@
             <span v-else>}</span>
           </div>
           <div v-else>无</div>
+          <pre style="display: none" class="example-model">{{jsonObject}}</pre>
         </li>
         <li><span>响应参数说明</span>
           <div class="response-parameter">
@@ -733,7 +734,9 @@
             let obj = []
             obj.push(data[key].name)
             obj.push(data[key].default)
-            obj.push(_this.swaggerCategory[_this.countTo].pathInfo.parameters[key])
+            // 不知道为啥，反正就是需要
+            obj.push(obj.push(data[key]))
+            // obj.push(_this.swaggerCategory[_this.countTo].pathInfo.parameters[key])
             result.push(obj)
           }
         }
