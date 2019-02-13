@@ -115,10 +115,21 @@
        */
       linkagePath () {
         let path = deepCopy(this.copyLinkPath)
-        this.copyChildForm.forEach((item, key) => {
+        // 筛选出已选中且存在数据的数据
+        const copySelected = this.copyChildForm.filter(param => this.selectedParams.indexOf(param.name) !== -1)
+        // 将数据替换至路由上
+        copySelected.forEach((item, key) => {
           // 数字0 布尔false
           if (String(item.default)) {
-            path = path.replace(new RegExp("\\{" + item.name + "\\}", "g"), item.default)
+            if (item.in === 'path') {
+              path = path.replace(new RegExp("\\{" + item.name + "\\}", "g"), item.default)
+            } else if (item.in === 'query'){
+              if (path.indexOf('?') === -1) {
+                path += `?${item.name}=${item.default}`
+              } else {
+                path += `&${item.name}=${item.default}`
+              }
+            }
           }
         })
         // let digits = path.indexOf('{')
