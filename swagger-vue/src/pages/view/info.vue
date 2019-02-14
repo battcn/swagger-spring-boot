@@ -286,9 +286,10 @@
                 arrs['type'] = 'array'
                 definition['Array'] = arrs
                 this.jsonObject = []
-                let jsonObj = {}
-                jsonObj[refType] = deftion
-                this.jsonObject.push(jsonObj)
+                this.jsonObject.push(deftion)
+                // let jsonObj = {}
+                // jsonObj[refType] = deftion
+                // this.jsonObject.push(jsonObj)
               } else {
                 definition = response
                 this.jsonObject = deftion
@@ -421,6 +422,7 @@
             array['required'] = result && result[key] && result[key]['required']
             // 通过该字段判断是否为下来选择
             array['enum'] = result && result[key] && result[key]['enum']
+            array['in'] = result && result[key] && result[key]['in']
             this.childForm[key] = deepCopy(array)
           }
         }
@@ -471,7 +473,8 @@
       _iniData: function () {
         this.switchA = 0
         this.resultShow = false
-        this.childForm = {}
+        this.childForm = [] // 初始值设为空数组
+        // this.childForm = {}
         this.indentation = 1
         this.isJsonObject = false
         this.jsonObject = ''
@@ -524,8 +527,10 @@
             if ((properties[key].type && properties[key].properties && properties[key].type === 'object') || (properties[key].type === 'array' && properties[key].properties)) {
               // 包含子字段
               if (properties[key].type === 'array' && properties[key].properties) {
-                obj[key] = {}
-                obj[key] = (Object.values(this._iniObject(properties[key].properties)))
+                obj[key] = []
+                obj[key].push(this._iniObject(properties[key].properties))
+                // obj[key] = {}
+                // obj[key] = (Object.values(this._iniObject(properties[key].properties)))
               } else {
                 obj[key] = this._iniObject(properties[key].properties)
               }
@@ -732,7 +737,9 @@
             let obj = []
             obj.push(data[key].name)
             obj.push(data[key].default)
-            obj.push(_this.swaggerCategory[_this.countTo].pathInfo.parameters[key])
+            // 不知道为啥，反正就是需要
+            obj.push(obj.push(data[key]))
+            // obj.push(_this.swaggerCategory[_this.countTo].pathInfo.parameters[key])
             result.push(obj)
           }
         }
