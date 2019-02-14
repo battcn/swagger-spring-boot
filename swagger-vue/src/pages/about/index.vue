@@ -24,6 +24,11 @@
           :href="infoData && infoData.termsOfService ? infoData.termsOfService : ''"
           target="_blank">{{infoData && infoData.termsOfService ? infoData.termsOfService : ''}}</a></span>
       </li>
+      <li class="head"><span>接口请求数量统计</span></li>
+      <li v-for="(item, key) in statistics">
+        <span>{{key}}请求</span>
+        <span>{{item}}</span>
+      </li>
     </ul>
   </div>
 </template>
@@ -34,7 +39,8 @@
   export default {
     name: 'about',
     data() {
-      return {}
+      return {
+      }
     },
     computed: {
       ...mapGetters(['dropDownBoxContent']),
@@ -42,15 +48,31 @@
         return deepCopy(this.dropDownBoxContent)
       },
       hostInfo() {/* host字段 */
-        return this.dataAll && this.dataAll.host;
       },
       infoData() {/*info字段 数据*/
         return this.dataAll && this.dataAll.info;
       },
       author() {/* 作者信息 */
         return this.infoData && this.infoData.contact;
+      },
+      statistics() { /* 接口数量统计 */
+        let num = {total: 0, get: 0, post: 0, delete: 0, patch: 0, put: 0};
+        if (this.dropDownBoxContent && this.dropDownBoxContent.paths) {
+          for (let key in this.dropDownBoxContent.paths) {
+            const keys = Object.keys(this.dropDownBoxContent.paths[key]);
+            num.total += keys.length
+            if (keys.length === 1) {
+              num[keys[0]] += 1
+            }
+            if (keys.length > 1) {
+              keys.forEach(item => {
+                num[item] += 1
+              })
+            }
+          }
+        }
+        return num;
       }
-
     }
   }
 </script>
