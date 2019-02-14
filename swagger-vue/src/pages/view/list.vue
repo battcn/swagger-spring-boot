@@ -51,7 +51,8 @@
     <info-view v-show="countTo!==-1"
                v-bind:swaggerCategory="swaggerCategory" v-bind:selected="selected"
                v-bind:count="count" v-bind:countTo="countTo"></info-view>
-    <authorizations></authorizations>
+    <authorizations @changTab="changTab"></authorizations>
+    <search @changTab="changTab"></search>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -64,6 +65,7 @@
   import About from '../about/index.vue'
   import InfoView from './info.vue'
   import Authorizations from '../util/operate/authorizations.vue'
+  import Search from '../util/operate/search.vue'
 
   export default {
     name: 'app',
@@ -108,6 +110,25 @@
       }
     },
     methods: {
+      changTab(path) {
+        if (path.tags && path.tags.length > 0) {
+          path.tags.forEach(item => {
+            this._dropDownBoxContent.tags.forEach((item1, index) => {
+              if (item1.name === item) {
+                this.count = index;
+                return !1;
+              }
+            })
+          })
+        }
+        if (this.swaggerCategory && this.swaggerCategory.length > 0) {
+          this.swaggerCategory.forEach((item, index) => {
+            if (item.pathName === path.path && item.name === path.name) {
+              this.countTo = index
+            }
+          })
+        }
+      },
       rollLeft: function () {
         let _left = this.$refs.tabSwitch;
         _left.scrollLeft -= 200;
@@ -215,7 +236,7 @@
       },
       ...mapMutations(['DECIDE_ACCOUNT_ISVERIFY', 'UPDATE_TABDATA_UPDATETABSHOW', 'UPDATE_DROPDOWN_DROPDOWNCOUNT', 'DELETE_TABDATA_DELETETAB', 'CLEAR_TABDATA_CLEARTAB', 'UPDATE_DROPDOWN_DROPDOWNDATA', 'UPDATE_BOXCONTENT_BOXCONTENT']),
     },
-    components: {Login, InfoView, About, Authorizations},
+    components: {Login, InfoView, About, Authorizations, Search},
     computed: {
       ...mapGetters(['accountIsSecurity', 'tabDataInfo', 'tabDataShow', 'dropDownData', 'dropDownBoxContent', 'dropDownCount']),
       lock() {
@@ -227,6 +248,7 @@
         if (!_tags || _tags.length <= 0) {
           return [];
         }
+        // 排序
         for (let i = 0, n = _tags.length; i < n; i++) {
           for (let j = i + 1, m = _tags.length; j < m; j++) {
             let _tagI = _tags[i];
