@@ -473,7 +473,8 @@
       _iniData: function () {
         this.switchA = 0
         this.resultShow = false
-        this.childForm = {}
+        this.childForm = [] // 初始值设为空数组
+        // this.childForm = {}
         this.indentation = 1
         this.isJsonObject = false
         this.jsonObject = ''
