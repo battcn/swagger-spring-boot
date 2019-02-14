@@ -124,7 +124,7 @@
     watch: {
       selected (newVal, oldVal) {
         if (newVal && newVal !== oldVal) {
-          this.filterPathParams = this.pathParams.filter(item => item.path.match(newVal))
+          this.filterPathParams = this.pathParams.filter(item => item.path.match(newVal) || item.summary.match(newVal))
         }
         if (!newVal) {
           this.initFilterPathParams()
