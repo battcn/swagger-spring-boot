@@ -160,7 +160,7 @@
     background: rgba(0, 0, 0, 0.5);
   }
 
-  .ins-search-container {
+  .search .ins-search-container {
     left: 50%;
     top: 100px;
     z-index: 101;
@@ -175,15 +175,15 @@
     text-align: left;
   }
 
-  .ins-search-mask, .ins-search-container {
+  .search .ins-search-mask, .search .ins-search-container {
     position: fixed;
   }
 
-  .ins-input-wrapper {
+  .search .ins-input-wrapper {
     position: relative;
   }
 
-  .ins-search-input {
+  .search .ins-search-input {
     width: 100%;
     border: none;
     outline: none;
@@ -202,7 +202,7 @@
     font-family: "Microsoft Yahei Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
   }
 
-  .ins-close {
+  .search .ins-close {
     top: 50%;
     right: 6px;
     width: 20px;
@@ -214,11 +214,11 @@
     display: inline-block;
   }
 
-  .ins-selectable {
+  .search .ins-selectable {
     cursor: pointer;
   }
 
-  .fa {
+  .search .fa {
     color: #e84d1c;
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
@@ -228,7 +228,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .ins-section-wrapper {
+  .search .ins-section-wrapper {
     left: 0;
     right: 0;
     top: 45px;
@@ -237,50 +237,50 @@
     position: absolute;
   }
 
-  .ins-section {
+  .search .ins-section {
     font-size: 14px;
     line-height: 16px;
   }
 
-  .ins-section-container {
+  .search .ins-section-container {
     position: relative;
     background: #f7f7f7;
   }
 
-  .ins-section .ins-search-item:hover,
-  .ins-section .ins-search-item.active {
+  .search .ins-section .ins-search-item:hover,
+  .search .ins-section .ins-search-item.active {
     color: #fff;
     background: #006bde;
   }
 
-  .ins-section .ins-search-item:hover .ins-search-preview,
-  .ins-section .ins-search-item.active .ins-search-preview {
+  .search .ins-section .ins-search-item:hover .ins-search-preview,
+  .search .ins-section .ins-search-item.active .ins-search-preview {
     color: #fff;
   }
 
-  .ins-section .ins-section-header {
+  .search .ins-section .ins-section-header {
     color: #9a9a9a;
     border-bottom: 1px solid #e2e2e2;
   }
 
-  .ins-section .ins-search-item header, .ins-section .ins-search-item .ins-search-preview {
+  .search .ins-section .ins-search-item header, .search .ins-section .ins-search-item .ins-search-preview {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .ins-section .ins-search-item .ins-search-preview {
+  .search .ins-section .ins-search-item .ins-search-preview {
     height: 15px;
     font-size: 12px;
     color: #9a9a9a;
     margin: 5px 0 0 0;
   }
 
-  .ins-section .ins-section-header, .ins-section .ins-search-item {
+  .search .ins-section .ins-section-header, .search .ins-section .ins-search-item {
     padding: 8px 15px;
   }
 
-  .ins-selectable {
+  .search .ins-selectable {
     cursor: pointer;
   }
 
@@ -299,18 +299,6 @@
     line-height: 20px;
     background-color: #fff;
   }
-
-  /*.search > div > div {*/
-  /*left: 50%;*/
-  /*top: 100px;*/
-  /*z-index: 101;*/
-  /*bottom: 100px;*/
-  /*-webkit-box-sizing: border-box;*/
-  /*-moz-box-sizing: border-box;*/
-  /*box-sizing: border-box;*/
-  /*width: 540px;*/
-  /*margin-left: -270px;*/
-  /*}*/
 
   .search .header { /* 标题 */
     border-bottom: 1px solid #ccc;

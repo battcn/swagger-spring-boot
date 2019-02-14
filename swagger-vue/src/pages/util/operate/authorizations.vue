@@ -104,7 +104,7 @@
     z-index: 99;
     position: fixed;
     bottom: 20px;
-    right: 40px;
+    right: 80px;
     width: 20px;
     height: 20px;
     border-radius: 20px;
