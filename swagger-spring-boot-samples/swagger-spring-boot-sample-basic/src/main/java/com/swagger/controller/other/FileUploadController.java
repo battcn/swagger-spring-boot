@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

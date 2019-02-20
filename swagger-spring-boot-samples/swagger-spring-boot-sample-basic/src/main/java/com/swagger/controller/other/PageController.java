@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import com.swagger.entity.Page;
 import com.swagger.entity.User;

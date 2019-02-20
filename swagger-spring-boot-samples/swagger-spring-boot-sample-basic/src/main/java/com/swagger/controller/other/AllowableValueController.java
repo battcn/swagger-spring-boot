@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import com.swagger.entity.AllowableValue;
 import io.swagger.annotations.Api;

@@ -6,4 +6,4 @@ spring:
       [用户]:
         base-package: com.battcn.controller.user
       [书籍]:
-        base-package: com.battcn.controller.book
+        base-package: com.battcn.controller.order

@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import com.swagger.utils.NewVerifyCodeUtils;
 import io.swagger.annotations.Api;

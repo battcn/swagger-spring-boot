@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.user;
 
 import com.battcn.boot.swagger.model.DataType;
 import com.battcn.boot.swagger.model.ParamType;

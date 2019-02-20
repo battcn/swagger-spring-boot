@@ -1,8 +1,7 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import com.swagger.entity.PojoA;
 import com.swagger.entity.PojoC;
-import com.swagger.entity.PojoD;
 import com.swagger.entity.TreeNode;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.GetMapping;

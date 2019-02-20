@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import com.battcn.boot.swagger.annotation.ApiOrder;
 import com.swagger.entity.Message;

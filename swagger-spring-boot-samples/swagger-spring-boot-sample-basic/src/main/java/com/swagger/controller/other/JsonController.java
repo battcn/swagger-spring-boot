@@ -1,4 +1,4 @@
-package com.swagger.controller;
+package com.swagger.controller.other;
 
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
