@@ -52,6 +52,33 @@ spring.http.encoding.charset=UTF-8
 spring.messages.encoding=UTF-8
 ```
 
+> 访问 404 
+
+如果遇到 访问 `swagger-ui.html` 404 的问题，尝试如下方案
+
+``` java
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
+/**
+ * 解决 swagger-ui.html 访问路径 404 问题
+ *
+ * @author Levin
+ */
+@Configuration
+public class SwaggerMvnConfiguration extends WebMvcConfigurationSupport {
+
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/META-INF/resources/").setCachePeriod(0);
+    }
+    
+}
+```
+
+
+
 - 在`application.yml`中添加
 
 ``` yaml
