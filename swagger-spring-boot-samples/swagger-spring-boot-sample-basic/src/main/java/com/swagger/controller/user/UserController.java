@@ -36,7 +36,7 @@ public class UserController {
     public User query(String username, String password) {
         log.info("多个参数用  @ApiImplicitParams");
         //return new User(1L, username, password);
-        throw new RuntimeException("服务器异常...");
+        throw new RuntimeException("服务器异常..2019-03-18 15:12:11.306 ERROR 17128 --- [nio-8080-exec-4] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: 服务器异常...] with root cause\n.");
     }
 
     @GetMapping("/{id}")
