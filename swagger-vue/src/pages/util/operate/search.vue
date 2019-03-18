@@ -75,6 +75,7 @@
         this.toggleSearch()
       },
       initSearchParams () {
+        this.pathParams = []
         for (let key in this.dropDownBoxContent.paths) {
           const pathKeys = Object.keys(this.dropDownBoxContent.paths[key])
           if (pathKeys && pathKeys.length > 0) {
