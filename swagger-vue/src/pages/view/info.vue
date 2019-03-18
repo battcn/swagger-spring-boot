@@ -186,7 +186,7 @@
   new Clipboard('.copy-json')
   export default {
     name: 'info',
-    data () {
+    data() {
       return {
         formatJsonObjectTo: '', /* 格式化后的响应JSON数据 */
         jsonValue: '', /* 复制的表单响应JSON数据 */
@@ -451,7 +451,7 @@
        * 判断源数据下是否存在 security 属性
        * @returns {boolean}
        */
-      isExistSecurity () {
+      isExistSecurity() {
         let is = this.swaggerCategory && this.swaggerCategory[this.countTo] && this.swaggerCategory[this.countTo].pathInfo && this.swaggerCategory[this.countTo].pathInfo.security
         return !!is
       }
@@ -945,7 +945,7 @@
   }
 </script>
 <style>
-  pre:hover,
+  /*pre:hover,*/
   pre:focus {
     width: min-content;
   }
@@ -1134,6 +1134,10 @@
     white-space: pre-wrap;
     color: #1A1A1A;
     font-size: 18px;
+  }
+
+  .result-content .content li pre {
+    white-space: pre-wrap;
   }
 
   .debugging-header > ul {
