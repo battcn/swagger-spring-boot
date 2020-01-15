@@ -1,0 +1,36 @@
+.component-card-tag {
+  display: inline-block;
+  width: 160px;
+  height: 180px;
+  border: @border;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 3px;
+  vertical-align: top;
+
+  .card-tag-desc {
+    font-size: 12px;
+  }
+}
+
+.component-card-content {
+  width: 100px;
+  padding: 10px;
+  position: relative;
+  .card-title {
+    position: absolute;
+    background: @color-get-default;
+    line-height: 20px;
+    padding: 0px 5px;
+    margin-left: 15px;
+    left: 0px;
+    top: 0px;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .card-content {
+    border: @border;
+    min-height: 100px;
+    width: 100px;
+  }
+}

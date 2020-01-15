@@ -11,7 +11,14 @@ const state = {
 
   dropDownData: [],
   dropDownCount: 0,
-  dropDownBoxContent: ""
+  dropDownBoxContent: "",
+  
+  searchKey: null,
+  tagContent: [],
+  linkContent: [],
+
+  listContent: [],
+  currentApi: null,
 }
 
 

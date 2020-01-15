@@ -1,0 +1,48 @@
+html, body {
+  padding: 0px;
+  margin: 0px
+}
+#swagger-ui {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+}
+
+.overflow-default {
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+.close {
+  position: absolute;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+  z-index: 5;
+  right: 10px;
+  top: 10px;
+}
+.close_before {
+  content: '';	
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	top: 7px;
+	width: 20px;
+	height: 2px;
+	background: rgba(0,0,0,0.6);
+	transform: rotate(45deg);
+}
+.close_after{
+  content: '';		
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	top: 7px;
+	width: 20px;
+	height: 2px;
+	background: rgba(0,0,0,0.6);
+	transform: rotate(135deg);
+}
