@@ -1,0 +1,29 @@
+.component-content {
+  text-align: center;
+}
+.component-header {
+  height: @height-top;
+  width: 100%;
+  border-bottom: @border;
+  box-shadow: 0px 0px 2px #999;
+  background: #ffffff;
+  position: fixed;
+  top: 0px;
+  z-index: 10;
+}
+.component-link-content {
+  margin-top: @height-top;
+  .link-content-left {
+    position: fixed;
+    left: 0px;
+    width: @width-left;
+    overflow: auto;
+    height: 100%;
+    padding-top: @height-top;
+    top: 0px;
+    z-index: 0;
+  }
+  .link-content-right {
+    margin-left: @width-left;
+  }
+}

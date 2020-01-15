@@ -1,0 +1,71 @@
+.component-link-list {
+  padding-top: 20px;
+  .component-link {
+    padding: 5px;
+    height: 30px;
+    overflow: hidden;
+    text-align: left;
+    transition: all .3s ease;
+    cursor: pointer;
+    .link-name {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 25px;
+      .overflow-default;
+      .link-type {
+        display: @inline-block;
+        width: 30px;
+        margin-right: 10px;
+        font-weight: 700;
+      }
+    }
+    .link-summary {
+      font-size: 12px;
+      .overflow-default;
+    }
+  }
+  
+  .component-link:hover, .link-selected {
+    color: @white;
+    background-color: @color-hover;
+    padding: 10px;
+    height: 60px;
+    transition: all .3s ease;
+  }
+  
+  .link-method-get {
+    color: @color-get;
+    background: @color-get-default;
+  }
+  .link-selected.link-method-get, .link-method-get:hover  {
+    color: @white;
+    background: @color-get-hover;
+  }
+  
+  .link-method-post {
+    color: @color-post;
+    background: @color-post-default;
+  }
+  .link-selected.link-method-post, .link-method-post:hover  {
+    color: @white;
+    background: @color-post-hover;
+  }
+  
+  .link-method-put {
+    color: @color-put;
+    background: @color-put-default;
+  }
+  .link-selected.link-method-put, .link-method-put:hover  {
+    color: @white;
+    background: @color-put-hover;
+  }
+  
+  .link-method-delete {
+    color: @color-delete;
+    background: @color-delete-default;
+  }
+  .link-selected.link-method-delete, .link-method-delete:hover  {
+    color: @white;
+    background: @color-delete-hover;
+  }
+}

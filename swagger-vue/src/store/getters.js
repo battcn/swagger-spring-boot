@@ -17,5 +17,26 @@ export const dropDownCount = state => state.dropDownCount
 
 export const dropDownBoxContent = state => state.dropDownBoxContent
 
-
+export const tagResult = state => {
+  const result = []
+  if (!state.dropDownBoxContent.paths) {
+    return result
+  }
+  if (!state.searchKey) {
+    return state.dropDownBoxContent.tags
+  }
+  return result
+}
+export const apiResult = state => {
+  const result = []
+  if (!state.dropDownBoxContent.paths) {
+    return result
+  }
+  if (!state.searchKey) {
+    return state.dropDownBoxContent.paths
+  }
+  return result
+}
+export const linkList = state => state.listContent
+export const model = state => state.model
 

@@ -40,5 +40,5 @@ overlays
 bin
 
 # vue #
-/dist/*
-/dist/*/
+*/dist/*
+*/dist/*/
